@@ -4,6 +4,7 @@ using System.Collections;
 
 public class PlayerMotor : MonoBehaviour 
 {
+	#region Serialized Private Variables
 	[SerializeField]
 	[Range(0,1)]
 	private float m_moveDamp = 0.25f;
@@ -12,26 +13,33 @@ public class PlayerMotor : MonoBehaviour
 	[SerializeField]
 	private float m_degreesPerSec = 120f;
 	[SerializeField]
-	private Camera m_gameCamera = null;
+	private PlayerCamera m_gameCamera = null;
+
+	#endregion
+
+	#region Private Variables
 
 	private float m_direction = 0f;
 	private float m_speed = 0f;
 	private float m_horizontal = 0f;
 	private float m_vertical = 0f;
-
-
+	
 	private Animator m_animator; 
 	private int m_locomotionId = 0;
 	private AnimatorStateInfo m_stateInfo;
 
-	protected virtual void Awake()
+	#endregion
+
+	#region Methods
+
+	void Start()
 	{
 		m_animator = this.GetComponent<Animator>();
 		m_locomotionId = Animator.StringToHash("Base Layer.Locomotion");
 
 		if(m_gameCamera == null)
 		{
-			m_gameCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+			m_gameCamera = PlayerCamera.PlayerCam;
 		}
 	}
 
@@ -68,22 +76,22 @@ public class PlayerMotor : MonoBehaviour
 
 		Vector3 axisDirection = new Vector3(m_horizontal, 0, m_vertical);
 
-		speedOut = axisDirection.sqrMagnitude;
+		speedOut = axisDirection.magnitude;
 
-		//Get camera rotation
-		Vector3 cameraDirection = camera.forward;
-		cameraDirection.y = 0f;
-		Quaternion refShift = Quaternion.FromToRotation(Vector3.forward, Vector3.Normalize(cameraDirection) );
+		//Cache the camera direction
+		Vector3 camDir = camera.forward;
+
+		//cameraDirection.y = 0f;
+		Quaternion rotation = Quaternion.FromToRotation(rootDiretion, camDir);
 
 		//Convert input in World Space coords
-		Vector3 moveDirection = refShift * axisDirection;
-		Vector3 axisSign = Vector3.Cross(moveDirection, rootDiretion);
+		Vector3 axisSign = Vector3.Cross(rotation * axisDirection, rootDiretion);
 
 		// Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), moveDirection, Color.green);
 		// Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), rootDiretion, Color.magenta);
 		// Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), axisDirection, Color.blue);
 
-		float angleToMove = Vector3.Angle(rootDiretion, moveDirection) * (axisSign.y >= 0 ? -1f : 1f);
+		float angleToMove = Vector3.Angle(rootDiretion, rotation.eulerAngles) * (axisSign.y >= 0 ? -1f : 1f);
 
 		angleToMove /= 180f;
 
@@ -94,4 +102,6 @@ public class PlayerMotor : MonoBehaviour
 	{
 		return m_stateInfo.nameHash == m_locomotionId;
 	}
+
+	#endregion
 }
