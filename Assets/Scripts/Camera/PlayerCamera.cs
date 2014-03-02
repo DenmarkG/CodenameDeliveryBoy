@@ -13,8 +13,6 @@ public class PlayerCamera : MonoBehaviour
 	[Range(0,10)]
 	private float m_smooth = 0.25f;
 	[SerializeField]
-	private float m_smoothDampTime = 0.1f;
-	[SerializeField]
 	private float m_snapSpeed = 20f;
 
 	#endregion
@@ -24,7 +22,6 @@ public class PlayerCamera : MonoBehaviour
 	private Transform m_target = null;
 	private Vector3 m_targetPos = Vector3.zero;
 	private Vector3 m_lookDir = Vector3.zero;
-	private Vector3 m_velSmooth = Vector3.zero;
 	private static PlayerCamera m_instance = null;
 	private float m_deadZone = .1f;
 	private Vector3 m_desiredPosition = Vector3.zero;
@@ -52,7 +49,7 @@ public class PlayerCamera : MonoBehaviour
 
 	void LateUpdate () 
 	{
-		if(Input.GetAxis("LEFT_TRIGGER") < -m_deadZone && !IsInvoking("ResetCamera") )
+		if( (Input.GetAxis("LEFT_TRIGGER") < -m_deadZone || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
 		{
 			StartCoroutine("ResetCamera");
 		}
@@ -103,19 +100,15 @@ public class PlayerCamera : MonoBehaviour
 		return Mathf.Clamp(angle, min, max);
 	}
 
-	/// <summary>
-	/// This doesn't work yet
-	/// </summary>
-	/// <returns>The camera.</returns>
 	IEnumerator ResetCamera()
 	{
-		Vector3 relativePos = m_target.position - m_desiredPosition;
+		Vector3 lookDir = m_target.forward;
+		Vector3 relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) ); 
 
 		while (Vector3.Distance(m_transform.position, relativePos) > .1f )
 		{
-			relativePos = m_target.position - m_desiredPosition;
+			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) );
 			m_transform.position = Vector3.Lerp(m_transform.position, relativePos, m_snapSpeed * Time.deltaTime);
-			Debug.DrawRay(m_transform.position, relativePos, Color.green);
 			SmoothLookAt();
 			yield return null;
 		}
