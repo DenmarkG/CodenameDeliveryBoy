@@ -14,12 +14,13 @@ public class PlayerCamera : MonoBehaviour
 	private float m_smooth = 0.25f;
 	[SerializeField]
 	private float m_snapSpeed = 20f;
-
+	[SerializeField]
+	private Transform m_target = null;
 	#endregion
 
 	#region Private Variables
 
-	private Transform m_target = null;
+
 	private Vector3 m_targetPos = Vector3.zero;
 	private Vector3 m_lookDir = Vector3.zero;
 	private static PlayerCamera m_instance = null;

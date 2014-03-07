@@ -15,18 +15,18 @@ public class PlayerMotor : MonoBehaviour
 	private float m_rotSpeed = 1.5f;
 	[SerializeField]
 	private float m_degreesPerSec = 120f;
-	[SerializeField]
-	private PlayerCamera m_gameCamera = null;
 
 	#endregion
 
 	#region Private Variables
 
+	private PlayerCamera m_gameCamera = null;
 	private float m_direction = 0f;
 	private float m_speed = 0f;
 	private float m_horizontal = 0f;
 	private float m_vertical = 0f;
-	private const float DEAD_ZONE = .1f;
+	private bool m_isRunning = false;
+	private const float DEAD_ZONE = .01f;
 	
 	private Animator m_animator; 
 	private int m_locomotionId = 0;
@@ -61,31 +61,50 @@ public class PlayerMotor : MonoBehaviour
 		m_direction = 0f;
 
 		//Get the input from the player
-		m_horizontal = Input.GetAxis("Horizontal");
-		m_vertical = Input.GetAxis("Vertical");
+		m_horizontal = Input.GetAxis(GameControllerHash.LeftStick.HORIZONTAL);
+		m_vertical = Input.GetAxis(GameControllerHash.LeftStick.VERTICAL);
+
+		//check to see if the player is running
+		m_isRunning = Input.GetButton(GameControllerHash.Buttons.B);
 
 		//Translate the input to "world space"
-		InputToWorldSpace(this.transform, m_gameCamera.transform, ref m_direction, ref m_speed, ref angle);
+		InputToWorldSpace(this.transform, m_gameCamera.transform, ref m_direction, ref m_speed, ref angle, m_isRunning);
 
 		//set the values for mechanim
 		m_animator.SetFloat("Speed", m_speed, m_speedDamp, Time.deltaTime);
 		m_animator.SetFloat("Direction", m_horizontal, m_dirDamp, Time.deltaTime);
 
-		if (m_speed > DEAD_ZONE) 
+		Debug.Log("Angle: " + angle);
+		Debug.Log("Direction: " + m_direction);
+
+//		if (m_speed > DEAD_ZONE) 
+//		{
+//			if(!IsPivoting() )
+//				m_animator.SetFloat("Angle", angle);
+//		}
+//		else //if( m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
+//		{
+//			//m_animator.SetFloat("Direction", 0f);
+//			m_animator.SetFloat("Angle", 0f);
+//		}
+
+		if(m_speed > DEAD_ZONE)
 		{
-			if(!IsPivoting() )
+			if(!IsPivoting())
+			{
 				m_animator.SetFloat("Angle", angle);
+			}
 		}
-		else if( m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
+		if(m_speed < DEAD_ZONE || Mathf.Abs(m_horizontal) < DEAD_ZONE)
 		{
-			m_animator.SetFloat("Direction", 0f);
 			m_animator.SetFloat("Angle", 0f);
+			m_animator.SetFloat("Direction", 0f);
 		}
 	}
 
 	public void UpdateMotorFixed()
 	{
-		if(IsInLocomotion() && ( (m_direction >= 0 && m_speed >= 0) ||  (m_direction <= 0 && m_speed <= 0) ) )
+		if(IsInLocomotion() && ( (m_direction >= 0 && m_speed >= 0) ||  (m_direction < 0 && m_speed < 0) ) && !IsPivoting() )
 		{
 			Vector3 toRot = new Vector3(0, m_degreesPerSec * (m_horizontal < 0f ? -1f: 1f), 0f);
 			Vector3 rotationAmount = Vector3.Lerp(Vector3.zero, toRot, Mathf.Abs(m_horizontal) ); 
@@ -94,35 +113,46 @@ public class PlayerMotor : MonoBehaviour
 		}
 	}
 
-	void InputToWorldSpace(Transform root, Transform camera, ref float directionOut, ref float speedOut, ref float angleOut)
+	void InputToWorldSpace(Transform player, Transform camera, ref float directionOut, ref float speedOut, ref float angleOut, bool isRunning)
 	{
-		//the root is essentially the actual direction of the character
-		Vector3 rootDiretion = root.forward;
-
+		//the player is essentially the actual direction of the character
+		Vector3 playerDiretion = player.forward;
+		
 		Vector3 axisDirection = new Vector3(m_horizontal, 0, m_vertical);
-
-		speedOut = axisDirection.magnitude;
-
+		
+		if (isRunning)
+			speedOut = (axisDirection.magnitude) * 2;
+		else
+			speedOut = axisDirection.magnitude;
+		
 		//Cache the camera direction
 		Vector3 camDir = camera.forward;
-
+		camDir.y = 0f;
+		camDir.Normalize();
+		
 		//cameraDirection.y = 0f;
-		Quaternion rotation = Quaternion.FromToRotation(rootDiretion, camDir);
-
+		Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, camDir);
+		
 		//Convert input in World Space coords
-		Vector3 axisSign = Vector3.Cross(rotation * axisDirection, rootDiretion);
+		Vector3 moveDirection = rotation * axisDirection;
+		//		Vector3 axisSign = Vector3.Cross(rotation * axisDirection, playerDiretion);
+		float axisSign = Vector3.Cross(moveDirection, playerDiretion).y >= 0 ? 1f : -1f;
+		
+		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), moveDirection, Color.green);
+		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), playerDiretion, Color.yellow);
+		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), axisDirection, Color.blue);
+		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), Vector3.Cross(moveDirection, playerDiretion), Color.red);
+		
+		//float angleToMove = Vector3.Angle(playerDiretion, rotation.eulerAngles) * (axisSign.y >= 0 ? -1f : 1f);
+		float angleToMove = Vector3.Angle(camDir - playerDiretion, moveDirection) * axisSign;
+		//Debug.Log("Angle To Move: " + angleToMove);
 
-		// Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), moveDirection, Color.green);
-		// Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), rootDiretion, Color.magenta);
-		// Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), axisDirection, Color.blue);
-
-		float angleToMove = Vector3.Angle(rootDiretion, rotation.eulerAngles) * (axisSign.y >= 0 ? -1f : 1f);
 
 		if(!IsPivoting() )
 			angleOut = angleToMove;
-
-		angleToMove /= 180f;
-			
+		
+		angleToMove /= 90f;
+		
 		directionOut = (angleToMove * m_rotSpeed);
 	}
 
