@@ -3,9 +3,8 @@ using System.Collections;
 
 public class InventoryItem : MonoBehaviour
 {
-	
-	public string myName = "";
-	//public Texture2D icon = null;
+	[SerializeField]	
+	private string m_myName = "";
 	
 	protected Inventory inventory; // the player inventory to add to upon contact. 
 	protected bool bIsConsistent = false;
@@ -16,10 +15,6 @@ public class InventoryItem : MonoBehaviour
 	}
 	
 	//Methods
-	protected virtual void OnAwake()
-	{
-	}
-
 	public virtual void AddToInventory(Inventory pInventory)
 	{
 		inventory = pInventory;
@@ -28,11 +23,17 @@ public class InventoryItem : MonoBehaviour
 	
 	public virtual string Print()
 	{
-		return myName;
+		return m_myName;
 	}
-	
+
+	protected virtual void OnAwake()
+	{
+		//
+	}
+
 	public virtual void DropItem()
 	{
+		//
 	}
 	
 	public bool IsConsistent

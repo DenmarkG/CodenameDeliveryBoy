@@ -3,9 +3,10 @@ using System.Collections;
 
 public class Wallet : InventoryItem 
 {
-	public int maxCapacity = 250;
+	[SerializeField]
+	private int m_maxCapacity = 250;
 	
-	private int currentAmount = 55;
+	private int m_currentAmount = 55;
 	
 	protected override void OnAwake()
 	{
@@ -14,29 +15,28 @@ public class Wallet : InventoryItem
 	
 	public void AddMoney(int amount)
 	{
-		currentAmount += amount;
-		if(currentAmount > maxCapacity)
+		m_currentAmount += amount;
+		if(m_currentAmount > m_maxCapacity)
 		{
-			currentAmount = maxCapacity;
+			m_currentAmount = m_maxCapacity;
 		}
 	}
 	
 	public bool PayMoney(int amount)
 	{
-		if(currentAmount - amount < 0)
+		if(m_currentAmount - amount < 0)
 		{
 			return false;
 		}
 		else
 		{
-			currentAmount -= amount;
+			m_currentAmount -= amount;
 			return true;
 		}
 	}
 	
 	public override string Print()
 	{
-		return currentAmount.ToString("C");
+		return m_currentAmount.ToString("C");
 	}
-	
 }

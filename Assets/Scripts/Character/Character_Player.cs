@@ -11,7 +11,10 @@ public class Character_Player : CharacterBase
 	{
 		base.Awake ();
 		m_missionManager = new MissionManager();
+		m_missionManager.AddMission(new Mission_01() );
+
 		m_inventory = new Inventory();
+		m_inventory.AddItem(new Wallet() );
 
 		//make sure the player has a motor
 		if(m_playerMotor == null)
@@ -37,8 +40,22 @@ public class Character_Player : CharacterBase
 		m_stateMachine.UpdateStateFixed();
 	}
 
+	#region Properties
+
+	public MissionManager PlayerMissionManager
+	{
+		get { return m_missionManager; }
+	}
+
+	public Inventory PlayerInventory
+	{
+		get { return m_inventory; }
+	}
+
 	public PlayerMotor Motor
 	{
 		get { return m_playerMotor; }
 	}
+
+	#endregion
 }

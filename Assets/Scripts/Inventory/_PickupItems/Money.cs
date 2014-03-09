@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Money : PickupItem 
@@ -8,7 +8,7 @@ public class Money : PickupItem
 	
 	protected override void OnAwake()
 	{
-		bCanRespawn = false;
+		m_canRespawn = false;
 	}
 	
 	protected override void OnTriggerEnter(Collider other)
@@ -18,7 +18,7 @@ public class Money : PickupItem
 			playerWallet = other.GetComponent<Wallet>();
 			if(inventory != null)
 			{
-				playerWallet.AddMoney(myValue);
+				playerWallet.AddMoney(m_myValue);
 				Collect();
 			}
 		}

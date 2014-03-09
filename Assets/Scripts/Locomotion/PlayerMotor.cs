@@ -74,8 +74,8 @@ public class PlayerMotor : MonoBehaviour
 		m_animator.SetFloat("Speed", m_speed, m_speedDamp, Time.deltaTime);
 		m_animator.SetFloat("Direction", m_horizontal, m_dirDamp, Time.deltaTime);
 
-		Debug.Log("Angle: " + angle);
-		Debug.Log("Direction: " + m_direction);
+		//Debug.Log("Angle: " + angle);
+		//Debug.Log("Direction: " + m_direction);
 
 //		if (m_speed > DEAD_ZONE) 
 //		{
@@ -131,7 +131,7 @@ public class PlayerMotor : MonoBehaviour
 		camDir.Normalize();
 		
 		//cameraDirection.y = 0f;
-		Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, camDir);
+		Quaternion rotation = Quaternion.FromToRotation(axisDirection, playerDiretion);
 		
 		//Convert input in World Space coords
 		Vector3 moveDirection = rotation * axisDirection;
@@ -141,10 +141,10 @@ public class PlayerMotor : MonoBehaviour
 		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), moveDirection, Color.green);
 		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), playerDiretion, Color.yellow);
 		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), axisDirection, Color.blue);
-		Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), Vector3.Cross(moveDirection, playerDiretion), Color.red);
+		//Debug.DrawRay(new Vector3(player.position.x, player.position.y + 2f, player.position.z), Vector3.Cross(moveDirection, playerDiretion), Color.red);
 		
 		//float angleToMove = Vector3.Angle(playerDiretion, rotation.eulerAngles) * (axisSign.y >= 0 ? -1f : 1f);
-		float angleToMove = Vector3.Angle(camDir - playerDiretion, moveDirection) * axisSign;
+		float angleToMove = Vector3.Angle(camDir, moveDirection) * axisSign;
 		//Debug.Log("Angle To Move: " + angleToMove);
 
 

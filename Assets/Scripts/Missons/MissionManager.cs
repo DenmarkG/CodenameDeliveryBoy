@@ -29,4 +29,9 @@ public class MissionManager
 		
 		return missions;
 	}
+
+	public void UpdateMission(Mission updatedMission)
+	{
+		//not sure how to implement this yet
+	}
 }

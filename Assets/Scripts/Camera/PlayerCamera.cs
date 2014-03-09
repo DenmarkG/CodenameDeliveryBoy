@@ -25,7 +25,7 @@ public class PlayerCamera : MonoBehaviour
 	private Vector3 m_lookDir = Vector3.zero;
 	private static PlayerCamera m_instance = null;
 	private float m_deadZone = .1f;
-	private Vector3 m_desiredPosition = Vector3.zero;
+	//private Vector3 m_desiredPosition = Vector3.zero;
 	private Transform m_transform = null;
 
 	#endregion
@@ -45,7 +45,7 @@ public class PlayerCamera : MonoBehaviour
 			m_target = GameObject.FindGameObjectWithTag("PlayerCameraTarget").transform;
 		}
 
-		m_desiredPosition = m_target.position - ( (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
+		//m_desiredPosition = m_target.position - ( (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
 	}
 
 	void LateUpdate () 
@@ -104,9 +104,9 @@ public class PlayerCamera : MonoBehaviour
 	IEnumerator ResetCamera()
 	{
 		Vector3 lookDir = m_target.forward;
-		Vector3 relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) ); 
+		Vector3 relativePos = m_transform.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) ); 
 
-		while (Vector3.Distance(m_transform.position, relativePos) > .1f )
+		while (Vector3.Distance(m_transform.position, relativePos) > .1f)
 		{
 			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) );
 			m_transform.position = Vector3.Lerp(m_transform.position, relativePos, m_snapSpeed * Time.deltaTime);

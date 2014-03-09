@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Food : PickupItem 
 {
 	protected override void OnAwake()
 	{
-		bCanRespawn = false;
+		m_canRespawn = false;
 	}
 	
 	protected override void OnTriggerEnter(Collider other)

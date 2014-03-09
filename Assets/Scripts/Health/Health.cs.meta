@@ -2,7 +2,9 @@ fileFormatVersion: 2
 guid: 59bcc977d056ccf4596e4337b81c1703
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_outlineTexture: {fileID: 2800000, guid: ae40cc46d2345c8408bc1cf5dd0018ca, type: 3}
+  - m_healthTexture: {fileID: 2800000, guid: 526b2292dffa300469cb58307b4e13f1, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

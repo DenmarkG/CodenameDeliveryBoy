@@ -1,27 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GuiManager : MonoBehaviour 
 {
-	public GUISkin mySkin = null;
-	
-	//private string inventoryString;
-	private Health playerHealth;
-	//private Inventory playerInventory;
-	
-	void Start()
+	#region Public Variables
+
+	public delegate void UpdateGUI();
+	public static event UpdateGUI OnUpdateGUI;
+
+	#endregion
+
+	#region Private Serialized Variables
+
+	//[SerializeField]
+	//private GUISkin m_Skin = null;
+
+	#endregion
+
+	#region Private Variables
+
+	private Health m_playerHealth;
+	private List<ScreenMask> m_screenMasks = new List<ScreenMask>();
+
+	#endregion
+
+	public void OnGUI()
 	{
-		playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<Health>();
-	}
-	
-	void Update()
-	{
-		//inventoryString = playerInventory.PrintInventory();
-	}
-	void OnGUI()
-	{
-		//inventoryString = GUI.TextArea(new Rect(Screen.width - 105, 5, 100, 150),  inventoryString);
-		GUI.Box(new Rect(5, 5, 50, 25), playerHealth.CurrentHealth.ToString(), mySkin.box);
-		//GUI.Box(new Rect(Screen.width - 105, 5, 100, 150),  inventoryString, mySkin.box);
+		if (OnUpdateGUI != null)
+		{
+			OnUpdateGUI();
+		}
+
+		if (m_screenMasks.Count != 0)
+		{
+			foreach (ScreenMask mask in m_screenMasks)
+			{
+				mask.Draw();
+			}
+		}
 	}
 }

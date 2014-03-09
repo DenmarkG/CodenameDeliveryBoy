@@ -7,6 +7,8 @@ public class Mission
 	protected string m_missionName = "";
 	[SerializeField]
 	protected string m_missionDescription = "";
+	[SerializeField]
+	protected MissionState m_currenState = MissionState.INVALID;
 
 	protected MissionState currentState = MissionState.INVALID;
 
@@ -30,8 +32,13 @@ public class Mission
 	{
 		return m_missionName + ": " + currentState.ToString() + "\n" + m_missionDescription;
 	}
-	
-	protected enum MissionState
+
+	public MissionState GetMissionState()
+	{
+		return m_currenState;
+	}
+
+	public enum MissionState
 	{
 		INVALID,
 		IN_PROGRESS,
