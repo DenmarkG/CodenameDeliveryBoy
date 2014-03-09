@@ -3,18 +3,19 @@ using System.Collections;
 
 public class Character_Player : CharacterBase 
 {
-	private MissionManager m_missionManager = null;
+	[SerializeField]
 	private Inventory m_inventory = null;
+	[SerializeField]
+	private MissionManager m_missionManager = null;
+
 	private PlayerMotor m_playerMotor = null;
 
 	protected override void Awake ()
 	{
 		base.Awake ();
 		m_missionManager = new MissionManager();
-		m_missionManager.AddMission(new Mission_01() );
 
 		m_inventory = new Inventory();
-		m_inventory.AddItem(new Wallet() );
 
 		//make sure the player has a motor
 		if(m_playerMotor == null)
@@ -30,9 +31,24 @@ public class Character_Player : CharacterBase
 		m_stateMachine.SetCurrentState(new StatePlayerOverworld(m_playerMotor) );
 	}
 
+	void Start()
+	{
+		m_inventory.AddItem(new Wallet() );
+	}
+
 	void Update()
 	{
 		m_stateMachine.UpdateState();
+
+		if(Input.GetKeyDown(KeyCode.M) )
+		{
+			GuiManager.OnUpdateGUI += m_missionManager.DisplayCurrentMissions;
+		}
+
+		if(Input.GetKeyUp(KeyCode.M) )
+		{
+			GuiManager.OnUpdateGUI -= m_missionManager.DisplayCurrentMissions;
+		}
 	}
 
 	void FixedUpdate()

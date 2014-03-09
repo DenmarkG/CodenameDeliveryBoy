@@ -2,9 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class MissionManager
 {
-	public List<Mission> m_missionList = null;
+	[SerializeField]
+	private List<Mission> m_missionList = new List<Mission>();
+	[SerializeField]
+	private List<Mission> m_completedMissions = new List<Mission>();
 
 	public MissionManager()
 	{
@@ -13,25 +17,45 @@ public class MissionManager
 
 	public void AddMission(Mission newMission)
 	{
-		if(!m_missionList.Contains(newMission))
+		if(!m_missionList.Contains(newMission) )
 		{
+			newMission.BeginMission();
 			m_missionList.Add(newMission);
 		}
 	}
 	
-	public string DisplayMissions()
+	public void DisplayCurrentMissions()
 	{
-		string missions = "";
-		foreach(Mission m in m_missionList)
+		//show the current missions
+		if(m_missionList.Count > 0)
 		{
-			missions += m.ToString() + "\n";
+			string currentMissions = "";
+			foreach(Mission m in m_missionList)
+			{
+				currentMissions += m.GetInfo() + "\n";
+			}
+			GUI.Box(new Rect(0, 50, 150, 50), currentMissions);
 		}
-		
-		return missions;
+
+		//show the completed missions
+		if(m_completedMissions.Count > 0)
+		{
+			string completeMissions = "";
+			foreach(Mission m in m_completedMissions)
+			{
+				completeMissions += m.GetInfo() + "\n";
+			}
+			
+			GUI.Box(new Rect(Screen.width - 150, 50, 150, 50), completeMissions);
+		}
 	}
 
 	public void UpdateMission(Mission updatedMission)
 	{
-		//not sure how to implement this yet
+		if(updatedMission.GetMissionState == MissionState.SUCCESS || updatedMission.GetMissionState == MissionState.FAIL)
+		{
+			m_completedMissions.Add(updatedMission);
+			m_missionList.Remove(updatedMission);
+		}
 	}
 }

@@ -3,22 +3,9 @@ using System.Collections;
 
 public class Food : PickupItem 
 {
-	protected override void OnAwake()
+	public Food()
 	{
 		m_canRespawn = false;
-	}
-	
-	protected override void OnTriggerEnter(Collider other)
-	{
-		if(other.tag == "Player")
-		{
-//			inventory = other.GetComponent<Inventory>();
-//			if(inventory != null)
-//			{
-//				inventory.AddItem(this);
-//				Debug.Log ("Collected Food");
-//				Collect();
-//			}
-		}
+		m_myName = "Groceries";
 	}
 }

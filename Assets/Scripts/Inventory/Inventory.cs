@@ -2,23 +2,26 @@
 using System.Collections;
 using System.Collections.Generic;
 
+
 public delegate void AddInventoryItemDelegate();
 
+[System.Serializable]
 public class Inventory  
 {
-	private int maxItemCount = 5;
-
-	public int inventoryDisplayRows = 2;
-	public int inventoryDisplayColumns = 3;
-	public int buttonSize = 15;
-	
-	public List<InventoryItem> inventoryItems = null;
-	
-	private int itemCount = 0;
+	[SerializeField]
+	private int m_maxItemCount = 5;
+//	[SerializeField]
+//	private int m_inventoryDisplayRows = 2;
+//	[SerializeField]
+//	private int m_inventoryDisplayColumns = 3;
+//	[SerializeField]
+//	private int m_buttonSize = 15;
+	[SerializeField]
+	private List<InventoryItem> m_inventoryItems = null;
 
 	public Inventory()
 	{
-		inventoryItems = new List<InventoryItem>();
+		m_inventoryItems = new List<InventoryItem>();
 	}
 	
 //	void OnGUI()
@@ -35,17 +38,24 @@ public class Inventory
 	
 	public void AddItem(InventoryItem newItem)
 	{
-		if(itemCount < maxItemCount - 1)
+		if(m_inventoryItems.Count < m_maxItemCount - 1)
 		{
-			inventoryItems.Add(newItem);
-			++itemCount;
+			m_inventoryItems.Add(newItem);
+		}
+	}
+
+	public void RemoveItem(InventoryItem itemToRemove)
+	{
+		if(m_inventoryItems.Contains(itemToRemove) )
+	   	{
+			m_inventoryItems.Remove(itemToRemove);
 		}
 	}
 	
 	public string PrintInventory()
 	{	
-		string items = string.Format("Total Items: {0}\nItems:", itemCount);
-		foreach(InventoryItem i in inventoryItems)
+		string items = string.Format("Total Items: {0}\nItems:", m_inventoryItems.Count);
+		foreach(InventoryItem i in m_inventoryItems)
 		{
 			items += "\n" + i.Print();
 		}
@@ -87,5 +97,10 @@ public class Inventory
 //				}
 //			}
 //		}
+	}
+
+	public bool Contains(InventoryItem item)
+	{
+		return m_inventoryItems.Contains(item);
 	}
 }

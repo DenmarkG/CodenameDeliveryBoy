@@ -20,4 +20,9 @@ public class CharacterBase : MonoBehaviour
 	{
 		m_paused = false;
 	}
+
+	public virtual void OnSpeak()
+	{
+
+	}
 }

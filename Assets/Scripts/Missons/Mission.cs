@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class Mission
 {
 	[SerializeField]
@@ -10,17 +11,23 @@ public class Mission
 	[SerializeField]
 	protected MissionState m_currenState = MissionState.INVALID;
 
-	protected MissionState currentState = MissionState.INVALID;
-
-	public virtual bool CheckRequirements()
+	public virtual bool CheckRequirements(Character_Player player)
 	{
 		//check to see if the player meets the necessary requirements to start
-		return false;
+		//returns true by default for missions that have no requirements
+		return true;
 	}
-
+	
 	public virtual void BeginMission()
 	{
 		//begin the mission
+	}
+
+	public virtual bool CheckForCompletion()
+	{
+		//check to see if the mission has been completed;
+		//returns true by default
+		return true;
 	}
 
 	public virtual void EndMission()
@@ -30,19 +37,20 @@ public class Mission
 
 	public string GetInfo()
 	{
-		return m_missionName + ": " + currentState.ToString() + "\n" + m_missionDescription;
+		return m_missionName + ": " + m_currenState.ToString();
 	}
 
-	public MissionState GetMissionState()
+	public MissionState GetMissionState
 	{
-		return m_currenState;
+		get { return m_currenState; }
 	}
+}
 
-	public enum MissionState
-	{
-		INVALID,
-		IN_PROGRESS,
-		SUCCESS,
-		FAIL
-	}
+
+public enum MissionState
+{
+	INVALID,
+	IN_PROGRESS,
+	SUCCESS,
+	FAIL
 }

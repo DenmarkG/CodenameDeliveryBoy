@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
 public class Wallet : InventoryItem 
 {
 	[SerializeField]
 	private int m_maxCapacity = 250;
 	
 	private int m_currentAmount = 55;
-	
-	protected override void OnAwake()
+
+	public Wallet()
 	{
+		m_myName = "Wallet";
 		bIsConsistent = true;
 	}
 	
@@ -34,7 +36,15 @@ public class Wallet : InventoryItem
 			return true;
 		}
 	}
-	
+
+	public void IncreaseCapacity(int newMaxCapacity)
+	{
+		if(newMaxCapacity > m_maxCapacity)
+		{
+			m_maxCapacity = newMaxCapacity;
+		}
+	}
+
 	public override string Print()
 	{
 		return m_currentAmount.ToString("C");
