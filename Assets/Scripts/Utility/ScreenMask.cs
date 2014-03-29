@@ -21,13 +21,15 @@ public class ScreenMask
 
 	#endregion
 
+	//Constructor
 	public ScreenMask(float pos_X, float pos_Y, Texture2D texture)
 	{
 		m_position.x = pos_X;
 		m_position.y = pos_Y;
 
-
 		m_displayRect = new Rect(m_position.x, m_position.y, m_texture.width, m_texture.height);
+
+		OnActivate();
 	}
 
 	#region Functions
@@ -63,6 +65,20 @@ public class ScreenMask
 		}
 
 		return false;
+	}
+
+	#endregion
+
+	#region
+		
+	private void OnActivate()
+	{
+		GuiManager.OnUpdateGUI += Draw;
+	}
+
+	private void OnDeactivate()
+	{
+		GuiManager.OnUpdateGUI -= Draw;
 	}
 
 	#endregion

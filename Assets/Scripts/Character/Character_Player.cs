@@ -5,16 +5,11 @@ public class Character_Player : CharacterBase
 {
 	[SerializeField]
 	private Inventory m_inventory = null;
-	[SerializeField]
-	private MissionManager m_missionManager = null;
 
 	private PlayerMotor m_playerMotor = null;
 
-	protected override void Awake ()
+	protected override void OnAwake ()
 	{
-		base.Awake ();
-		m_missionManager = new MissionManager();
-
 		m_inventory = new Inventory();
 
 		//make sure the player has a motor
@@ -40,6 +35,7 @@ public class Character_Player : CharacterBase
 	{
 		m_stateMachine.UpdateState();
 
+		//Show Missions
 		if(Input.GetKeyDown(KeyCode.M) )
 		{
 			GuiManager.OnUpdateGUI += m_missionManager.DisplayCurrentMissions;

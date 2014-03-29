@@ -13,8 +13,8 @@ public class GuiManager : MonoBehaviour
 
 	#region Private Serialized Variables
 
-	//[SerializeField]
-	//private GUISkin m_Skin = null;
+	[SerializeField]
+	private GUISkin m_Skin = null;
 
 	#endregion
 
@@ -27,6 +27,8 @@ public class GuiManager : MonoBehaviour
 
 	public void OnGUI()
 	{
+		GUI.skin = m_Skin;
+
 		if (OnUpdateGUI != null)
 		{
 			OnUpdateGUI();

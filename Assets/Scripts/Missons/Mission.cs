@@ -37,7 +37,7 @@ public class Mission
 
 	public string GetInfo()
 	{
-		return m_missionName + ": " + m_currenState.ToString();
+		return m_missionName + ":\n\t\t" + m_currenState.ToString();
 	}
 
 	public MissionState GetMissionState
@@ -45,7 +45,6 @@ public class Mission
 		get { return m_currenState; }
 	}
 }
-
 
 public enum MissionState
 {

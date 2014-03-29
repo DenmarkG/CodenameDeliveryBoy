@@ -3,12 +3,22 @@ using System.Collections;
 
 public class CharacterBase : MonoBehaviour 
 {
+	[SerializeField]
+	protected MissionManager m_missionManager = null;
+
 	protected bool m_paused = false;
 	protected StateMachineBase m_stateMachine = null; 
 
-	protected virtual void Awake()
+	void Awake()
 	{
 		m_stateMachine = new StateMachineBase();
+		m_missionManager = new MissionManager();
+		OnAwake();
+	}
+
+	protected virtual void OnAwake()
+	{
+		//
 	}
 
 	public virtual void OnPause()

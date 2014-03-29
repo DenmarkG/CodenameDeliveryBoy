@@ -10,9 +10,9 @@ public class Clock : MonoBehaviour
 	private float currentSeconds = 0f;
 	private int currentMinutes = 0;
 	private int currentHours  = 0;
-	private string currentTime = "";
 	private float myTimeScaleStartValue = 0;
-	private Day currentDay = Day.MONDAY;
+	private Day m_currentDay = Day.MONDAY;
+	private string m_timeString = "";
 
 	/// <summary>
 	/// values greater than one will speed up time, 
@@ -30,9 +30,16 @@ public class Clock : MonoBehaviour
 		currentMinutes = (int) (dayStartTime % 100);
 		myTimeScaleStartValue = m_timeScale;
 	}
+
+	void Start()
+	{
+		GuiManager.OnUpdateGUI += DrawClock;
+	}
 	
 	void Update()
 	{
+		UpdateTime();
+
 		if(Input.GetKeyDown(KeyCode.P))
 		{
 			PauseClock();
@@ -44,13 +51,12 @@ public class Clock : MonoBehaviour
 		}
 	}
 	
-	void OnGUI()
+	void DrawClock()
 	{
-		currentTime = UpdateTime();
-		GUI.Box(new Rect((Screen.width / 2) - 75, 5, 150, 25),  currentDay.ToString() + " " + currentTime);
+		GUI.Box(new Rect((Screen.width / 2) - 75, 5, 150, 25),  m_currentDay.ToString() + " " + m_timeString);
 	}
 	
-	string UpdateTime()
+	void UpdateTime()
 	{
 		//increase the seconds
 		currentSeconds += Time.deltaTime * m_timeScale; //if the timescale is zero, then time won't increase
@@ -81,19 +87,19 @@ public class Clock : MonoBehaviour
 		}
 
 		//return the time as a formatted string
-		return string.Format("{0:D2}:{1:D2}:{2:D2}", currentHours, currentMinutes, (int)currentSeconds);
+		m_timeString =  string.Format("{0:D2}:{1:D2}:{2:D2}", currentHours, currentMinutes, (int)currentSeconds);
 	}
 	
 	//method to increment days of the week
 	void GoToNextDay()
 	{
-		if(currentDay == Day.SATURDAY)
+		if(m_currentDay == Day.SATURDAY)
 		{
-			currentDay = Day.SUNDAY;
+			m_currentDay = Day.SUNDAY;
 		}
 		else
 		{
-			currentDay += 1; 
+			m_currentDay += 1; 
 		}
 	}
 	
@@ -118,7 +124,12 @@ public class Clock : MonoBehaviour
 	{
 		get { return instance; }
 	}
-	
+
+	public static float GetTimeScale
+	{
+		get { return m_timeScale * Time.deltaTime; }
+	}
+
 	private enum Day //day of the week enumerated
 	{
 		SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY

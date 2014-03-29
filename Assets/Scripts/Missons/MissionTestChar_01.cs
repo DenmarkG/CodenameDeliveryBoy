@@ -10,7 +10,7 @@ public class MissionTestChar_01 : MonoBehaviour
 	{
 		if(other.gameObject.tag == "Player")
 		{
-			if (mission.GetMissionState != MissionState.IN_PROGRESS)
+			if (mission.GetMissionState == MissionState.INVALID)
 			{
 				Character_Player player = other.GetComponent<Character_Player>();
 				if( mission.CheckRequirements(player) )

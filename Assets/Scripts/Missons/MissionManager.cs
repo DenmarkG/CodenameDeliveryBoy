@@ -7,8 +7,6 @@ public class MissionManager
 {
 	[SerializeField]
 	private List<Mission> m_missionList = new List<Mission>();
-	[SerializeField]
-	private List<Mission> m_completedMissions = new List<Mission>();
 
 	public MissionManager()
 	{
@@ -30,23 +28,20 @@ public class MissionManager
 		if(m_missionList.Count > 0)
 		{
 			string currentMissions = "";
+			string completeMissions = "";
 			foreach(Mission m in m_missionList)
 			{
-				currentMissions += m.GetInfo() + "\n";
+				//add each mission to the appropriate list
+				if(m.GetMissionState == MissionState.IN_PROGRESS)
+					currentMissions += m.GetInfo() + "\n";
+				else
+					completeMissions += m.GetInfo() + "\n";
 			}
-			GUI.Box(new Rect(0, 50, 150, 50), currentMissions);
-		}
+			if (currentMissions != "")
+				GUI.Box(new Rect(0, 50, 150, 50), currentMissions);
 
-		//show the completed missions
-		if(m_completedMissions.Count > 0)
-		{
-			string completeMissions = "";
-			foreach(Mission m in m_completedMissions)
-			{
-				completeMissions += m.GetInfo() + "\n";
-			}
-			
-			GUI.Box(new Rect(Screen.width - 150, 50, 150, 50), completeMissions);
+			if (completeMissions != "")
+				GUI.Box(new Rect(Screen.width - 150, 50, 150, 50), completeMissions);
 		}
 	}
 
@@ -54,8 +49,7 @@ public class MissionManager
 	{
 		if(updatedMission.GetMissionState == MissionState.SUCCESS || updatedMission.GetMissionState == MissionState.FAIL)
 		{
-			m_completedMissions.Add(updatedMission);
-			m_missionList.Remove(updatedMission);
+			//
 		}
 	}
 }
