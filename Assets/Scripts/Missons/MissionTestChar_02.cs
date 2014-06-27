@@ -3,7 +3,6 @@ using System.Collections;
 
 public class MissionTestChar_02 : MonoBehaviour 
 {
-	[SerializeField]
 	private InventoryItem m_itemToGive = MissionHash.mission_01.Item;
 
 	private Mission mission = MissionHash.mission_01;
@@ -12,7 +11,7 @@ public class MissionTestChar_02 : MonoBehaviour
 	{
 		if(other.tag == "Player")
 		{
-			if(mission.GetMissionState == MissionState.IN_PROGRESS)
+			if(mission.GetMissionState == Mission.MissionState.IN_PROGRESS)
 			{
 				Character_Player player = other.gameObject.GetComponent<Character_Player>();
 				if(!player.PlayerInventory.Contains(m_itemToGive) )

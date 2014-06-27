@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Character_Player : CharacterBase 
 {
-	[SerializeField]
 	private Inventory m_inventory = null;
 
 	private PlayerMotor m_playerMotor = null;
@@ -36,15 +35,19 @@ public class Character_Player : CharacterBase
 		m_stateMachine.UpdateState();
 
 		//Show Missions
-		if(Input.GetKeyDown(KeyCode.M) )
+		if (Input.GetKeyDown(KeyCode.M) )
 		{
 			GuiManager.OnUpdateGUI += m_missionManager.DisplayCurrentMissions;
 		}
 
-		if(Input.GetKeyUp(KeyCode.M) )
+		if (Input.GetKeyUp(KeyCode.M) )
 		{
 			GuiManager.OnUpdateGUI -= m_missionManager.DisplayCurrentMissions;
 		}
+
+		//Toggle the inventory
+		if (Input.GetKeyDown (KeyCode.I))
+			m_inventory.ToggleInventory ();
 	}
 
 	void FixedUpdate()

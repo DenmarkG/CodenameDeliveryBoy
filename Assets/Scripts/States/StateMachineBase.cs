@@ -3,7 +3,7 @@ using System.Collections;
 
 public class StateMachineBase 
 {
-	private StateBase currentState = null;
+	private State_Base currentState = null;
 	
 	public void UpdateState()
 	{
@@ -21,7 +21,7 @@ public class StateMachineBase
 		}
 	}
 	
-	public void SetCurrentState(StateBase newState)
+	public void SetCurrentState(State_Base newState)
 	{
 		if(currentState != null)
 		{
@@ -36,7 +36,7 @@ public class StateMachineBase
 		}
 	}
 	
-	public StateBase CurrentState
+	public State_Base CurrentState
 	{
 		get { return currentState; }
 	}

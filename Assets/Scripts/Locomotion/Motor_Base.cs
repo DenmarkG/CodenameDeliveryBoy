@@ -1,90 +1,69 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Motor_Base : MonoBehaviour 
+public class Motor_Base : MonoBehaviour
 {
-	public float moveSpeed = 5f;
-	public float rotSpeed = 2.5f;
-	public float attackCoolDown = 1; //the rate of attack in seconds
-	public float attackRange = 15;
-	public float gravity = 21f;
-	
-	protected bool bRunning;
-	protected bool bCanAttack;
-	protected bool bCanMove;
-	protected Transform myTransform;
-	protected CharacterController myCharacterController;
-	protected bool bAttacking = false;
-	protected GameObject target;
-	protected Vector3 moveVector = Vector3.zero;
-	//private Animator myAnimator;
+	//protected variables
+	[SerializeField]
+	protected const float DEAD_ZONE = .01f;	//in most cases, values less than this will be ignored
 
-	void Awake()
-	{
-		bCanMove = true;
-		bCanAttack = true;
-		bRunning = false;
-		myTransform = this.transform;
-		myCharacterController = this.GetComponent<CharacterController>();
-		OnAwake();
-		//myAnimator = this.GetComponent<Animator>();
-		//myAnimator.SetBool("Alive", true);
-	}
-	
+	//variables for storing input information
+	protected float m_horizontal = 0f;
+	protected float m_vertical = 0f;
 
-	#region Virtual Functions
-	protected virtual void OnAwake()
+	//tells whether or not the player is running
+	protected bool m_isRunning = false;
+
+	//variables to help with animation blending. These correspond to variables in the Animation Controller 
+	protected float m_direction = 0f;
+	protected float m_speed = 0f;
+	protected float m_angle = 0f;
+
+	//variables for setting up the Animator
+	protected Animator m_animator = null;
+	protected int m_locomotionId = 0;
+	protected int m_locomotionPivot_R = 0;
+	protected int m_locomotionPivot_L = 0;
+	protected AnimatorStateInfo m_stateInfo;
+
+	//reference to the game's camera
+	protected PlayerCamera m_camera = null;
+
+	//private variables
+
+	//Callbacks
+	protected virtual void Awake()
 	{
+		SetUpAnimator();
 	}
-	
+
+	protected virtual void Start()
+	{
+		m_camera = PlayerCamera.GetCamera;
+	}
+
+	//Public Functions
 	public virtual void UpdateMotor()
 	{
+		//
 	}
-	
-	protected void Rotate(float pHorz, float pVert)
+
+	public virtual void UpdateMotorFixed()
 	{
-		float step = rotSpeed * Time.deltaTime;
-		Vector3 targetDir = new Vector3(pHorz, 0, pVert);
-		Quaternion qTargetDir = Quaternion.LookRotation(targetDir, Vector3.up);
-		Quaternion newRot = Quaternion.Lerp(myTransform.rotation, qTargetDir, step);
-		myTransform.rotation = newRot;
+		//
 	}
-	
-	protected void Rotate(Vector3 direction)
+
+	//Protected Functions
+
+	//Private Functions
+	private void SetUpAnimator()
 	{
-		float step = rotSpeed * Time.deltaTime;
-		Quaternion qTargetDir = Quaternion.LookRotation(direction, Vector3.up);
-		Quaternion newRot = Quaternion.Lerp(myTransform.rotation, qTargetDir, step);
-		myTransform.rotation = newRot;
+		///get the animator component attached to this object
+		m_animator = this.GetComponent<Animator>();
+
+		///has the id's for fast access later
+		m_locomotionId = Animator.StringToHash("Base Layer.Locomotion");
+		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
+		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
 	}
-	
-	protected virtual IEnumerator AttackCoolDown(float coolDownTime)
-	{
-		yield return new WaitForSeconds(coolDownTime);
-		bCanAttack = true;
-	}
-		
-	protected virtual void Attack()
-	{
-		Debug.Log("Attacking");
-	}
-	#endregion
-	
-	#region Functions
-	protected void ApplyGravity()
-	{
-		if(!myCharacterController.isGrounded)
-		{
-			moveVector.y -= gravity * Time.deltaTime;
-		}
-	}
-	#endregion
-	
-	
-	#region Properties
-	protected bool IsAttacking
-	{
-		get { return bAttacking; }
-	}
-	#endregion
 }

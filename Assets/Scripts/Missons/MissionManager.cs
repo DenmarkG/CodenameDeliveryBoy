@@ -2,10 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
 public class MissionManager
 {
-	[SerializeField]
 	private List<Mission> m_missionList = new List<Mission>();
 
 	public MissionManager()
@@ -20,6 +18,8 @@ public class MissionManager
 			newMission.BeginMission();
 			m_missionList.Add(newMission);
 		}
+
+		GuiManager.DisplayStatusMessage("New Mission Added!");
 	}
 	
 	public void DisplayCurrentMissions()
@@ -32,10 +32,10 @@ public class MissionManager
 			foreach(Mission m in m_missionList)
 			{
 				//add each mission to the appropriate list
-				if(m.GetMissionState == MissionState.IN_PROGRESS)
-					currentMissions += m.GetInfo() + "\n";
+				if(m.GetMissionState == Mission.MissionState.IN_PROGRESS)
+					currentMissions += m.GetInfo + "\n";
 				else
-					completeMissions += m.GetInfo() + "\n";
+					completeMissions += m.GetInfo + "\n";
 			}
 			if (currentMissions != "")
 				GUI.Box(new Rect(0, 50, 150, 50), currentMissions);
@@ -47,7 +47,7 @@ public class MissionManager
 
 	public void UpdateMission(Mission updatedMission)
 	{
-		if(updatedMission.GetMissionState == MissionState.SUCCESS || updatedMission.GetMissionState == MissionState.FAIL)
+		if(updatedMission.GetMissionState == Mission.MissionState.SUCCESS || updatedMission.GetMissionState == Mission.MissionState.FAIL)
 		{
 			//
 		}

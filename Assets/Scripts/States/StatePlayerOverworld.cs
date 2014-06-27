@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class StatePlayerOverworld : StateBase 
+public class StatePlayerOverworld : State_Base 
 {
 	PlayerMotor m_motor = null;
 

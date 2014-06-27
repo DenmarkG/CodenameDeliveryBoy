@@ -5,28 +5,39 @@ public class PlayerCamera : MonoBehaviour
 {
 	#region Private Serialized Variables
 
+	//tuneable private varibles for how the camera should move
+	//and where it should be relative to the player
 	[SerializeField]
 	private float m_distanceAway = 3f; //How far away the camera should be
 	[SerializeField]
-	private float m_offsetHeight = 1.5f;
+	private float m_offsetHeight = 1.5f; //How high the camera should be
 	[SerializeField]
 	[Range(0,10)]
-	private float m_smooth = 0.25f;
+	private float m_smooth = 0.25f; //smoothing value; controls the camera lag
 	[SerializeField]
-	private float m_snapSpeed = 20f;
+	private float m_snapSpeed = 20f; //how fast the camera should snap into position
 	[SerializeField]
 	private Transform m_target = null;
+
 	#endregion
 
 	#region Private Variables
 
+	//State machine variables
+    private StateMachineBase m_stateMachine = null;
+    private State_Camera_Follow m_followState = null;
 
+	//Variables for storing the look direction, the player position, and this transform
 	private Vector3 m_targetPos = Vector3.zero;
 	private Vector3 m_lookDir = Vector3.zero;
-	private static PlayerCamera m_instance = null;
-	private float m_deadZone = .1f;
-	//private Vector3 m_desiredPosition = Vector3.zero;
 	private Transform m_transform = null;
+
+	//variable for the singleton instance
+	private static PlayerCamera m_instance = null;
+	//private Vector3 m_desiredPosition = Vector3.zero;
+
+	//constants
+	private const float DEAD_ZONE = .1f;
 
 	#endregion
 
@@ -34,49 +45,36 @@ public class PlayerCamera : MonoBehaviour
 	{
 		if (m_instance == null)
 			m_instance = this;
+
+        m_stateMachine = new StateMachineBase();
+        m_followState = new State_Camera_Follow();
 	}
 
 	void Start () 
 	{
 		m_transform = this.transform;
-
-		if(m_target == null)
-		{
 			m_target = GameObject.FindGameObjectWithTag("PlayerCameraTarget").transform;
-		}
+
+		m_stateMachine.SetCurrentState(m_followState);
 
 		//m_desiredPosition = m_target.position - ( (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
 	}
 
+	void Update()
+	{
+		//reset the camera if the reset button is pressed
+		if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
+			StartCoroutine("ResetCamera");
+	}
+
 	void LateUpdate () 
 	{
-		if( (Input.GetAxis("LEFT_TRIGGER") < -m_deadZone || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
-		{
-			StartCoroutine("ResetCamera");
-		}
-
-		//set the offset to the player each frame
-		m_targetPos = m_target.position;
-		m_targetPos.y = m_offsetHeight;
-
-		//calculate the direction from camera to player, kill y, and normalize to create valid direction
-		//m_lookDir = characterOffset - m_transform.position;
-		m_lookDir = m_targetPos - m_transform.position;
-		//m_lookDir.y = 0;
-		m_lookDir.Normalize();
-
-		//calculate the target position
-		m_targetPos = m_targetPos - (m_lookDir * m_distanceAway);
-		
-		//move the camera to the new position
-		transform.position = Vector3.Lerp(transform.position, m_targetPos, Time.deltaTime * m_smooth);
-
-		//Look at the target
-		SmoothLookAt();
+		m_stateMachine.UpdateState();
 	}
+
 	#region Custom Methods
 	
-	void SmoothLookAt()
+	public void SmoothLookAt()
 	{
 		// Create a vector from the camera towards the player.
 		Vector3 relPlayerPosition = m_target.position - transform.position;
@@ -104,9 +102,9 @@ public class PlayerCamera : MonoBehaviour
 	IEnumerator ResetCamera()
 	{
 		Vector3 lookDir = m_target.forward;
-		Vector3 relativePos = m_transform.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) ); 
+		Vector3 relativePos = m_transform.position + (-lookDir * m_distanceAway); 
 
-		while (Vector3.Distance(m_transform.position, relativePos) > .1f)
+		while (Vector3.Distance(m_transform.position, relativePos) > DEAD_ZONE)
 		{
 			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) );
 			m_transform.position = Vector3.Lerp(m_transform.position, relativePos, m_snapSpeed * Time.deltaTime);
@@ -119,9 +117,46 @@ public class PlayerCamera : MonoBehaviour
 
 	#region Properties
 
-	public static PlayerCamera PlayerCam
+	public static PlayerCamera GetCamera
 	{
 		get { return m_instance; }
+	}
+
+	public float SmoothSpeed
+	{
+		get { return m_smooth; }
+	}
+
+	public float DeadZone
+	{
+		get { return DEAD_ZONE; }
+	}
+
+	public Transform CameraTarget
+	{
+		get { return m_target; }
+	}
+
+	public float OffsetHeight
+	{
+		get { return m_offsetHeight; }
+	}
+
+	public float DistanceAway
+	{
+		get { return m_distanceAway; }
+	}
+
+	public Vector3 TargetPos
+	{
+		get { return m_targetPos; }
+		set { m_targetPos = value; }
+	}
+
+	public Vector3 LookDirection
+	{
+		get { return m_lookDir; }
+		set { m_lookDir = value; }
 	}
 
 	#endregion

@@ -6,6 +6,7 @@ public class PickupItem : InventoryItem
 {
 	[SerializeField]
 	protected int m_myValue;
+
 	protected bool m_canRespawn;
 	protected float m_respawnTime;
 	

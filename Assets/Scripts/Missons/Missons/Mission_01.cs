@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Mission_01 : Mission
 {
-	[SerializeField]
 	private InventoryItem m_groceries = null;
 
 	private Character_Player m_player;
@@ -31,6 +30,7 @@ public class Mission_01 : Mission
 		m_currenState = MissionState.SUCCESS;
 		m_player.PlayerMissionManager.UpdateMission(this);
 		m_player.PlayerInventory.RemoveItem(m_groceries);
+		GuiManager.DisplayStatusMessage("Mission Complete!");
 	}
 
 	public InventoryItem Item

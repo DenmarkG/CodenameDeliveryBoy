@@ -12,6 +12,7 @@ public class Wallet : InventoryItem
 	public Wallet()
 	{
 		m_myName = "Wallet";
+		m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_Wallet");
 		bIsConsistent = true;
 	}
 	

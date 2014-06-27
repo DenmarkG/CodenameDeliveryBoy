@@ -7,5 +7,6 @@ public class Food : PickupItem
 	{
 		m_canRespawn = false;
 		m_myName = "Groceries";
+		m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_Food");
 	}
 }
