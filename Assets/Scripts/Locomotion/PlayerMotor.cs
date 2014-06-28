@@ -54,14 +54,14 @@ public class PlayerMotor : Motor_Base
 		Vector3 moveVector = fromInputToPlayerRotation * inputAxisDirection;
 		
 		//now calculate the angle between the move vector and the camera's forward vector
-		m_angle = Vector3.Angle(cameraDiretion, moveVector);
+//		m_angle = Vector3.Angle(cameraDiretion, moveVector);
 		
 		//since the angle will always return positive, we want to calculate the direction the player is turning
 		//to do this we take the dot product of...
-		float axisSign = Vector3.Dot(moveVector, this.transform.right) > 0 ? 1 : -1;
+		//float axisSign = Vector3.Dot(moveVector, this.transform.right) > 0 ? 1 : -1;
 		
 		//now apply the sign to the angle
-		m_angle *= axisSign;
+		//m_angle *= axisSign;
 		
 		Debug.Log("angle: " + m_angle);
 

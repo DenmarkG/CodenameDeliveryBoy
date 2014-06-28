@@ -9,16 +9,10 @@ public class CharacterBase : MonoBehaviour
 	protected bool m_paused = false;
 	protected StateMachineBase m_stateMachine = null; 
 
-	void Awake()
+	protected virtual void Awake()
 	{
 		m_stateMachine = new StateMachineBase();
 		m_missionManager = new MissionManager();
-		OnAwake();
-	}
-
-	protected virtual void OnAwake()
-	{
-		//
 	}
 
 	public virtual void OnPause()

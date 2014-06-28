@@ -55,6 +55,11 @@ public class Mission
 	{
 		//end the mission
 	}
+	
+	protected virtual void UnlockDependentMissions()
+	{
+		//
+	}
 
 	#endregion
 

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Character_NPC : CharacterBase 
 {
-	protected override void OnAwake()
+	protected override void Awake()
 	{
 		//
 	}

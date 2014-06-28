@@ -7,8 +7,9 @@ public class Character_Player : CharacterBase
 
 	private PlayerMotor m_playerMotor = null;
 
-	protected override void OnAwake ()
+	protected override void Awake ()
 	{
+		base.Awake();
 		m_inventory = new Inventory();
 
 		//make sure the player has a motor

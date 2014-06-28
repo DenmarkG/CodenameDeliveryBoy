@@ -8,9 +8,14 @@ public class MissionManager
 
 	public MissionManager()
 	{
+		//list of missions currently in progress
 		m_missionList = new List<Mission>();
 	}
 
+	/// <summary>
+	/// Adds a new mission to the mission list, if a mission is not available or has already been started it will be skipped
+	/// </summary>
+	/// <param name="newMission">New mission.</param>
 	public void AddMission(Mission newMission)
 	{
 		if(!m_missionList.Contains(newMission) )
@@ -45,7 +50,7 @@ public class MissionManager
 		}
 	}
 
-	public void UpdateMission(Mission updatedMission)
+	public virtual void UpdateMission(Mission updatedMission)
 	{
 		if(updatedMission.GetMissionState == Mission.MissionState.SUCCESS || updatedMission.GetMissionState == Mission.MissionState.FAIL)
 		{
