@@ -25,6 +25,11 @@ public class PlayerMotor : Motor_Base
 		m_animator.SetFloat("Speed", m_speed);
 		m_animator.SetFloat("Direction", m_direction);
 		m_animator.SetFloat("Angle", m_angle);
+
+		//testing the time scale
+		m_animator.speed = Clock.TimeScale;
+//		Debug.Log("animator: " + m_animator.speed);
+//		Debug.Log ("timeScale: " + Clock.TimeScale);
 	}
 
 	private void ConvertInputToWorldSpace()

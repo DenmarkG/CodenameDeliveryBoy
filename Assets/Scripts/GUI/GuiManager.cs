@@ -9,6 +9,8 @@ public class GuiManager : MonoBehaviour
 	public delegate void UpdateGUI();
 	public static event UpdateGUI OnUpdateGUI;
 
+	float m_hSliderValue = 1f;
+
 	#endregion
 
 	#region Private Serialized Variables
@@ -69,6 +71,10 @@ public class GuiManager : MonoBehaviour
 				mask.Draw();
 			}
 		}
+
+		//time scale test
+		m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), m_hSliderValue, 0, 2f);
+		Clock.TimeScale = m_hSliderValue;
 	}
 
 	#endregion

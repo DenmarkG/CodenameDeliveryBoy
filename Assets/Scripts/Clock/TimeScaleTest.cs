@@ -15,6 +15,6 @@ public class TimeScaleTest : MonoBehaviour
 
 	void Update()
 	{
-		m_transform.rotation *= Quaternion.Euler(Vector3.up * m_rotSpeed * Clock.GetTimeScale);
+		m_transform.rotation *= Quaternion.Euler(Vector3.up * m_rotSpeed * Clock.TimeScale);
 	}
 }

@@ -125,9 +125,15 @@ public class Clock : MonoBehaviour
 		get { return instance; }
 	}
 
-	public static float GetTimeScale
+	public static float TimeDelta
 	{
 		get { return m_timeScale * Time.deltaTime; }
+	}
+
+	public static float TimeScale
+	{
+		get { return m_timeScale; }
+		set { m_timeScale = value; }
 	}
 
 	private enum Day //day of the week enumerated
