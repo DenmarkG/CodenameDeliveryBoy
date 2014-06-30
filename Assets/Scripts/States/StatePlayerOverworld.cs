@@ -25,6 +25,11 @@ public class StatePlayerOverworld : State_Base
 		m_motor.UpdateMotorFixed();
 	}
 
+	public override void LateUpdateState ()
+	{
+		//
+	}
+
 	public override void ExitState()
 	{
 		//

@@ -68,7 +68,7 @@ public class PlayerMotor : Motor_Base
 		//now apply the sign to the angle
 		//m_angle *= axisSign;
 		
-		Debug.Log("angle: " + m_angle);
+//		Debug.Log("angle: " + m_angle);
 
 		//get the angle between the camera's forward vector and the movement vector
 		//float angle = Vector3.Angle(cameraDiretion, inputAxisDirection) * (m_horizontal >= 0 ? 1 : -1);

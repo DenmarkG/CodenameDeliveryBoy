@@ -6,5 +6,6 @@ public abstract class State_Base
 	public abstract void EnterState();
 	public abstract void UpdateState();
 	public abstract void UpdateStateFixed();
+	public abstract void LateUpdateState();
 	public abstract void ExitState();
 }

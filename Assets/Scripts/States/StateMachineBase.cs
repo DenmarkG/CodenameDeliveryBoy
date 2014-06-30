@@ -3,41 +3,49 @@ using System.Collections;
 
 public class StateMachineBase 
 {
-	private State_Base currentState = null;
+	private State_Base m_currentState = null;
 	
 	public void UpdateState()
 	{
-		if(currentState != null)
+		if(m_currentState != null)
 		{
-			currentState.UpdateState(); 
+			m_currentState.UpdateState(); 
 		}
 	}
 
 	public void UpdateStateFixed()
 	{
-		if(currentState != null)
+		if(m_currentState != null)
 		{
-			currentState.UpdateStateFixed(); 
+			m_currentState.UpdateStateFixed(); 
+		}
+	}
+
+	public void LateUpdateState()
+	{
+		if (m_currentState != null)
+		{
+			m_currentState.LateUpdateState();
 		}
 	}
 	
 	public void SetCurrentState(State_Base newState)
 	{
-		if(currentState != null)
+		if(m_currentState != null)
 		{
-			currentState.ExitState();
+			m_currentState.ExitState();
 		}
 		
-		currentState = newState; 
+		m_currentState = newState; 
 		
-		if(currentState != null)
+		if(m_currentState != null)
 		{
-			currentState.EnterState();
+			m_currentState.EnterState();
 		}
 	}
 	
 	public State_Base CurrentState
 	{
-		get { return currentState; }
+		get { return m_currentState; }
 	}
 }

@@ -26,6 +26,7 @@ public class PlayerCamera : MonoBehaviour
 	//State machine variables
     private StateMachineBase m_stateMachine = null;
     private State_Camera_Follow m_followState = null;
+    private State_Camera_Orbit m_orbitState = null;
 
 	//Variables for storing the look direction, the player position, and this transform
 	private Vector3 m_targetPos = Vector3.zero;
@@ -43,21 +44,26 @@ public class PlayerCamera : MonoBehaviour
 
 	void Awake()
 	{
+		//if the static instance of this camera is null, assign it
 		if (m_instance == null)
 			m_instance = this;
 
+		//assign the states that this camera object will use
         m_stateMachine = new StateMachineBase();
-        m_followState = new State_Camera_Follow();
+        m_followState = new State_Camera_Follow(this);
+		m_orbitState = new State_Camera_Orbit(this);
 	}
 
 	void Start () 
 	{
+		//cache the transform component of this object
 		m_transform = this.transform;
-			m_target = GameObject.FindGameObjectWithTag("PlayerCameraTarget").transform;
 
+		//set the target of the camera to look at the camera target object's transform
+		m_target = GameObject.FindGameObjectWithTag("PlayerCameraTarget").transform;
+
+		//set the current state as the follow state
 		m_stateMachine.SetCurrentState(m_followState);
-
-		//m_desiredPosition = m_target.position - ( (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
 	}
 
 	void Update()
@@ -65,14 +71,36 @@ public class PlayerCamera : MonoBehaviour
 		//reset the camera if the reset button is pressed
 		if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
 			StartCoroutine("ResetCamera");
+
+		//if the right mouse button is pressed, allow the camera to enter the free orbit state
+		if (Mathf.Abs(Input.GetAxis("Fire2") ) > DEAD_ZONE && m_stateMachine.CurrentState == m_followState )
+			m_stateMachine.SetCurrentState(m_orbitState);
+		else if (Mathf.Abs(Input.GetAxis("Fire2") ) < DEAD_ZONE && m_stateMachine.CurrentState == m_orbitState)
+			m_stateMachine.SetCurrentState(m_followState);
+
+		//update the state machine's current state
+		m_stateMachine.UpdateState();
 	}
 
 	void LateUpdate () 
 	{
-		m_stateMachine.UpdateState();
+		//update the state machine
+		m_stateMachine.LateUpdateState();
 	}
 
 	#region Custom Methods
+	
+	public void SetOrbitState()
+	{
+		//set the current state to the Orbit State
+		m_stateMachine.SetCurrentState(m_orbitState);
+	}
+	
+	public void SetFollowState()
+	{
+		//set the current state to the follow state
+		m_stateMachine.SetCurrentState(m_followState);
+	}
 	
 	public void SmoothLookAt()
 	{
