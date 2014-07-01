@@ -10,6 +10,12 @@ public class PlayerCamera : MonoBehaviour
 	[SerializeField]
 	private float m_distanceAway = 3f; //How far away the camera should be
 	[SerializeField]
+	private float m_maxDistanceAway = 10f; //The max distance away from the player the camera can zoom
+	[SerializeField]
+	private float m_minDistanceAway = 1.5f; //The closest distance the camera can be to the player
+	[SerializeField]
+	private float m_zoomSpeed = 5f; //How fast the camera can zoom
+	[SerializeField]
 	private float m_offsetHeight = 1.5f; //How high the camera should be
 	[SerializeField]
 	[Range(0,10)]
@@ -18,10 +24,14 @@ public class PlayerCamera : MonoBehaviour
 	private float m_snapSpeed = 20f; //how fast the camera should snap into position
 	[SerializeField]
 	private Transform m_target = null;
+	[SerializeField]
+	private float m_orbitSpeed = 5f;
 
 	#endregion
 
 	#region Private Variables
+	//Storing the start values for resetting the camera
+	private float m_startDistance = 0f;
 
 	//State machine variables
     private StateMachineBase m_stateMachine = null;
@@ -52,6 +62,9 @@ public class PlayerCamera : MonoBehaviour
         m_stateMachine = new StateMachineBase();
         m_followState = new State_Camera_Follow(this);
 		m_orbitState = new State_Camera_Orbit(this);
+
+		//initialize any defalut values
+		m_startDistance = m_distanceAway;
 	}
 
 	void Start () 
@@ -73,9 +86,9 @@ public class PlayerCamera : MonoBehaviour
 			StartCoroutine("ResetCamera");
 
 		//if the right mouse button is pressed, allow the camera to enter the free orbit state
-		if (Mathf.Abs(Input.GetAxis("Fire2") ) > DEAD_ZONE && m_stateMachine.CurrentState == m_followState )
+		if (Input.GetKeyDown(KeyCode.F) && m_stateMachine.CurrentState == m_followState )
 			m_stateMachine.SetCurrentState(m_orbitState);
-		else if (Mathf.Abs(Input.GetAxis("Fire2") ) < DEAD_ZONE && m_stateMachine.CurrentState == m_orbitState)
+		else if (Input.GetKeyUp(KeyCode.F) && m_stateMachine.CurrentState == m_orbitState)
 			m_stateMachine.SetCurrentState(m_followState);
 
 		//update the state machine's current state
@@ -114,14 +127,19 @@ public class PlayerCamera : MonoBehaviour
 		transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, m_smooth * Time.deltaTime);
 	}
 
-	float ClampAngle(float angle, float min, float max)
+	public float ClampAngle(float angle, float min, float max)
 	{
 		while (angle < -360 || angle > 360)
 		{
 			if (angle > 360)
-			{ angle -= 360; }
+			{
+				angle -= 360; 
+			}
+
 			if (angle < 360)
-			{ angle += 360; }
+			{ 
+				angle += 360; 
+			}
 		}
 		
 		return Mathf.Clamp(angle, min, max);
@@ -129,16 +147,30 @@ public class PlayerCamera : MonoBehaviour
 
 	IEnumerator ResetCamera()
 	{
-		Vector3 lookDir = m_target.forward;
-		Vector3 relativePos = m_transform.position + (-lookDir * m_distanceAway); 
+		//calculate the desired relative position
+		Vector3 relativePos = m_transform.position + new Vector3(0, 0, -m_distanceAway); 
 
 		while (Vector3.Distance(m_transform.position, relativePos) > DEAD_ZONE)
 		{
-			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) );
-			m_transform.position = Vector3.Lerp(m_transform.position, relativePos, m_snapSpeed * Time.deltaTime);
-			SmoothLookAt();
+			//lerp the distance toward the start distance
+			m_distanceAway = Mathf.Lerp(m_distanceAway, m_startDistance, m_snapSpeed * Clock.DeltaTime);
+
+			//recalculate the desired position based on the new distance away
+			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + new Vector3(0, 0, -m_distanceAway) );
+
+			//move the camera closer to the default position
+			m_transform.position = Vector3.Slerp(m_transform.position, relativePos, m_snapSpeed * Clock.DeltaTime);
+
+			//return null to prevent the game from hanging on this loop
 			yield return null;
 		}
+
+		//set the position to the desired position since it's close enough not to jump
+		m_transform.position = relativePos;
+
+		//smoothly look at the desired target
+		SmoothLookAt();
+
 	}
 
 	#endregion
@@ -153,6 +185,16 @@ public class PlayerCamera : MonoBehaviour
 	public float SmoothSpeed
 	{
 		get { return m_smooth; }
+	}
+
+	public float ZoomSpeed
+	{
+		get { return m_zoomSpeed; }
+	}
+
+	public float OrbitSpeed
+	{
+		get { return m_orbitSpeed; }
 	}
 
 	public float DeadZone
@@ -173,6 +215,16 @@ public class PlayerCamera : MonoBehaviour
 	public float DistanceAway
 	{
 		get { return m_distanceAway; }
+
+		set 
+		{
+			if(value > m_maxDistanceAway)
+				value = m_maxDistanceAway;
+			else if (value < m_minDistanceAway)
+				value = m_minDistanceAway;
+
+			m_distanceAway = value;
+		}
 	}
 
 	public Vector3 TargetPos

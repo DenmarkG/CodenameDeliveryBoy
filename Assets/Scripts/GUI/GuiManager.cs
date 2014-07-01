@@ -94,7 +94,7 @@ public class GuiManager : MonoBehaviour
 
 		while (currentTime <= countTimeInSeconds)
 		{
-			currentTime += Clock.DeltaTime();
+			currentTime += Clock.DeltaTime;
 			yield return null;
 		}
 

@@ -146,8 +146,8 @@ public class Clock : MonoBehaviour
 		//
 	}
 
-	public static float DeltaTime()
+	public static float DeltaTime
 	{
-		return Time.deltaTime * m_timeScale;
+		get { return Time.deltaTime * m_timeScale; }
 	}
 }
