@@ -5,7 +5,7 @@ using System.Collections;
 public class Clock : MonoBehaviour 
 {
 	[SerializeField]
-	private int dayStartTime = 900;	//Time to start the day in Military Time (i.e. 0900 = 9:00 am, 1700 = 5:00pm)
+	private int m_dayStartTime = 900;	//Time to start the day in Military Time (i.e. 0900 = 9:00 am, 1700 = 5:00pm)
 	
 	private float currentSeconds = 0f;
 	private int currentMinutes = 0;
@@ -13,7 +13,9 @@ public class Clock : MonoBehaviour
 	private float myTimeScaleStartValue = 0;
 	private Day m_currentDay = Day.MONDAY;
 	private string m_timeString = "";
-
+	
+	private SkyBoxBehavior m_skybox = null;
+	
 	/// <summary>
 	/// values greater than one will speed up time, 
 	/// values lower than one will slow time
@@ -26,9 +28,12 @@ public class Clock : MonoBehaviour
 
 	void Awake()
 	{
-		currentHours = (int) (dayStartTime / 100);
-		currentMinutes = (int) (dayStartTime % 100);
+		currentHours = (int) (m_dayStartTime / 100);
+		currentMinutes = (int) (m_dayStartTime % 100);
 		myTimeScaleStartValue = m_timeScale;
+		
+		m_skybox = this.gameObject.AddComponent<SkyBoxBehavior>();
+		m_skybox.SetSkyBoxes(m_dayStartTime);
 	}
 
 	void Start()
@@ -70,6 +75,9 @@ public class Clock : MonoBehaviour
 			{
 				//if the minutes are greater than 59, add an hour
 				currentHours += 1;
+				
+				//update the time of day on the skybox behavior
+				m_skybox.UpdateTimeOfDay(currentHours);
 				
 				if(currentHours > 23)
 				{

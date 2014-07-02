@@ -73,7 +73,7 @@ public class GuiManager : MonoBehaviour
 		}
 
 		//time scale test
-		m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), m_hSliderValue, 0, 2f);
+		m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), m_hSliderValue, 0, 20f);
 		Clock.TimeScale = m_hSliderValue;
 	}
 
