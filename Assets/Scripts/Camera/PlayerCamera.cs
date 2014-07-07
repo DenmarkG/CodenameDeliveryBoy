@@ -19,19 +19,21 @@ public class PlayerCamera : MonoBehaviour
 	private float m_offsetHeight = 1.5f; //How high the camera should be
 	[SerializeField]
 	[Range(0,10)]
-	private float m_smooth = 0.25f; //smoothing value; controls the camera lag
+	private float m_smooth = 0.5f; //smoothing value; controls the camera lag
 	[SerializeField]
 	private float m_snapSpeed = 20f; //how fast the camera should snap into position
 	[SerializeField]
 	private Transform m_target = null;
 	[SerializeField]
 	private float m_orbitSpeed = 5f;
-
+	
 	#endregion
 
 	#region Private Variables
 	//Storing the start values for resetting the camera
-	private float m_startDistance = 0f;
+	private float m_startDistanceAway = 0f;
+	private float m_startOffsetHeight = 0f;
+	private float m_startSmoothSpeed = 0f;
 
 	//State machine variables
     private StateMachineBase m_stateMachine = null;
@@ -63,8 +65,8 @@ public class PlayerCamera : MonoBehaviour
         m_followState = new State_Camera_Follow(this);
 		m_orbitState = new State_Camera_Orbit(this);
 
-		//initialize any defalut values
-		m_startDistance = m_distanceAway;
+		//store the initial values for resetting the camera's position later. 
+		SetDefaultValues();
 	}
 
 	void Start () 
@@ -121,7 +123,7 @@ public class PlayerCamera : MonoBehaviour
 		Vector3 relPlayerPosition = m_target.position - transform.position;
 		
 		// Create a rotation based on the relative position of the player being the forward vector.
-		Quaternion lookAtRotation = Quaternion.LookRotation(relPlayerPosition, Vector3.up);
+		Quaternion lookAtRotation = Quaternion.LookRotation(relPlayerPosition);
 		
 		// Lerp the camera's rotation between it's current rotation and the rotation that looks at the player.
 		transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, m_smooth * Time.deltaTime);
@@ -136,7 +138,7 @@ public class PlayerCamera : MonoBehaviour
 				angle -= 360; 
 			}
 
-			if (angle < 360)
+			if (angle < -360)
 			{ 
 				angle += 360; 
 			}
@@ -147,16 +149,17 @@ public class PlayerCamera : MonoBehaviour
 
 	IEnumerator ResetCamera()
 	{
-		//calculate the desired relative position
-		Vector3 relativePos = m_transform.position + new Vector3(0, 0, -m_distanceAway); 
+		RestoreDefaults();
 
+		//calculate the desired relative position
+		Vector3 relativePos = m_transform.position + (m_target.forward * -m_distanceAway);
 		while (Vector3.Distance(m_transform.position, relativePos) > DEAD_ZONE)
 		{
 			//lerp the distance toward the start distance
-			m_distanceAway = Mathf.Lerp(m_distanceAway, m_startDistance, m_snapSpeed * Clock.DeltaTime);
+			m_distanceAway = Mathf.Lerp(m_distanceAway, m_distanceAway, m_snapSpeed * Clock.DeltaTime);
 
 			//recalculate the desired position based on the new distance away
-			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + new Vector3(0, 0, -m_distanceAway) );
+			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
 
 			//move the camera closer to the default position
 			m_transform.position = Vector3.Slerp(m_transform.position, relativePos, m_snapSpeed * Clock.DeltaTime);
@@ -170,7 +173,22 @@ public class PlayerCamera : MonoBehaviour
 
 		//smoothly look at the desired target
 		SmoothLookAt();
+	}
 
+	void SetDefaultValues()
+	{
+		//store the default values
+		m_startDistanceAway = m_distanceAway;
+		m_startOffsetHeight = m_offsetHeight;
+		m_startSmoothSpeed = m_smooth;
+	}
+
+	void RestoreDefaults()
+	{
+		//reset any values to their original values
+		m_distanceAway = m_startDistanceAway;
+		m_offsetHeight = m_startOffsetHeight;
+		m_smooth = m_startSmoothSpeed;
 	}
 
 	#endregion
