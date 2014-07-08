@@ -28,12 +28,14 @@ public class PlayerMotor : Motor_Base
 
 		//testing the time scale
 		m_animator.speed = Clock.TimeScale;
-//		Debug.Log("animator: " + m_animator.speed);
-//		Debug.Log ("timeScale: " + Clock.TimeScale);
 	}
 
 	private void ConvertInputToWorldSpace()
 	{
+		//**************************************************************************************************
+		//This function is currently a work in progress
+		//**************************************************************************************************
+
 		//cache the forward vector of the player and the camera
 		//also remove the y values for each, since we only want to calculate in 2 dimensions
 		Vector3 playerDirection = this.transform.forward;

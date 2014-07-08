@@ -78,7 +78,7 @@ public class SkyBoxBehavior : MonoBehaviour
 	public IEnumerator TransitionToNextSky()
 	{		
 		float transisitionTime = 0f;
-		Material sky = m_currentSky;
+		//Material sky = m_currentSky;
 		
 		while (transisitionTime <= m_transitionTime)
 		{

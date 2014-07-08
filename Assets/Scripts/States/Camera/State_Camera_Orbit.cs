@@ -35,14 +35,15 @@ public class State_Camera_Orbit : State_Base
 	public override void UpdateState ()
 	{
 		//cache the input from the mouse
-		m_mouseX += Input.GetAxis("Mouse X")  * m_camera.OrbitSpeed;
-		m_mouseY += Input.GetAxis("Mouse Y") * m_camera.OrbitSpeed;
+		if (Mathf.Abs(Input.GetAxis("Mouse X") ) > m_camera.DeadZone)
+			m_mouseX += Input.GetAxis("Mouse X")  * m_camera.OrbitSpeed;
+
+		if (Mathf.Abs(Input.GetAxis("Mouse Y") ) > m_camera.DeadZone)
+			m_mouseY += Input.GetAxis("Mouse Y") * m_camera.OrbitSpeed;
 
 		m_camera.DistanceAway += -Input.GetAxis("Mouse ScrollWheel") * m_camera.ZoomSpeed;
 
 		//clamp the y value to the range [-360,360]
-		Debug.Log(m_mouseY);
-
 		m_mouseY = m_camera.ClampAngle(m_mouseY, -360, 360);
 	}
 
@@ -55,7 +56,6 @@ public class State_Camera_Orbit : State_Base
 	{
 		//set the direction of the camera to be the Forward vector times the Distance away of the camera
 		Vector3 direction = m_camera.transform.forward * -m_camera.DistanceAway;
-
 
 		//create a rotation based on the current mouse x and y values
 		Quaternion rotation = Quaternion.Euler(m_mouseY, m_mouseX, 0f);

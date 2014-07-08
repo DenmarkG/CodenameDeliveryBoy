@@ -55,7 +55,7 @@ public class Inventory
 		}
 	}
 
-	public void ToggleInventory()
+	public void ToggleInventoryDisplay()
 	{
 		if (m_isVisible)
 			GuiManager.OnUpdateGUI -= DisplayInventory;
