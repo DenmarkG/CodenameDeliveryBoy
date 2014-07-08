@@ -22,19 +22,10 @@ public class Character_NPC : CharacterBase
 
 	public void FixedUpdate()
 	{
-		m_stateMachine.UpdateStateFixed();
-	}
-
-	public override void OnPause()
-	{
-		base.OnPause();
-		m_isPaused = true;
-	}
-	
-	public override void OnResume()
-	{
-		base.OnResume();
-		m_isPaused = false;
+		if (!m_isPaused)
+		{
+			m_stateMachine.UpdateStateFixed();
+		}
 	}
 	
 	public override void OnSpeak()

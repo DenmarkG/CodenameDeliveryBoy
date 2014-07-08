@@ -49,7 +49,10 @@ public class Character_Player : CharacterBase
 
 	void FixedUpdate()
 	{
-		m_stateMachine.UpdateStateFixed();
+		if (!m_isPaused)
+		{
+			m_stateMachine.UpdateStateFixed();
+		}
 	}
 
 	#region Properties

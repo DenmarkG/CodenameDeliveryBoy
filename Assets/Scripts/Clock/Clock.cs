@@ -24,10 +24,12 @@ public class Clock : MonoBehaviour
 	/// </summary>
 	private static float m_timeScale = 1f;
 
-	private static Clock instance = null;
+	private static Clock m_instance = null;
 
 	void Awake()
 	{
+		m_instance = this;
+
 		currentHours = (int) (m_dayStartTime / 100);
 		currentMinutes = (int) (m_dayStartTime % 100);
 		myTimeScaleStartValue = m_timeScale;
@@ -44,16 +46,6 @@ public class Clock : MonoBehaviour
 	void Update()
 	{
 		UpdateTime();
-
-		if(Input.GetKeyDown(KeyCode.P))
-		{
-			PauseClock();
-		}
-		
-		if(Input.GetKeyDown(KeyCode.T))
-		{
-			StartClock();
-		}
 	}
 	
 	void DrawClock()
@@ -128,9 +120,9 @@ public class Clock : MonoBehaviour
 		get {return (currentHours * 100) + currentMinutes; }
 	}
 
-	public static Clock GetClock
+	public static Clock Instance
 	{
-		get { return instance; }
+		get { return m_instance; }
 	}
 
 	public static float TimeDelta
@@ -147,11 +139,6 @@ public class Clock : MonoBehaviour
 	private enum Day //day of the week enumerated
 	{
 		SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
-	}
-
-	public static void PauseGame()
-	{
-		//
 	}
 
 	public static float DeltaTime

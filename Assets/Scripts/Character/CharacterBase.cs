@@ -33,11 +33,18 @@ public class CharacterBase : MonoBehaviour
 	{
 		m_animator = this.gameObject.GetComponent<Animator>();
 		m_pauseState = new State_Pause(m_animator);
+
+		//add the pause and resume functions to the game manager's delegate
+		GameManager.OnPause += OnPause;
+		GameManager.OnResume += OnResume;
 	}
 
 	//Whenever the game is paused, this function will be called
-	public virtual void OnPause()
+	protected void OnPause()
 	{
+		//pause the current Animation
+		m_animator.speed = Clock.TimeScale;
+
 		//save the previous state, so the character will return to the state when the game the is resumed
 		m_previousState = m_stateMachine.CurrentState;
 
@@ -48,14 +55,19 @@ public class CharacterBase : MonoBehaviour
 		m_isPaused = true;
 	}
 
-	public virtual void OnResume()
+	protected void OnResume()
 	{
 		//set the current state to the state that the character was in before the game was paused
 		m_stateMachine.SetCurrentState(m_previousState);
 
-		//
+		//set the previous state to null
 		m_previousState = null;
+
+		//set the paused boolean to be false
 		m_isPaused = false;
+
+		//unpause the current Animation
+		m_animator.speed = Clock.TimeScale;
 	}
 
 	public virtual void OnSpeak()
@@ -69,7 +81,7 @@ public class CharacterBase : MonoBehaviour
 
 	public bool IsPaused
 	{
-		get { return IsPaused; }
+		get { return m_isPaused; }
 	}
 
 	public Motor_Base Motor
