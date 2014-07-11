@@ -14,10 +14,10 @@ public class Character_Player : CharacterBase
 		//make sure the player has a motor
 		if(m_motor == null)
 		{
-			m_motor = this.GetComponent<PlayerMotor>();
+			m_motor = this.GetComponent<Motor_Player>();
 			if(m_motor == null)
 			{
-				m_motor = this.gameObject.AddComponent<PlayerMotor>();
+				m_motor = this.gameObject.AddComponent<Motor_Player>();
 			}
 		}
 

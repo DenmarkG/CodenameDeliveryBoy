@@ -18,14 +18,14 @@ public class PlayerCamera : MonoBehaviour
 	[SerializeField]
 	private float m_offsetHeight = 1.5f; //How high the camera should be
 	[SerializeField]
-	[Range(0,10)]
-	private float m_smooth = 0.5f; //smoothing value; controls the camera lag
+	[Range(0,50)]
+	private float m_smooth = 10f; //smoothing value; controls the camera lag
 	[SerializeField]
 	private float m_snapSpeed = 20f; //how fast the camera should snap into position
 	[SerializeField]
 	private Transform m_target = null;
 	[SerializeField]
-	private float m_orbitSpeed = 5f;
+	private float m_orbitSpeed = 15f;
 	
 	#endregion
 
@@ -120,31 +120,27 @@ public class PlayerCamera : MonoBehaviour
 	public void SmoothLookAt()
 	{
 		// Create a vector from the camera towards the player.
-		Vector3 relPlayerPosition = m_target.position - transform.position;
+		Vector3 relativePlayerPosition = m_target.position - transform.position;
 		
 		// Create a rotation based on the relative position of the player being the forward vector.
-		Quaternion lookAtRotation = Quaternion.LookRotation(relPlayerPosition);
+		Quaternion lookAtRotation = Quaternion.LookRotation(relativePlayerPosition);
 		
 		// Lerp the camera's rotation between it's current rotation and the rotation that looks at the player.
-		transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, m_smooth * Time.deltaTime);
+		transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, m_smooth * Clock.DeltaTime);
 	}
 
-	public float ClampAngle(float angle, float min, float max)
+	public float ClampAngle (float angle, float min, float max)
 	{
-		while (angle < -360 || angle > 360)
+		if(max > min)
 		{
-			if (angle > 360)
-			{
-				angle -= 360; 
-			}
+			if (angle > max)
+				angle = max;
 
-			if (angle < -360)
-			{ 
-				angle += 360; 
-			}
+			if (angle < min)
+				angle = min;
 		}
-		
-		return Mathf.Clamp(angle, min, max);
+
+		return angle;
 	}
 
 	IEnumerator ResetCamera()

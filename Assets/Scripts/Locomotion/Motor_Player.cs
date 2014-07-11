@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerMotor : Motor_Base
+public class Motor_Player : Motor_Base
 {
 	public override void UpdateMotor ()
 	{
@@ -36,6 +36,16 @@ public class PlayerMotor : Motor_Base
 		//This function is currently a work in progress
 		//**************************************************************************************************
 
+		//Remap the input from the controller to world space
+		Transform cameraTransform = m_camera.transform;
+		Vector3 moveVector = Vector3.zero;
+
+
+		moveVector.x = (m_horizontal * cameraTransform.right.x) + (m_vertical * cameraTransform.forward.x);
+		moveVector.z = (m_horizontal * cameraTransform.right.z) + (m_vertical * cameraTransform.forward.z);
+		Vector3.Normalize(moveVector);
+
+
 		//cache the forward vector of the player and the camera
 		//also remove the y values for each, since we only want to calculate in 2 dimensions
 		Vector3 playerDirection = this.transform.forward;
@@ -44,13 +54,15 @@ public class PlayerMotor : Motor_Base
 		cameraDiretion.y = 0;
 		cameraDiretion.Normalize(); //normalize the camera vector to keep lenght consistent
 
+		//m_direction = (playerDirection - moveVector).magnitude;
+
 		//create a movement vector based on the input
-		Vector3 inputAxisDirection = new Vector3(m_horizontal, 0, m_vertical);
+		Vector3 inputAxisDirection = new Vector3(0, 0, moveVector.z);
 
 		//if the player is running set the speed to 2. Otherwise set it to the length of the input vector
 		m_speed = inputAxisDirection.magnitude;
 		if (m_isRunning && m_speed > DEAD_ZONE)
-			m_speed = 2;
+			m_speed += 1;
 
 
 		//calculate the rotation from the input vector to the player's forward
@@ -58,7 +70,7 @@ public class PlayerMotor : Motor_Base
 
 		//rotate the axis direction so that it is now oriented with the player 
 		//i.e. axis z will correspond to the player's forward
-		Vector3 moveVector = fromInputToPlayerRotation * inputAxisDirection;
+//		Vector3 moveVector = fromInputToPlayerRotation * inputAxisDirection;
 		
 		//now calculate the angle between the move vector and the camera's forward vector
 //		m_angle = Vector3.Angle(cameraDiretion, moveVector);
@@ -76,11 +88,12 @@ public class PlayerMotor : Motor_Base
 		//float angle = Vector3.Angle(cameraDiretion, inputAxisDirection) * (m_horizontal >= 0 ? 1 : -1);
 		//Debug.Log("Angle: " + angle);
 		//m_direction = angle / 90f;
-		m_direction = m_horizontal;
 
-		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), inputAxisDirection, Color.green);
-		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);
-		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
+		//m_direction = m_horizontal;
+
+//		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), inputAxisDirection, Color.green);
+//		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);
+//		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
 	}
 	
 	private bool IsInLocomotion()
