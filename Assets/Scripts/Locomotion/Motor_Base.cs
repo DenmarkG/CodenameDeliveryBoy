@@ -17,10 +17,13 @@ public class Motor_Base : MonoBehaviour
 	//variables to help with animation blending. These correspond to variables in the Animation Controller 
 	protected float m_direction = 0f;
 	protected float m_speed = 0f;
+	protected const float RUN_SPEED = 2f;
 	protected float m_angle = 0f;
 
 	//variables for setting up the Animator
 	protected Animator m_animator = null;
+	protected AnimatorStateInfo m_animStateInfo;
+	protected AnimatorTransitionInfo m_animTransistionInfo;
 	protected int m_locomotionId = 0;
 	protected int m_locomotionPivot_R = 0;
 	protected int m_locomotionPivot_L = 0;
