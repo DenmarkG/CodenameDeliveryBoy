@@ -23,6 +23,10 @@ public class GuiManager : MonoBehaviour
 	private float m_statusBoxHeight = 50f;
 	[SerializeField]
 	private float m_statusMessageDisplayTime = 15f;
+	[SerializeField]
+	private float m_textDialogBoxWidth = 350f;
+	[SerializeField]
+	private float m_textDialogBoxHeight = 150f;
 
 	#endregion
 
@@ -36,6 +40,10 @@ public class GuiManager : MonoBehaviour
 	private static List<string> m_statusMessages = new List<string>();
 	private string m_currentStatusMessage = "";
 
+	//variables for displaying dialog
+	private static Rect m_textDialogBox;
+	private string m_currentDialogString = "";
+
 
 	//create a static instance
 	private static GuiManager m_instance;
@@ -47,6 +55,7 @@ public class GuiManager : MonoBehaviour
 	void Awake()
 	{
 		m_statusBox = new Rect (0, Screen.height - m_statusBoxHeight, m_statusBoxWidth, m_statusBoxHeight);
+		m_textDialogBox = new Rect(Screen.width - m_textDialogBoxWidth, Screen.height - m_textDialogBoxHeight, m_textDialogBoxWidth, m_textDialogBoxHeight);
 		m_instance = this;
 	}
 
@@ -63,6 +72,8 @@ public class GuiManager : MonoBehaviour
 		{
 			GUI.Box(m_statusBox, m_currentStatusMessage);
 		}
+
+		if (
 
 		if (m_screenMasks.Count != 0)
 		{
@@ -85,6 +96,11 @@ public class GuiManager : MonoBehaviour
 	{
 		m_statusMessages.Add(messageToDisplay);
 		m_instance.StartCoroutine("CountDownStatusMessageTimer", m_instance.m_statusMessageDisplayTime);
+	}
+
+	public static void DisplayTextDialog(string dialogToDisplay)
+	{
+		//[#todo] fisnish this implementation
 	}
 
 	private IEnumerator CountDownStatusMessageTimer (float countTimeInSeconds)
@@ -122,5 +138,9 @@ public class GuiManager : MonoBehaviour
 		get { return m_statusBox; }
 	}
 
+	public static Rect TextDialogBox
+	{
+		get { return m_textDialogBox; }
+	}
 	#endregion
 }
