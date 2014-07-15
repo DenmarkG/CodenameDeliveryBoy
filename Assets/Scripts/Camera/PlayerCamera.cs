@@ -51,6 +51,7 @@ public class PlayerCamera : MonoBehaviour
 
 	//constants
 	private const float DEAD_ZONE = .1f;
+	private const float MOVEMENT_STOP_SPEED = 5f; // how fast the camera's movement comes to a stop when an axis is zero
 
 	#endregion
 

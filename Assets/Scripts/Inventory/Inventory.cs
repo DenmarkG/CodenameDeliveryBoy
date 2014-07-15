@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -44,7 +44,7 @@ public class Inventory
 			m_inventoryItems.Add(newItem);
 		}
 
-		GuiManager.DisplayStatusMessage(newItem.Name + " Added!");
+		GuiManager.DisplayStatusMessage(newItem.ItemName + " Added!");
 	}
 
 	public void RemoveItem(InventoryItem itemToRemove)

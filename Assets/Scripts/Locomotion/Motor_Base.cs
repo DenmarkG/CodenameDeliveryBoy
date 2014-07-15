@@ -5,7 +5,7 @@ public class Motor_Base : MonoBehaviour
 {
 	//protected variables
 	[SerializeField]
-	protected const float DEAD_ZONE = .01f;	//in most cases, values less than this will be ignored
+	protected const float DEAD_ZONE = .01f;	//in specific cases, values less than this will be ignored
 
 	//variables for storing input information
 	protected float m_horizontal = 0f;

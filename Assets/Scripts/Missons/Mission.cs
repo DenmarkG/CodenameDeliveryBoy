@@ -34,7 +34,7 @@ public class Mission
 	/// </summary>
 	public virtual void BeginMission()
 	{
-
+		//[#todo] may need to load resources here
 	}
 
 	/// <summary>
