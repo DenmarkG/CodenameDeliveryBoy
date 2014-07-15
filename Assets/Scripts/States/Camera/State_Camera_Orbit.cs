@@ -50,11 +50,13 @@ public class State_Camera_Orbit : State_Base
 		{
 			//cache the input from the mouse
 			if (Mathf.Abs(delta_X) > m_camera.DeadZone)
-				m_mouseX += Mathf.Clamp(delta_X, -1, 1) * Clock.DeltaTime * m_camera.OrbitSpeed;
+				m_mouseX += Mathf.Clamp(delta_X, -1, 1);
 
 			if (Mathf.Abs(delta_Y) > m_camera.DeadZone)
-				m_mouseY += Mathf.Clamp(delta_Y, -1, 1) * Clock.DeltaTime * m_camera.OrbitSpeed;
-			
+				m_mouseY += Mathf.Clamp(delta_Y, -1, 1);
+
+			//Debug.Log(m_mouseY);
+
 			//clamp the y value to the range [-360,360]
 			m_mouseY = m_camera.ClampAngle(m_mouseY, -40, 80);
 
@@ -63,6 +65,7 @@ public class State_Camera_Orbit : State_Base
 //			Debug.Log(mousePosition);
 		}
 
+		//[#todo] if the mouse is not moving, lerp mousex/y back to zero (keep the camera from being jerky
 
 		m_camera.DistanceAway += -Input.GetAxis("Mouse ScrollWheel") * m_camera.ZoomSpeed;
 	}
@@ -83,6 +86,9 @@ public class State_Camera_Orbit : State_Base
 
 		//calculate the desired position based on the position, direction, and roation that we just calculated
 		m_desiredPosition = m_target.position + rotation * direction;
+		Vector3.Normalize(m_desiredPosition);
+		m_desiredPosition *= -m_camera.DistanceAway;
+		Debug.Log ("desired: " + m_desiredPosition + "\nmag: " + m_desiredPosition.magnitude);
 
 		//move the camera to the new position
 		m_camera.transform.position = Vector3.Lerp(m_camera.transform.position, m_desiredPosition, Clock.DeltaTime);

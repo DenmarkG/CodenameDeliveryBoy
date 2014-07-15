@@ -42,7 +42,7 @@ public class Motor_Player : Motor_Base
 		if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
 		{
 			m_animator.SetFloat("Speed", 0);
-			m_animator.SetFloat("Angle", 0);
+			//m_animator.SetFloat("Angle", 0);
 		}
 
 		//[#todo] implement a pause method that utilizes this method
@@ -62,7 +62,9 @@ public class Motor_Player : Motor_Base
 
 		moveVector.x = (m_horizontal * cameraTransform.right.x) + (m_vertical * cameraTransform.forward.x);
 		moveVector.z = (m_horizontal * cameraTransform.right.z) + (m_vertical * cameraTransform.forward.z);
-		Vector3.Normalize(moveVector);
+
+		if (moveVector.magnitude > 1)
+			Vector3.Normalize(moveVector);
 
 
 		//cache the forward vector of the player and the camera
@@ -79,9 +81,10 @@ public class Motor_Player : Motor_Base
 		//Vector3 inputAxisDirection = new Vector3(0, 0, moveVector.z);
 
 		//if the player is running set the speed to 2. Otherwise set it to the length of the input vector
-		m_speed = moveVector.magnitude;
 		if (m_isRunning && m_speed > DEAD_ZONE)
 			m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime);
+		else 
+			m_speed = moveVector.magnitude;
 
 
 		//calculate the rotation from the input vector to the player's forward
@@ -104,11 +107,12 @@ public class Motor_Player : Motor_Base
 //		Debug.Log("angle: " + m_angle);
 
 		//get the angle between the camera's forward vector and the movement vector
-		float axisSign = Vector3.Dot(cameraTransform.right, this.transform.right) >= 0 ? 1 : -1;
+		//float axisSign = Vector3.Cross(moveVector, playerDirection).y >= 0 ? -1 : 1;
 		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (m_horizontal >= 0 ? 1 : -1);
-		Debug.Log("Angle: " + m_angle);
+//		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (axisSign);
+		//Debug.Log("Angle: " + m_angle);
 		m_direction = m_angle / 180f;
-		Debug.Log("Direction: " + m_direction);
+		//Debug.Log("Direction: " + m_direction);
 
 		//Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), inputAxisDirection, Color.green);
 		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);

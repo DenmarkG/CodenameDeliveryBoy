@@ -25,7 +25,7 @@ public class PlayerCamera : MonoBehaviour
 	[SerializeField]
 	private Transform m_target = null;
 	[SerializeField]
-	private float m_orbitSpeed = 15f;
+	private float m_orbitSpeed = .01f;
 	
 	#endregion
 
@@ -149,7 +149,8 @@ public class PlayerCamera : MonoBehaviour
 
 		//calculate the desired relative position
 		Vector3 relativePos = m_transform.position + (m_target.forward * -m_distanceAway);
-		while (Vector3.Distance(m_transform.position, relativePos) > DEAD_ZONE)
+		bool bHasReset = false;
+		while (!bHasReset)
 		{
 			//lerp the distance toward the start distance
 			m_distanceAway = Mathf.Lerp(m_distanceAway, m_distanceAway, m_snapSpeed * Clock.DeltaTime);
@@ -159,6 +160,8 @@ public class PlayerCamera : MonoBehaviour
 
 			//move the camera closer to the default position
 			m_transform.position = Vector3.Slerp(m_transform.position, relativePos, m_snapSpeed * Clock.DeltaTime);
+
+			bHasReset = Vector3.Distance(m_transform.position, relativePos) <= DEAD_ZONE;
 
 			//return null to prevent the game from hanging on this loop
 			yield return null;

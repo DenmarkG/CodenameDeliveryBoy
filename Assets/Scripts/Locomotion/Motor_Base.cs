@@ -18,6 +18,7 @@ public class Motor_Base : MonoBehaviour
 	protected float m_direction = 0f;
 	protected float m_speed = 0f;
 	protected const float RUN_SPEED = 2f;
+	protected const float RUN_TRANSITION_SPEED = 2f;
 	protected float m_angle = 0f;
 
 	//variables for setting up the Animator
