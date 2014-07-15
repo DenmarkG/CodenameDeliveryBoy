@@ -51,7 +51,7 @@ public class PlayerCamera : MonoBehaviour
 
 	//constants
 	private const float DEAD_ZONE = .1f;
-	private const float MOVEMENT_STOP_SPEED = 5f; // how fast the camera's movement comes to a stop when an axis is zero
+	private const float MOVEMENT_STOP_SPEED = 3f; // how fast the camera's movement comes to a stop when an axis is zero
 
 	#endregion
 
@@ -157,7 +157,7 @@ public class PlayerCamera : MonoBehaviour
 			m_distanceAway = Mathf.Lerp(m_distanceAway, m_distanceAway, m_snapSpeed * Clock.DeltaTime);
 
 			//recalculate the desired position based on the new distance away
-			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
+			relativePos = (m_target.position + (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
 
 			//move the camera closer to the default position
 			m_transform.position = Vector3.Slerp(m_transform.position, relativePos, m_snapSpeed * Clock.DeltaTime);
@@ -213,6 +213,11 @@ public class PlayerCamera : MonoBehaviour
 	public float OrbitSpeed
 	{
 		get { return m_orbitSpeed; }
+	}
+
+	public float MoveStopSpeed
+	{
+		get { return MOVEMENT_STOP_SPEED; }
 	}
 
 	public float DeadZone

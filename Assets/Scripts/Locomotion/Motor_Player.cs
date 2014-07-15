@@ -64,7 +64,7 @@ public class Motor_Player : Motor_Base
 		moveVector.z = (m_horizontal * cameraTransform.right.z) + (m_vertical * cameraTransform.forward.z);
 
 		if (moveVector.magnitude > 1)
-			Vector3.Normalize(moveVector);
+			moveVector.Normalize();
 
 
 		//cache the forward vector of the player and the camera
