@@ -73,8 +73,6 @@ public class GuiManager : MonoBehaviour
 			GUI.Box(m_statusBox, m_currentStatusMessage);
 		}
 
-		if (
-
 		if (m_screenMasks.Count != 0)
 		{
 			foreach (ScreenMask mask in m_screenMasks)

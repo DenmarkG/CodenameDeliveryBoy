@@ -4,6 +4,8 @@ using System.Collections;
 
 public class Clock : MonoBehaviour 
 {
+	#region private variables
+
 	[SerializeField]
 	private int m_dayStartTime = 900;	//Time to start the day in Military Time (i.e. 0900 = 9:00 am, 1700 = 5:00pm)
 	
@@ -26,6 +28,10 @@ public class Clock : MonoBehaviour
 
 	private static Clock m_instance = null;
 
+	#endregion
+
+	#region Unity Callbacks
+
 	void Awake()
 	{
 		m_instance = this;
@@ -47,7 +53,12 @@ public class Clock : MonoBehaviour
 	{
 		UpdateTime();
 	}
-	
+
+
+	#endregion
+
+	#region Private Methods
+
 	void DrawClock()
 	{
 		GUI.Box(new Rect((Screen.width / 2) - 75, 5, 150, 25),  m_currentDay.ToString() + " " + m_timeString);
@@ -102,7 +113,11 @@ public class Clock : MonoBehaviour
 			m_currentDay += 1; 
 		}
 	}
-	
+
+	#endregion
+
+	#region Public Methods
+
 	//public method for starting the clock externally
 	public void StartClock()
 	{
@@ -114,6 +129,16 @@ public class Clock : MonoBehaviour
 	{
 		m_timeScale = 0;
 	}
+
+	public static IEnumerator Timer(float time, Action<object> CallBackFunc, object functionParam)
+	{
+		CallBackFunc(functionParam);
+		yield return null;
+	}
+
+	#endregion
+
+	#region Properties
 	
 	public float GetTime
 	{
@@ -135,14 +160,16 @@ public class Clock : MonoBehaviour
 		get { return m_timeScale; }
 		set { m_timeScale = value; }
 	}
+	
+	public static float DeltaTime
+	{
+		get { return Time.deltaTime * m_timeScale; }
+	}
+
+	#endregion
 
 	private enum Day //day of the week enumerated
 	{
 		SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
-	}
-
-	public static float DeltaTime
-	{
-		get { return Time.deltaTime * m_timeScale; }
 	}
 }

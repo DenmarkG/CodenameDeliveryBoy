@@ -1,10 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GUI\GuiManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Clock\Clock.cs">
     <Files>
       <File FileName="Assets\Scripts\Locomotion\Motor_Base.cs" Line="22" Column="31" />
       <File FileName="Assets\Scripts\Locomotion\Motor_Player.cs" Line="67" Column="26" />
-      <File FileName="Assets\Scripts\GUI\GuiManager.cs" Line="103" Column="40" />
+      <File FileName="Assets\Scripts\GUI\GuiManager.cs" Line="80" Column="17" />
+      <File FileName="Assets\Scripts\Clock\Clock.cs" Line="133" Column="96" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
