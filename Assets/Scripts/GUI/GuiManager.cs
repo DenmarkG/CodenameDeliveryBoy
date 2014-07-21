@@ -9,7 +9,7 @@ public class GuiManager : MonoBehaviour
 	public delegate void UpdateGUI();
 	public static event UpdateGUI OnUpdateGUI;
 
-	float m_hSliderValue = 1f;
+//	float m_hSliderValue = 1f;
 
 	#endregion
 
@@ -22,11 +22,13 @@ public class GuiManager : MonoBehaviour
 	[SerializeField]
 	private float m_statusBoxHeight = 50f;
 	[SerializeField]
-	private float m_statusMessageDisplayTime = 15f;
+	private float m_statusMessageDisplayTime = 3f;
 	[SerializeField]
 	private float m_textDialogBoxWidth = 350f;
 	[SerializeField]
 	private float m_textDialogBoxHeight = 150f;
+	[SerializeField]
+	private float m_textDelay = .1f;
 
 	#endregion
 
@@ -55,7 +57,7 @@ public class GuiManager : MonoBehaviour
 	void Awake()
 	{
 		m_statusBox = new Rect (0, Screen.height - m_statusBoxHeight, m_statusBoxWidth, m_statusBoxHeight);
-		m_textDialogBox = new Rect(Screen.width - m_textDialogBoxWidth, Screen.height - m_textDialogBoxHeight, m_textDialogBoxWidth, m_textDialogBoxHeight);
+		m_textDialogBox = new Rect( (Screen.width - m_textDialogBoxWidth) / 2, Screen.height - m_textDialogBoxHeight, m_textDialogBoxWidth, m_textDialogBoxHeight);
 		m_instance = this;
 	}
 
@@ -71,6 +73,11 @@ public class GuiManager : MonoBehaviour
 		if (m_currentStatusMessage != "")
 		{
 			GUI.Box(m_statusBox, m_currentStatusMessage);
+		}
+
+		if (m_currentDialogString != "")
+		{
+			GUI.Box(m_textDialogBox, m_currentDialogString);
 		}
 
 		if (m_screenMasks.Count != 0)
@@ -96,9 +103,31 @@ public class GuiManager : MonoBehaviour
 		m_instance.StartCoroutine("CountDownStatusMessageTimer", m_instance.m_statusMessageDisplayTime);
 	}
 
-	public static void DisplayTextDialog(string dialogToDisplay)
+	public static void ShowDialog(string dialogToDisplay)
 	{
-		//[#todo] fisnish this implementation
+		m_instance.StartCoroutine("PrintDialog", dialogToDisplay);
+	}
+
+	#endregion
+
+	#region Private Methods
+
+	private IEnumerator PrintDialog(string dialogToDisplay)
+	{
+		int letterIndex = 0;
+		while (m_currentDialogString != dialogToDisplay)
+		{
+			if (!Clock.IsPaused)
+			{
+				m_currentDialogString += dialogToDisplay[letterIndex];
+				++letterIndex;
+				yield return new WaitForSeconds(m_textDelay);
+			}
+			else
+			{
+				yield return null;
+			}
+		}
 	}
 
 	private IEnumerator CountDownStatusMessageTimer (float countTimeInSeconds)

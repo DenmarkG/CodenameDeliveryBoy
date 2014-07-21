@@ -130,11 +130,11 @@ public class Clock : MonoBehaviour
 		m_timeScale = 0;
 	}
 
-	public static IEnumerator Timer(float time, Action<object> CallBackFunc, object functionParam)
-	{
-		CallBackFunc(functionParam);
-		yield return null;
-	}
+//	public static IEnumerator Timer(float time, Action<object> CallBackFunc, object functionParam)
+//	{
+//		CallBackFunc(functionParam);
+//		yield return null;
+//	}
 
 	#endregion
 
@@ -164,6 +164,11 @@ public class Clock : MonoBehaviour
 	public static float DeltaTime
 	{
 		get { return Time.deltaTime * m_timeScale; }
+	}
+
+	public static bool IsPaused
+	{
+		get { return m_timeScale == 0; }
 	}
 
 	#endregion
