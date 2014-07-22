@@ -38,6 +38,6 @@ public class GameControllerHash
 	public struct RightStick
 	{
 		public const string HORIZONTAL = "HORIZONTAL_R";
-		public const string VERTICAL = "HORIZONTAL_V";
+		public const string VERTICAL = "HORIZONTAL_R";
 	}
 }

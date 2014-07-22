@@ -88,10 +88,13 @@ public class PlayerCamera : MonoBehaviour
 		if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
 			StartCoroutine("ResetCamera");
 
-		//if the right mouse button is pressed, allow the camera to enter the free orbit state
-		if (Input.GetKeyDown(KeyCode.F) && m_stateMachine.CurrentState == m_followState )
+		//if the right mouse button is pressed or the right stick is moved, allow the camera to enter the free orbit state
+		bool orbiting = Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.HORIZONTAL) ) > DEAD_ZONE || 
+						Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.VERTICAL) ) > DEAD_ZONE;
+
+		if ( (Input.GetKeyDown(KeyCode.F) /*|| orbiting == true*/) && m_stateMachine.CurrentState == m_followState )
 			m_stateMachine.SetCurrentState(m_orbitState);
-		else if (Input.GetKeyUp(KeyCode.F) && m_stateMachine.CurrentState == m_orbitState)
+		else if ( (Input.GetKeyUp(KeyCode.F) /*|| orbiting == false*/) && m_stateMachine.CurrentState == m_orbitState)
 			m_stateMachine.SetCurrentState(m_followState);
 
 		//update the state machine's current state

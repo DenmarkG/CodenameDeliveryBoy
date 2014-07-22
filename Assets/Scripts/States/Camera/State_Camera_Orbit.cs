@@ -9,11 +9,14 @@ public class State_Camera_Orbit : State_Base
 
 	Vector3 m_desiredPosition = Vector3.zero;
 
-	private float m_mouseX = 0f;
-	private float m_mouseY = 0f;
+	private float m_input_X = 0f;
+	private float m_input_Y = 0f;
 
 	//this variable will be needed to cacluate mouse deltas, since that information is not captured by Unity
-	private Vector2 m_lastMousePos = Vector2.zero;
+	private Vector2 m_lastInputPos = Vector2.zero;
+	Vector2 m_inputPosition = Vector2.zero;
+
+	private bool m_bUsingController = false;
 
 	public State_Camera_Orbit(PlayerCamera pCamera)
 	{
@@ -24,57 +27,64 @@ public class State_Camera_Orbit : State_Base
 	public override void EnterState ()
 	{	
 		//reset the mouse values, so the camera doesn't jump when entering the state
-		m_mouseX = 0f;
-		m_mouseY = 0f;
+		m_input_X = 0f;
+		m_input_Y = 0f;
 
 		//get the target object from the camera that was passed in
 		m_target = m_camera.CameraTarget;
 
-		m_lastMousePos = (Vector2) Input.mousePosition;
+		m_lastInputPos = (Vector2) Input.mousePosition;
+
+		m_bUsingController = GameManager.IsUsingController;
+		Debug.Log(m_bUsingController);
 	}
 	
 	public override void UpdateState ()
 	{
+		float delta_X = 0f;
+		float delta_Y = 0f;
 
-		//get the mouse's current position
-		Vector2 mousePosition = (Vector2) Input.mousePosition;
-
-		//calculate the change in position since the last frame
-		float delta_X = m_lastMousePos.x - mousePosition.x;
-		float delta_Y = m_lastMousePos.y - mousePosition.y;
+		if (m_bUsingController)
+		{
+			GetControllerInput();
+		}
+		else
+		{
+			GetMouseInput(out delta_X, out delta_Y);
+		}
 
 		//if the position delta is greater than the deadzone, increment the x value. Lerp it back to zero otherwise
 		if (Mathf.Abs(delta_X) > m_camera.DeadZone)
 		{
 			//cache the input from the mouse
-			m_mouseX += Mathf.Clamp(delta_X, -1, 1);
+			m_input_X += Mathf.Clamp(delta_X, -1, 1);
 
 			//set this as the last mouse x position
-			m_lastMousePos.x = mousePosition.x;
+			m_lastInputPos.x = m_inputPosition.x;
 		}
 		else
 		{
 			//if the mouse is not moving on the x axis, lerp the mouse x back to 0
-			m_mouseX = Mathf.Lerp(m_mouseX, 0, Clock.DeltaTime  * m_camera.MoveStopSpeed);
+			m_input_X = Mathf.Lerp(m_input_X, 0, Clock.DeltaTime  * m_camera.MoveStopSpeed);
 		}
 
 		//if the position delta is greater than the deadzone, increment the y value. Lerp it back to zero otherwise
 		if (Mathf.Abs(delta_Y) > m_camera.DeadZone)
 		{
-			m_mouseY += Mathf.Clamp(delta_Y, -1, 1);
+			m_input_Y += Mathf.Clamp(delta_Y, -1, 1);
 			
 			//Debug.Log(m_mouseY);
 			
 			//clamp the y value to the range [-40,80]
-			m_mouseY = m_camera.ClampAngle(m_mouseY, -40, 80);
+			m_input_Y = m_camera.ClampAngle(m_input_Y, -40, 80);
 
 			//set this as the last mouse y position
-			m_lastMousePos.y = mousePosition.y;
+			m_lastInputPos.y = m_inputPosition.y;
 		}
 		else
 		{
 			//if the mouse is not moving on the y axis, lerp the mouse y back to 0
-			m_mouseY = Mathf.Lerp(m_mouseY, 0, Clock.DeltaTime  * m_camera.MoveStopSpeed);
+			m_input_Y = Mathf.Lerp(m_input_Y, 0, Clock.DeltaTime  * m_camera.MoveStopSpeed);
 		}
 
 		m_camera.DistanceAway += -Input.GetAxis("Mouse ScrollWheel") * m_camera.ZoomSpeed;
@@ -96,7 +106,7 @@ public class State_Camera_Orbit : State_Base
 
 		//this 'works'
 		//create a rotation based on the current mouse x and y values
-		Quaternion rotation = Quaternion.Euler(m_mouseY, m_mouseX, 0f);
+		Quaternion rotation = Quaternion.Euler(m_input_Y, m_input_X, 0f);
 		//calculate the desired position based on the position, direction, and roation that we just calculated
 		m_desiredPosition = m_target.position + rotation * direction;
 
@@ -115,6 +125,25 @@ public class State_Camera_Orbit : State_Base
 	
 	public override void ExitState ()
 	{
+		Debug.Log("leaving orbit state");
+	}
+
+	#region Input Caching Methods
+
+	private void GetMouseInput(out float delta_X, out float delta_Y)
+	{
+		//get the mouse's current position
+		m_inputPosition = (Vector2) Input.mousePosition;
+		
+		//calculate the change in position since the last frame
+		delta_X = m_lastInputPos.x - m_inputPosition.x;
+		delta_Y = m_lastInputPos.y - m_inputPosition.y;
+	}
+
+	private void GetControllerInput()
+	{
 		//
 	}
+
+	#endregion
 }

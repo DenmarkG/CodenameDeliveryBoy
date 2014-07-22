@@ -32,6 +32,8 @@ public class Motor_Base : MonoBehaviour
 
 	//reference to the game's camera
 	protected PlayerCamera m_camera = null;
+	
+	protected bool m_bLocked = false; //when true the character cannot move
 
 	//private variables
 
@@ -69,5 +71,15 @@ public class Motor_Base : MonoBehaviour
 		m_locomotionId = Animator.StringToHash("Base Layer.Locomotion");
 		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
 		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
+	}
+
+	public virtual void LockPlayerMotion()
+	{
+		m_bLocked = true;
+	}
+	
+	public virtual void UnlockPlayerMotion()
+	{
+		m_bLocked = false;
 	}
 }

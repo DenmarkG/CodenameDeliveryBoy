@@ -68,7 +68,7 @@ public class Inventory
 	void DisplayInventory()
 	{
 		int m_displayStartPos_X = (Screen.width / 2) - ( (m_inventoryDisplayColumns * m_iconSize) / 2);
-		int m_displayStartPos_Y = (Screen.height / 2) - ( (m_inventoryDisplayRows * m_iconSize) / 2);;
+		int m_displayStartPos_Y = (Screen.height / 2) - ( (m_inventoryDisplayRows * m_iconSize) / 2);
 
 		for(int gridY = 0; gridY < m_inventoryDisplayRows; gridY++)
 		{

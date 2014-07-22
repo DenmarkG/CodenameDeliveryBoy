@@ -2,5 +2,7 @@
 <Characters>
 	<Carl>
 		<Dialog> Hi I&aposm Carl. How goes it?</Dialog>
+		<Dialog> Here is more text.</Dialog>
+		<Dialog> Guess what? even more! </Dialog>
 	</Carl>
 </Characters>

@@ -10,43 +10,59 @@ public class Motor_Player : Motor_Base
 
 	public override void UpdateMotor ()
 	{
-		//reset the angle to zero
-		m_angle = 0f;
-
-		//get the info for the current animation states
-		m_animStateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-//		m_animTransistionInfo = m_animator.GetAnimatorTransitionInfo(0);
-
-		//get the state info for the current state
-		m_stateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-
-		//Get the input from the player
-		m_horizontal = Input.GetAxis(GameControllerHash.LeftStick.HORIZONTAL);
-		m_vertical = Input.GetAxis(GameControllerHash.LeftStick.VERTICAL);
-
-		//check to see if the player is running
-		m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
-
-		//now convert the movement to world space
-		ConvertInputToWorldSpace();
-
-		//set the values for the animator
-		m_animator.SetFloat("Speed", m_speed);
-		m_animator.SetFloat("Direction", m_direction);
-
-		if (m_speed > DEAD_ZONE && !IsPivoting() )
+		if (!m_bLocked)
 		{
-			m_animator.SetFloat("Angle", m_angle);
-		}
-		//[#todo]check to see if an elseif can be made instead later
-		if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
-		{
-			m_animator.SetFloat("Speed", 0);
-			//m_animator.SetFloat("Angle", 0);
-		}
+			//reset the angle to zero
+			m_angle = 0f;
 
-		//[#todo] implement a pause method that utilizes this method
-		m_animator.speed = Clock.TimeScale;
+			//get the info for the current animation states
+			m_animStateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
+	//		m_animTransistionInfo = m_animator.GetAnimatorTransitionInfo(0);
+
+			//get the state info for the current state
+			m_stateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
+
+			//Get the input from the player
+			m_horizontal = Input.GetAxis(GameControllerHash.LeftStick.HORIZONTAL);
+			m_vertical = Input.GetAxis(GameControllerHash.LeftStick.VERTICAL);
+
+			//check to see if the player is running
+			m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
+
+			//now convert the movement to world space
+			ConvertInputToWorldSpace();
+
+			//set the values for the animator
+			m_animator.SetFloat("Speed", m_speed);
+			m_animator.SetFloat("Direction", m_direction);
+
+			if (m_speed > DEAD_ZONE && !IsPivoting)
+			{
+				m_animator.SetFloat("Angle", m_angle);
+			}
+			//[#todo]check to see if an elseif can be made instead later
+			if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
+			{
+				m_animator.SetFloat("Speed", 0);
+				//m_animator.SetFloat("Angle", 0);
+			}
+
+			//[#todo] implement a pause method that utilizes this method
+			m_animator.speed = Clock.TimeScale;
+		}
+	}
+
+	public override void LockPlayerMotion()
+	{
+		base.LockPlayerMotion();
+		m_animator.SetFloat("Speed", 0);
+		m_animator.SetFloat("Direction", 0);
+		m_animator.SetFloat("Angle", 0);
+	}
+	
+	public override void UnlockPlayerMotion()
+	{
+		base.UnlockPlayerMotion();
 	}
 
 	private void ConvertInputToWorldSpace()
@@ -81,10 +97,10 @@ public class Motor_Player : Motor_Base
 		//Vector3 inputAxisDirection = new Vector3(0, 0, moveVector.z);
 
 		//if the player is running set the speed to 2. Otherwise set it to the length of the input vector
+		m_speed = moveVector.magnitude;
+
 		if (m_isRunning && m_speed > DEAD_ZONE)
 			m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime);
-		else 
-			m_speed = moveVector.magnitude;
 
 
 		//calculate the rotation from the input vector to the player's forward
@@ -119,19 +135,27 @@ public class Motor_Player : Motor_Base
 		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
 	}
 
-	private bool IsInLocomotion()
+	#region Private Properties
+
+	private bool IsInLocomotion
 	{
-		return m_stateInfo.nameHash == m_locomotionId;
+		get { return m_stateInfo.nameHash == m_locomotionId; }
 	}
 	
-	private bool IsPivoting()
+	private bool IsPivoting
 	{
-		return m_stateInfo.nameHash == m_locomotionPivot_L || m_stateInfo.nameHash == m_locomotionPivot_R;
+		get { return m_stateInfo.nameHash == m_locomotionPivot_L || m_stateInfo.nameHash == m_locomotionPivot_R; }
 	}
+	
+	#endregion
+
+	#region Public Properties
 
 	public float AnimatorSpeed
 	{
 		get { return m_animator.speed; }
 		set { m_animator.speed = value; }
 	}
+
+	#endregion
 }

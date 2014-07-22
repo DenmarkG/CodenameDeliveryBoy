@@ -15,9 +15,12 @@ public class GameManager : MonoBehaviour
 
 	private Clock m_clock = null;
 
+	private bool m_bIsUsingController = false;
+
 	void Awake()
 	{
 		m_instance = this;
+		m_bIsUsingController = Input.GetJoystickNames().Length != 0;
 	}
 
 	void Start()
@@ -69,6 +72,11 @@ public class GameManager : MonoBehaviour
 	public static GameManager Instance
 	{
 		get {return m_instance; }
+	}
+
+	public static bool IsUsingController
+	{
+		get { return m_instance.m_bIsUsingController; }
 	}
 }
 
