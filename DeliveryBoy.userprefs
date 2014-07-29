@@ -1,8 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Health\Health.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Utility\Tests\ThirdPersonCamera.cs">
     <Files>
-      <File FileName="Assets\Scripts\Health\Health.cs" Line="21" Column="12" />
+      <File FileName="Assets\Scripts\Locomotion\Motor_Player.cs" Line="101" Column="7" />
+      <File FileName="Assets\Scripts\Locomotion\Motor_Base.cs" Line="22" Column="2" />
+      <File FileName="Assets\Scripts\Utility\Tests\ThirdPersonCamera.cs" Line="178" Column="7" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -75,13 +75,11 @@ public class Motor_Player : Motor_Base
 		Transform cameraTransform = m_camera.transform;
 		Vector3 moveVector = Vector3.zero;
 
-
 		moveVector.x = (m_horizontal * cameraTransform.right.x) + (m_vertical * cameraTransform.forward.x);
 		moveVector.z = (m_horizontal * cameraTransform.right.z) + (m_vertical * cameraTransform.forward.z);
 
 		if (moveVector.magnitude > 1)
 			moveVector.Normalize();
-
 
 		//cache the forward vector of the player and the camera
 		//also remove the y values for each, since we only want to calculate in 2 dimensions
@@ -97,11 +95,13 @@ public class Motor_Player : Motor_Base
 		//Vector3 inputAxisDirection = new Vector3(0, 0, moveVector.z);
 
 		//if the player is running set the speed to 2. Otherwise set it to the length of the input vector
-		m_speed = moveVector.magnitude;
 
 		if (m_isRunning && m_speed > DEAD_ZONE)
-			m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime);
-
+			m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime * RUN_TRANSITION_SPEED);
+		else
+			m_speed = Mathf.Lerp(m_speed, moveVector.magnitude, Clock.DeltaTime * RUN_TRANSITION_SPEED);
+			
+//		Debug.Log("speed: " + m_speed);
 
 		//calculate the rotation from the input vector to the player's forward
 		//Quaternion fromInputToPlayerRotation = Quaternion.FromToRotation(moveVector, playerDirection);
@@ -126,9 +126,9 @@ public class Motor_Player : Motor_Base
 		//float axisSign = Vector3.Cross(moveVector, playerDirection).y >= 0 ? -1 : 1;
 		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (m_horizontal >= 0 ? 1 : -1);
 //		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (axisSign);
-		//Debug.Log("Angle: " + m_angle);
-		m_direction = m_angle / 180f;
-		//Debug.Log("Direction: " + m_direction);
+		Debug.Log("Angle: " + m_angle);
+		m_direction = m_angle / 90f;
+		Debug.Log("Direction: " + m_direction);
 
 		//Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), inputAxisDirection, Color.green);
 		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);

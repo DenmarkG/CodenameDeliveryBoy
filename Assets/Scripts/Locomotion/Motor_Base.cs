@@ -20,6 +20,7 @@ public class Motor_Base : MonoBehaviour
 	protected const float RUN_SPEED = 2f;
 	protected const float RUN_TRANSITION_SPEED = 2f;
 	protected float m_angle = 0f;
+	protected float m_rotationSpeed = 1.5f;
 
 	//variables for setting up the Animator
 	protected Animator m_animator = null;
@@ -32,7 +33,7 @@ public class Motor_Base : MonoBehaviour
 
 	//reference to the game's camera
 	protected PlayerCamera m_camera = null;
-	
+
 	protected bool m_bLocked = false; //when true the character cannot move
 
 	//private variables

@@ -89,8 +89,8 @@ public class PlayerCamera : MonoBehaviour
 			StartCoroutine("ResetCamera");
 
 		//if the right mouse button is pressed or the right stick is moved, allow the camera to enter the free orbit state
-		bool orbiting = Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.HORIZONTAL) ) > DEAD_ZONE || 
-						Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.VERTICAL) ) > DEAD_ZONE;
+		/*bool orbiting = Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.HORIZONTAL) ) > DEAD_ZONE || 
+						Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.VERTICAL) ) > DEAD_ZONE;*/
 
 		if ( (Input.GetKeyDown(KeyCode.F) /*|| orbiting == true*/) && m_stateMachine.CurrentState == m_followState )
 			m_stateMachine.SetCurrentState(m_orbitState);
