@@ -36,7 +36,7 @@ public class State_Camera_Orbit : State_Base
 		m_lastInputPos = (Vector2) Input.mousePosition;
 
 		m_bUsingController = GameManager.IsUsingController;
-		Debug.Log(m_bUsingController);
+//		Debug.Log(m_bUsingController);
 	}
 	
 	public override void UpdateState ()
@@ -125,7 +125,7 @@ public class State_Camera_Orbit : State_Base
 	
 	public override void ExitState ()
 	{
-		Debug.Log("leaving orbit state");
+//		Debug.Log("leaving orbit state");
 	}
 
 	#region Input Caching Methods

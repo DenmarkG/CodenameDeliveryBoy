@@ -1,14 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Camera\PlayerCamera.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Health\Health.cs">
     <Files>
-      <File FileName="Assets\Scripts\Character\Character_Player.cs" Line="4" Column="42" />
-      <File FileName="Assets\Scripts\GUI\GuiManager.cs" Line="173" Column="4" />
-      <File FileName="Assets\Scripts\Locomotion\Motor_Player.cs" Line="65" Column="26" />
-      <File FileName="Assets\Scripts\States\Character\Overworld\State_CharacterOverworld.cs" Line="18" Column="1" />
-      <File FileName="Assets\Scripts\Character\CharacterBase.cs" Line="75" Column="5" />
-      <File FileName="Assets\Scripts\Locomotion\Motor_Base.cs" Line="38" Column="21" />
-      <File FileName="Assets\Scripts\Camera\PlayerCamera.cs" Line="92" Column="1" />
+      <File FileName="Assets\Scripts\Health\Health.cs" Line="21" Column="12" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
