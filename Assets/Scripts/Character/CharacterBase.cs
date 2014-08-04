@@ -68,11 +68,13 @@ public class CharacterBase : MonoBehaviour
 
 		//unpause the current Animation
 		m_animator.speed = Clock.TimeScale;
+
+		m_motor.UnlockMotion();
 	}
 
 	public virtual void OnSpeak()
 	{
-		//
+		m_motor.LockMotion();
 	}
 
 	#endregion

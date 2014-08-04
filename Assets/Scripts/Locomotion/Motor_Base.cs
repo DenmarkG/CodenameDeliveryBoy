@@ -20,7 +20,7 @@ public class Motor_Base : MonoBehaviour
 	protected const float RUN_SPEED = 2f;
 	protected const float RUN_TRANSITION_SPEED = 2f;
 	protected float m_angle = 0f;
-	protected float m_rotationSpeed = 1.5f;
+	protected float m_rotationSpeed = 3f;
 
 	//variables for setting up the Animator
 	protected Animator m_animator = null;
@@ -74,12 +74,12 @@ public class Motor_Base : MonoBehaviour
 		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
 	}
 
-	public virtual void LockPlayerMotion()
+	public virtual void LockMotion()
 	{
 		m_bLocked = true;
 	}
 	
-	public virtual void UnlockPlayerMotion()
+	public virtual void UnlockMotion()
 	{
 		m_bLocked = false;
 	}

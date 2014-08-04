@@ -38,13 +38,13 @@ public class Motor_Player : Motor_Base
 
 			if (m_speed > DEAD_ZONE && !IsPivoting)
 			{
-				m_animator.SetFloat("Angle", m_angle);
+//				m_animator.SetFloat("Angle", m_angle);
 			}
 			//[#todo]check to see if an elseif can be made instead later
 			if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
 			{
 				m_animator.SetFloat("Speed", 0);
-				//m_animator.SetFloat("Angle", 0);
+				m_animator.SetFloat("Angle", 0);
 			}
 
 			//[#todo] implement a pause method that utilizes this method
@@ -52,17 +52,17 @@ public class Motor_Player : Motor_Base
 		}
 	}
 
-	public override void LockPlayerMotion()
+	public override void LockMotion()
 	{
-		base.LockPlayerMotion();
+		base.LockMotion();
 		m_animator.SetFloat("Speed", 0);
 		m_animator.SetFloat("Direction", 0);
 		m_animator.SetFloat("Angle", 0);
 	}
 	
-	public override void UnlockPlayerMotion()
+	public override void UnlockMotion()
 	{
-		base.UnlockPlayerMotion();
+		base.UnlockMotion();
 	}
 
 	private void ConvertInputToWorldSpace()
@@ -89,52 +89,41 @@ public class Motor_Player : Motor_Base
 		cameraDiretion.y = 0;
 		cameraDiretion.Normalize(); //normalize the camera vector to keep length consistent
 
-		//m_direction = (playerDirection - moveVector).magnitude;
-
-		//create a movement vector based on the input
-		//Vector3 inputAxisDirection = new Vector3(0, 0, moveVector.z);
-
 		//if the player is running set the speed to 2. Otherwise set it to the length of the input vector
 
 		if (m_isRunning && m_speed > DEAD_ZONE)
 			m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime * RUN_TRANSITION_SPEED);
 		else
 			m_speed = Mathf.Lerp(m_speed, moveVector.magnitude, Clock.DeltaTime * RUN_TRANSITION_SPEED);
-			
-//		Debug.Log("speed: " + m_speed);
-
-		//calculate the rotation from the input vector to the player's forward
-		//Quaternion fromInputToPlayerRotation = Quaternion.FromToRotation(moveVector, playerDirection);
-
-		//rotate the axis direction so that it is now oriented with the player 
-		//i.e. axis z will correspond to the player's forward
-//		Vector3 moveVector = fromInputToPlayerRotation * inputAxisDirection;
-		
-		//now calculate the angle between the move vector and the camera's forward vector
-//		m_angle = Vector3.Angle(cameraDiretion, moveVector);
-		
-		//since the angle will always return positive, we want to calculate the direction the player is turning
-		//to do this we take the dot product of...
-		//float axisSign = Vector3.Dot(moveVector, this.transform.right) > 0 ? 1 : -1;
-		
-		//now apply the sign to the angle
-		//m_angle *= axisSign;
-		
-//		Debug.Log("angle: " + m_angle);
 
 		//get the angle between the camera's forward vector and the movement vector
-		//float axisSign = Vector3.Cross(moveVector, playerDirection).y >= 0 ? -1 : 1;
 		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (m_horizontal >= 0 ? 1 : -1);
-//		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (axisSign);
-		Debug.Log("Angle: " + m_angle);
+
 		m_direction = m_angle / 90f;
-		Debug.Log("Direction: " + m_direction);
+//		Debug.Log("Angle: " + m_angle);
+//		Debug.Log("Direction: " + m_direction);
+
+		if (moveVector.magnitude > DEAD_ZONE)
+			Rotate(moveVector);
 
 		//Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), inputAxisDirection, Color.green);
 		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);
 		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
+		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), playerDirection, Color.red);
 	}
 
+	void Rotate(Vector3 targetDir)
+	{
+		//create a step value to rotate the player over time
+		float step = m_rotationSpeed * Clock.DeltaTime;
+
+		//create a rotation with the forward vector the same as the move direction
+		Quaternion qTargetDir = Quaternion.LookRotation(targetDir, Vector3.up);
+	
+		//set the rotation to the lerp between the current and the desired direction
+		transform.rotation = Quaternion.Lerp(this.transform.rotation, qTargetDir, step);
+
+	}
 	#region Private Properties
 
 	private bool IsInLocomotion

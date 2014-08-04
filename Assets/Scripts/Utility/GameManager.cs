@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 	{
 		m_instance = this;
 		m_bIsUsingController = Input.GetJoystickNames().Length != 0;
+//		Screen.showCursor = false;
 	}
 
 	void Start()

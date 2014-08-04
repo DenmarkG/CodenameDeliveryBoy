@@ -134,10 +134,16 @@ public class State_Camera_Orbit : State_Base
 	{
 		//get the mouse's current position
 		m_inputPosition = (Vector2) Input.mousePosition;
-		
+
+//		float mouse_X = Input.GetAxis("Mouse X");
+//		float mouse_Y = Input.GetAxis("Mouse Y");
+
 		//calculate the change in position since the last frame
 		delta_X = m_lastInputPos.x - m_inputPosition.x;
 		delta_Y = m_lastInputPos.y - m_inputPosition.y;
+
+//		delta_X = m_lastInputPos.x - mouse_X;
+//		delta_Y = m_lastInputPos.y - mouse_Y;
 	}
 
 	private void GetControllerInput()
