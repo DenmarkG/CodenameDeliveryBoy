@@ -4,8 +4,10 @@ using System.Collections;
 
 public class Clock : MonoBehaviour 
 {
+	#region private variables
+
 	[SerializeField]
-	private int dayStartTime = 900;	//Time to start the day in Military Time (i.e. 0900 = 9:00 am, 1700 = 5:00pm)
+	private int m_dayStartTime = 900;	//Time to start the day in Military Time (i.e. 0900 = 9:00 am, 1700 = 5:00pm)
 	
 	private float currentSeconds = 0f;
 	private int currentMinutes = 0;
@@ -13,7 +15,9 @@ public class Clock : MonoBehaviour
 	private float myTimeScaleStartValue = 0;
 	private Day m_currentDay = Day.MONDAY;
 	private string m_timeString = "";
-
+	
+	private SkyBoxBehavior m_skybox = null;
+	
 	/// <summary>
 	/// values greater than one will speed up time, 
 	/// values lower than one will slow time
@@ -22,13 +26,22 @@ public class Clock : MonoBehaviour
 	/// </summary>
 	private static float m_timeScale = 1f;
 
-	private static Clock instance = null;
+	private static Clock m_instance = null;
+
+	#endregion
+
+	#region Unity Callbacks
 
 	void Awake()
 	{
-		currentHours = (int) (dayStartTime / 100);
-		currentMinutes = (int) (dayStartTime % 100);
+		m_instance = this;
+
+		currentHours = (int) (m_dayStartTime / 100);
+		currentMinutes = (int) (m_dayStartTime % 100);
 		myTimeScaleStartValue = m_timeScale;
+		
+		m_skybox = this.gameObject.AddComponent<SkyBoxBehavior>();
+		m_skybox.SetSkyBoxes(m_dayStartTime);
 	}
 
 	void Start()
@@ -39,18 +52,13 @@ public class Clock : MonoBehaviour
 	void Update()
 	{
 		UpdateTime();
-
-		if(Input.GetKeyDown(KeyCode.P))
-		{
-			PauseClock();
-		}
-		
-		if(Input.GetKeyDown(KeyCode.T))
-		{
-			StartClock();
-		}
 	}
-	
+
+
+	#endregion
+
+	#region Private Methods
+
 	void DrawClock()
 	{
 		GUI.Box(new Rect((Screen.width / 2) - 75, 5, 150, 25),  m_currentDay.ToString() + " " + m_timeString);
@@ -70,6 +78,9 @@ public class Clock : MonoBehaviour
 			{
 				//if the minutes are greater than 59, add an hour
 				currentHours += 1;
+				
+				//update the time of day on the skybox behavior
+				m_skybox.UpdateTimeOfDay(currentHours);
 				
 				if(currentHours > 23)
 				{
@@ -102,7 +113,11 @@ public class Clock : MonoBehaviour
 			m_currentDay += 1; 
 		}
 	}
-	
+
+	#endregion
+
+	#region Public Methods
+
 	//public method for starting the clock externally
 	public void StartClock()
 	{
@@ -114,15 +129,25 @@ public class Clock : MonoBehaviour
 	{
 		m_timeScale = 0;
 	}
+
+//	public static IEnumerator Timer(float time, Action<object> CallBackFunc, object functionParam)
+//	{
+//		CallBackFunc(functionParam);
+//		yield return null;
+//	}
+
+	#endregion
+
+	#region Properties
 	
 	public float GetTime
 	{
 		get {return (currentHours * 100) + currentMinutes; }
 	}
 
-	public static Clock GetClock
+	public static Clock Instance
 	{
-		get { return instance; }
+		get { return m_instance; }
 	}
 
 	public static float TimeDelta
@@ -135,19 +160,21 @@ public class Clock : MonoBehaviour
 		get { return m_timeScale; }
 		set { m_timeScale = value; }
 	}
+	
+	public static float DeltaTime
+	{
+		get { return Time.deltaTime * m_timeScale; }
+	}
+
+	public static bool IsPaused
+	{
+		get { return m_timeScale == 0; }
+	}
+
+	#endregion
 
 	private enum Day //day of the week enumerated
 	{
 		SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
-	}
-
-	public static void PauseGame()
-	{
-		//
-	}
-
-	public static float DeltaTime()
-	{
-		return Time.deltaTime * m_timeScale;
 	}
 }

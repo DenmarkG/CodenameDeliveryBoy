@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 [System.Serializable]
@@ -11,9 +11,11 @@ public class Wallet : InventoryItem
 
 	public Wallet()
 	{
-		m_myName = "Wallet";
-		m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_Wallet");
-		bIsConsistent = true;
+		m_itemName = "Wallet";
+
+		//[#todo] this line was causing errors in the editor and has been removed temporarily
+		//m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_Wallet");
+		m_bIsConsistent = true;
 	}
 	
 	public void AddMoney(int amount)

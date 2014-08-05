@@ -41,8 +41,7 @@ public class State_Camera_Follow : State_Base
 		
 		//calculate the target position
 		m_targetPos = m_targetPos - (m_lookDir * m_camera.DistanceAway);
-		
-		//move the camera to the new position
+
 		m_camera.transform.position = Vector3.Lerp(m_camera.transform.position, m_targetPos, Time.deltaTime * m_camera.SmoothSpeed);
 		
 		//Look at the target

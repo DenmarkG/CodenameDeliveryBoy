@@ -5,7 +5,7 @@ public class Motor_Base : MonoBehaviour
 {
 	//protected variables
 	[SerializeField]
-	protected const float DEAD_ZONE = .01f;	//in most cases, values less than this will be ignored
+	protected const float DEAD_ZONE = .01f;	//in specific cases, values less than this will be ignored
 
 	//variables for storing input information
 	protected float m_horizontal = 0f;
@@ -17,10 +17,15 @@ public class Motor_Base : MonoBehaviour
 	//variables to help with animation blending. These correspond to variables in the Animation Controller 
 	protected float m_direction = 0f;
 	protected float m_speed = 0f;
+	protected const float RUN_SPEED = 2f;
+	protected const float RUN_TRANSITION_SPEED = 3f;
 	protected float m_angle = 0f;
+	protected float m_rotationSpeed = 3f;
 
 	//variables for setting up the Animator
 	protected Animator m_animator = null;
+	protected AnimatorStateInfo m_animStateInfo;
+	protected AnimatorTransitionInfo m_animTransistionInfo;
 	protected int m_locomotionId = 0;
 	protected int m_locomotionPivot_R = 0;
 	protected int m_locomotionPivot_L = 0;
@@ -28,6 +33,8 @@ public class Motor_Base : MonoBehaviour
 
 	//reference to the game's camera
 	protected PlayerCamera m_camera = null;
+
+	protected bool m_bLocked = false; //when true the character cannot move
 
 	//private variables
 
@@ -65,5 +72,15 @@ public class Motor_Base : MonoBehaviour
 		m_locomotionId = Animator.StringToHash("Base Layer.Locomotion");
 		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
 		m_locomotionPivot_R = Animator.StringToHash ("Base Layer.LocomotionPivot_R");
+	}
+
+	public virtual void LockMotion()
+	{
+		m_bLocked = true;
+	}
+	
+	public virtual void UnlockMotion()
+	{
+		m_bLocked = false;
 	}
 }

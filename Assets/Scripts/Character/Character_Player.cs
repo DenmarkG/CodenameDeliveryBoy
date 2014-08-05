@@ -5,25 +5,25 @@ public class Character_Player : CharacterBase
 {
 	private Inventory m_inventory = null;
 
-	private PlayerMotor m_playerMotor = null;
-
 	protected override void Awake ()
 	{
 		base.Awake();
 		m_inventory = new Inventory();
+		m_missionManager = new MissionManager();
 
 		//make sure the player has a motor
-		if(m_playerMotor == null)
+		if(m_motor == null)
 		{
-			m_playerMotor = this.GetComponent<PlayerMotor>();
-			if(m_playerMotor == null)
+			m_motor = this.GetComponent<Motor_Player>();
+			if(m_motor == null)
 			{
-				m_playerMotor = this.gameObject.AddComponent<PlayerMotor>();
+				m_motor = this.gameObject.AddComponent<Motor_Player>();
 			}
 		}
 
 		//set the inital state
-		m_stateMachine.SetCurrentState(new StatePlayerOverworld(m_playerMotor) );
+		m_overWorldState = new State_CharacterOverworld(m_motor);
+		m_stateMachine.SetCurrentState(m_overWorldState);
 	}
 
 	void Start()
@@ -33,27 +33,26 @@ public class Character_Player : CharacterBase
 
 	void Update()
 	{
-		m_stateMachine.UpdateState();
-
-		//Show Missions
-		if (Input.GetKeyDown(KeyCode.M) )
+		if (!m_isPaused)
 		{
-			GuiManager.OnUpdateGUI += m_missionManager.DisplayCurrentMissions;
+			m_stateMachine.UpdateState();
+			
+			//Show Missions
+			if (Input.GetKeyDown(KeyCode.M) )
+				m_missionManager.ToggleMissionDisplay();
+			
+			//Toggle the inventory
+			if (Input.GetKeyDown (KeyCode.I) )
+				m_inventory.ToggleInventoryDisplay();
 		}
-
-		if (Input.GetKeyUp(KeyCode.M) )
-		{
-			GuiManager.OnUpdateGUI -= m_missionManager.DisplayCurrentMissions;
-		}
-
-		//Toggle the inventory
-		if (Input.GetKeyDown (KeyCode.I))
-			m_inventory.ToggleInventory ();
 	}
 
 	void FixedUpdate()
 	{
-		m_stateMachine.UpdateStateFixed();
+		if (!m_isPaused)
+		{
+			m_stateMachine.UpdateStateFixed();
+		}
 	}
 
 	#region Properties
@@ -66,11 +65,6 @@ public class Character_Player : CharacterBase
 	public Inventory PlayerInventory
 	{
 		get { return m_inventory; }
-	}
-
-	public PlayerMotor Motor
-	{
-		get { return m_playerMotor; }
 	}
 
 	#endregion

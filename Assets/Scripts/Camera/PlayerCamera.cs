@@ -10,18 +10,30 @@ public class PlayerCamera : MonoBehaviour
 	[SerializeField]
 	private float m_distanceAway = 3f; //How far away the camera should be
 	[SerializeField]
+	private float m_maxDistanceAway = 10f; //The max distance away from the player the camera can zoom
+	[SerializeField]
+	private float m_minDistanceAway = 1.5f; //The closest distance the camera can be to the player
+	[SerializeField]
+	private float m_zoomSpeed = 2f; //How fast the camera can zoom
+	[SerializeField]
 	private float m_offsetHeight = 1.5f; //How high the camera should be
 	[SerializeField]
-	[Range(0,10)]
-	private float m_smooth = 0.25f; //smoothing value; controls the camera lag
+	[Range(0,50)]
+	private float m_smooth = 10f; //smoothing value; controls the camera lag
 	[SerializeField]
 	private float m_snapSpeed = 20f; //how fast the camera should snap into position
 	[SerializeField]
 	private Transform m_target = null;
-
+	[SerializeField]
+	private float m_orbitSpeed = 45f;
+	
 	#endregion
 
 	#region Private Variables
+	//Storing the start values for resetting the camera
+	private float m_startDistanceAway = 0f;
+	private float m_startOffsetHeight = 0f;
+	private float m_startSmoothSpeed = 0f;
 
 	//State machine variables
     private StateMachineBase m_stateMachine = null;
@@ -39,6 +51,7 @@ public class PlayerCamera : MonoBehaviour
 
 	//constants
 	private const float DEAD_ZONE = .1f;
+	private const float MOVEMENT_STOP_SPEED = 3f; // how fast the camera's movement comes to a stop when an axis is zero
 
 	#endregion
 
@@ -52,6 +65,9 @@ public class PlayerCamera : MonoBehaviour
         m_stateMachine = new StateMachineBase();
         m_followState = new State_Camera_Follow(this);
 		m_orbitState = new State_Camera_Orbit(this);
+
+		//store the initial values for resetting the camera's position later. 
+		SetDefaultValues();
 	}
 
 	void Start () 
@@ -68,18 +84,24 @@ public class PlayerCamera : MonoBehaviour
 
 	void Update()
 	{
-		//reset the camera if the reset button is pressed
-		if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
-			StartCoroutine("ResetCamera");
+		if (!Clock.IsPaused)
+		{
+			//reset the camera if the reset button is pressed
+			if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
+				StartCoroutine("ResetCamera");
 
-		//if the right mouse button is pressed, allow the camera to enter the free orbit state
-		if (Mathf.Abs(Input.GetAxis("Fire2") ) > DEAD_ZONE && m_stateMachine.CurrentState == m_followState )
-			m_stateMachine.SetCurrentState(m_orbitState);
-		else if (Mathf.Abs(Input.GetAxis("Fire2") ) < DEAD_ZONE && m_stateMachine.CurrentState == m_orbitState)
-			m_stateMachine.SetCurrentState(m_followState);
+			//if the right mouse button is pressed or the right stick is moved, allow the camera to enter the free orbit state
+			/*bool orbiting = Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.HORIZONTAL) ) > DEAD_ZONE || 
+							Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.VERTICAL) ) > DEAD_ZONE;*/
 
-		//update the state machine's current state
-		m_stateMachine.UpdateState();
+			if ( (Input.GetKeyDown(KeyCode.F) /*|| orbiting == true*/) && m_stateMachine.CurrentState == m_followState )
+				m_stateMachine.SetCurrentState(m_orbitState);
+			else if ( (Input.GetKeyUp(KeyCode.F) /*|| orbiting == false*/) && m_stateMachine.CurrentState == m_orbitState)
+				m_stateMachine.SetCurrentState(m_followState);
+
+			//update the state machine's current state
+			m_stateMachine.UpdateState();
+		}
 	}
 
 	void LateUpdate () 
@@ -105,40 +127,74 @@ public class PlayerCamera : MonoBehaviour
 	public void SmoothLookAt()
 	{
 		// Create a vector from the camera towards the player.
-		Vector3 relPlayerPosition = m_target.position - transform.position;
+		Vector3 relativePlayerPosition = m_target.position - transform.position;
 		
 		// Create a rotation based on the relative position of the player being the forward vector.
-		Quaternion lookAtRotation = Quaternion.LookRotation(relPlayerPosition, Vector3.up);
+		Quaternion lookAtRotation = Quaternion.LookRotation(relativePlayerPosition);
 		
 		// Lerp the camera's rotation between it's current rotation and the rotation that looks at the player.
-		transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, m_smooth * Time.deltaTime);
+		transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, m_smooth * Clock.DeltaTime);
 	}
 
-	float ClampAngle(float angle, float min, float max)
+	public float ClampAngle (float angle, float min, float max)
 	{
-		while (angle < -360 || angle > 360)
+		if(max > min)
 		{
-			if (angle > 360)
-			{ angle -= 360; }
-			if (angle < 360)
-			{ angle += 360; }
+			if (angle > max)
+				angle = max;
+
+			if (angle < min)
+				angle = min;
 		}
-		
-		return Mathf.Clamp(angle, min, max);
+
+		return angle;
 	}
 
 	IEnumerator ResetCamera()
 	{
-		Vector3 lookDir = m_target.forward;
-		Vector3 relativePos = m_transform.position + (-lookDir * m_distanceAway); 
+		RestoreDefaults();
 
-		while (Vector3.Distance(m_transform.position, relativePos) > DEAD_ZONE)
+		//calculate the desired relative position
+		Vector3 relativePos = m_transform.position + (m_target.forward * -m_distanceAway);
+		bool bHasReset = false;
+		while (!bHasReset)
 		{
-			relativePos = m_target.position + ( (m_target.up * m_offsetHeight) + (-lookDir * m_distanceAway) );
-			m_transform.position = Vector3.Lerp(m_transform.position, relativePos, m_snapSpeed * Time.deltaTime);
-			SmoothLookAt();
+			//lerp the distance toward the start distance
+			m_distanceAway = Mathf.Lerp(m_distanceAway, m_distanceAway, m_snapSpeed * Clock.DeltaTime);
+
+			//recalculate the desired position based on the new distance away
+			relativePos = (m_target.position + (m_target.up * m_offsetHeight) + (m_target.forward * -m_distanceAway) );
+
+			//move the camera closer to the default position
+			m_transform.position = Vector3.Slerp(m_transform.position, relativePos, m_snapSpeed * Clock.DeltaTime);
+
+			bHasReset = Vector3.Distance(m_transform.position, relativePos) <= DEAD_ZONE;
+
+			//return null to prevent the game from hanging on this loop
 			yield return null;
 		}
+
+		//set the position to the desired position since it's close enough not to jump
+		m_transform.position = relativePos;
+
+		//smoothly look at the desired target
+		SmoothLookAt();
+	}
+
+	void SetDefaultValues()
+	{
+		//store the default values
+		m_startDistanceAway = m_distanceAway;
+		m_startOffsetHeight = m_offsetHeight;
+		m_startSmoothSpeed = m_smooth;
+	}
+
+	void RestoreDefaults()
+	{
+		//reset any values to their original values
+		m_distanceAway = m_startDistanceAway;
+		m_offsetHeight = m_startOffsetHeight;
+		m_smooth = m_startSmoothSpeed;
 	}
 
 	#endregion
@@ -153,6 +209,21 @@ public class PlayerCamera : MonoBehaviour
 	public float SmoothSpeed
 	{
 		get { return m_smooth; }
+	}
+
+	public float ZoomSpeed
+	{
+		get { return m_zoomSpeed; }
+	}
+
+	public float OrbitSpeed
+	{
+		get { return m_orbitSpeed; }
+	}
+
+	public float MoveStopSpeed
+	{
+		get { return MOVEMENT_STOP_SPEED; }
 	}
 
 	public float DeadZone
@@ -173,6 +244,16 @@ public class PlayerCamera : MonoBehaviour
 	public float DistanceAway
 	{
 		get { return m_distanceAway; }
+
+		set 
+		{
+			if(value > m_maxDistanceAway)
+				value = m_maxDistanceAway;
+			else if (value < m_minDistanceAway)
+				value = m_minDistanceAway;
+
+			m_distanceAway = value;
+		}
 	}
 
 	public Vector3 TargetPos

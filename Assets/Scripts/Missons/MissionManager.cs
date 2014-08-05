@@ -6,6 +6,8 @@ public class MissionManager
 {
 	private List<Mission> m_missionList = new List<Mission>();
 
+	private bool m_isVisible = false;
+
 	public MissionManager()
 	{
 		//list of missions currently in progress
@@ -26,8 +28,26 @@ public class MissionManager
 
 		GuiManager.DisplayStatusMessage("New Mission Added!");
 	}
-	
-	public void DisplayCurrentMissions()
+
+	public virtual void UpdateMission(Mission updatedMission)
+	{
+		if(updatedMission.GetMissionState == Mission.MissionState.SUCCESS || updatedMission.GetMissionState == Mission.MissionState.FAIL)
+		{
+			//
+		}
+	}
+
+	public void ToggleMissionDisplay()
+	{
+		if (m_isVisible)
+			GuiManager.OnUpdateGUI -= DisplayCurrentMissions;
+		else
+			GuiManager.OnUpdateGUI += DisplayCurrentMissions;
+		
+		m_isVisible = !m_isVisible;
+	}
+
+	private void DisplayCurrentMissions()
 	{
 		//show the current missions
 		if(m_missionList.Count > 0)
@@ -48,13 +68,9 @@ public class MissionManager
 			if (completeMissions != "")
 				GUI.Box(new Rect(Screen.width - 150, 50, 150, 50), completeMissions);
 		}
-	}
-
-	public virtual void UpdateMission(Mission updatedMission)
-	{
-		if(updatedMission.GetMissionState == Mission.MissionState.SUCCESS || updatedMission.GetMissionState == Mission.MissionState.FAIL)
+		else
 		{
-			//
+			GuiManager.DisplayStatusMessage("No Current Missions");
 		}
 	}
 }

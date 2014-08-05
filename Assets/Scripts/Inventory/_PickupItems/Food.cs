@@ -6,7 +6,9 @@ public class Food : PickupItem
 	public Food()
 	{
 		m_canRespawn = false;
-		m_myName = "Groceries";
-		m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_Food");
+		m_itemName = "Food";
+
+		//this line was causing errors in the editor
+//		m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_Food");
 	}
 }
