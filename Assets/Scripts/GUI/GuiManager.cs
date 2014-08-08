@@ -166,62 +166,6 @@ public class GuiManager : MonoBehaviour
 			EndCallback (true);
 	}
 
-	public static void ShowDialog(string dialogToDisplay)
-	{
-		m_instance.StartCoroutine("PrintDialog", dialogToDisplay);
-	}
-
-	#endregion
-
-	#region Private Methods
-
-	private IEnumerator PrintDialog(string dialogToDisplay)
-	{
-		//this variable holds the position of the next character that will be shown to the screen
-		int letterIndex = 0;
-
-		//until the string passed in is not equal to the one that is shown on screen, we will continue to add letters to it
-		while (m_currentDialogString != dialogToDisplay)
-		{
-			//The letters should stop printing when the game is paused, then resume when no longer paused
-			if (!Clock.IsPaused)
-			{
-				m_currentDialogString += dialogToDisplay[letterIndex];
-				++letterIndex;
-
-				//This if check will allow the player to skip through the dialog faster
-				if (Input.GetKey(KeyCode.Space) || Input.GetAxis(GameControllerHash.Buttons.A) != 0 )
-				{
-					m_currentDialogString = dialogToDisplay;
-					letterIndex = dialogToDisplay.Length;
-				}
-
-				yield return new WaitForSeconds(m_textDelay);
-			}
-			else
-			{
-				//if the game is paused, simply skip adding letters to the displayed string
-				yield return null;
-			}
-		}
-
-		//add a timer to prevent the player from skipping past the end of the dialog
-		yield return new WaitForSeconds(m_endTextDelay);
-
-
-		//once the strings are equal, continue displaying the dialog until the player exits the conversation
-		while(m_currentDialogString == dialogToDisplay)
-		{
-			//once the player presses the button to escape the conversation, clear the dialog and exit this loop
-			if (Input.GetKey(KeyCode.Space) || Input.GetAxis(GameControllerHash.Buttons.A) != 0 )
-			{
-				m_currentDialogString = "";
-				break;
-			}
-			yield return null;
-		}
-	}
-
 	private IEnumerator CountDownStatusMessageTimer (float countTimeInSeconds)
 	{
 		float currentTime = 0;
