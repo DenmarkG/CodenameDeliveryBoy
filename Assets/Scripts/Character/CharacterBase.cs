@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CharacterBase : MonoBehaviour 
+public class CharacterBase : MonoBehaviour, OnUnPause
 {
 	#region Protected variables
 
@@ -39,7 +39,7 @@ public class CharacterBase : MonoBehaviour
 
 		//add the pause and resume functions to the game manager's delegate
 		GameManager.OnPause += OnPause;
-		GameManager.OnResume += OnResume;
+		GameManager.OnUnPause += OnUnPause;
 	}
 
 	//Whenever the game is paused, this function will be called
@@ -58,7 +58,7 @@ public class CharacterBase : MonoBehaviour
 		m_isPaused = true;
 	}
 
-	protected void OnResume()
+	protected void OnUnPause()
 	{
 		//set the current state to the state that the character was in before the game was paused
 		m_stateMachine.SetCurrentState(m_previousState);

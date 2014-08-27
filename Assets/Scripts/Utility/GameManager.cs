@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
 	public delegate void Pause();
 	public static event Pause OnPause;
 
-	public delegate void Resume();
-	public static event Resume OnResume;
+	public delegate void Unpause();
+	public static event Resume OnUnPause;
 
 	private bool m_isPaused = false;
 
