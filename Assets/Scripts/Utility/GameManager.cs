@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
 
     private static Character_Player m_player = null;
 
+    // True if running on windows or web player
+    private bool m_isWindows = true;
+
     public delegate void Pause();
     public static event Pause OnPause;
 
@@ -23,11 +26,12 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        m_instance = this;
+        // Determine the current platform
+        m_isWindows = ((Application.platform == RuntimePlatform.WindowsPlayer) || (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsWebPlayer) ? true : false);
         m_bIsUsingController = Input.GetJoystickNames().Length != 0;
         m_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Character_Player>();
         m_dialogManager = new DialogManager(m_player);
-        //		Screen.showCursor = false;
+        m_instance = this;
     }
 
     void Start()
@@ -37,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             TogglePause();
         }
@@ -89,6 +93,11 @@ public class GameManager : MonoBehaviour
     public static bool IsUsingController
     {
         get { return m_instance.m_bIsUsingController; }
+    }
+
+    public static bool IsWindows
+    {
+        get { return m_instance.m_isWindows; }
     }
 }
 

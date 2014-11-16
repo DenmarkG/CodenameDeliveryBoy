@@ -11,7 +11,8 @@ public class GuiManager : MonoBehaviour
     public delegate void UpdateGUI();
     public static event UpdateGUI OnUpdateGUI;
 
-    float m_hSliderValue = 1f;
+    // When testing the timescale, uncomment this
+    //float m_hSliderValue = 1f;
 
     #endregion
 
@@ -46,10 +47,16 @@ public class GuiManager : MonoBehaviour
     private static List<string> m_statusMessages = new List<string>();
     private string m_currentStatusMessage = "";
 
-    //variables for displaying dialog
+    // variables for displaying dialog
     private static Rect m_textDialogBox;
-    //	private char[] m_currentDialogString;
     private string m_currentDialogString = "";
+
+    // the message to display when the game is running
+    private string m_runningMessage = "";
+    private Rect m_runningMessageRect;
+    // the message to display when the game is paused
+    private string m_pausedMessage = "";
+    private Rect m_pausedMessageRect;
 
     //create a static instance
     private static GuiManager m_instance;
@@ -62,39 +69,55 @@ public class GuiManager : MonoBehaviour
     {
         m_statusBox = new Rect(0, Screen.height - m_statusBoxHeight, m_statusBoxWidth, m_statusBoxHeight);
         m_textDialogBox = new Rect((Screen.width - m_textDialogBoxWidth) / 2, Screen.height - m_textDialogBoxHeight, m_textDialogBoxWidth, m_textDialogBoxHeight);
+
         m_instance = this;
+    }
+
+    void Start()
+    {
+        // If running on windows, setup the status pause messages
+        if (GameManager.IsWindows)
+        {
+            InitPauseMessages();
+        }
     }
 
     public void OnGUI()
     {
         GUI.skin = m_Skin;
 
-        if (OnUpdateGUI != null)
+        if (!Clock.IsPaused)
         {
-            OnUpdateGUI();
-        }
-
-        if (m_currentStatusMessage != "")
-        {
-            GUI.Box(m_statusBox, m_currentStatusMessage);
-        }
-
-        if (m_currentDialogString != "")
-        {
-            GUI.Box(m_textDialogBox, m_currentDialogString);
-        }
-
-        if (m_screenMasks.Count != 0)
-        {
-            foreach (ScreenMask mask in m_screenMasks)
+            if (OnUpdateGUI != null)
             {
-                mask.Draw();
+                OnUpdateGUI();
             }
-        }
 
-        //time scale test
-        m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), m_hSliderValue, 0, 20f);
-        Clock.TimeScale = m_hSliderValue;
+            if (m_currentStatusMessage != "")
+            {
+                GUI.Box(m_statusBox, m_currentStatusMessage);
+            }
+
+            if (m_currentDialogString != "")
+            {
+                GUI.Box(m_textDialogBox, m_currentDialogString);
+            }
+
+            if (GameManager.IsWindows)
+            {
+                // Tell the player how to get to the pause menu
+                GUI.Box(m_runningMessageRect, m_runningMessage);
+            }
+
+            //time scale test
+            //m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), m_hSliderValue, 0, 20f);
+            //Clock.TimeScale = m_hSliderValue;
+        }
+        else
+        {
+
+            DiplayControlsOnWindows();
+        }
     }
 
     #endregion
@@ -190,6 +213,21 @@ public class GuiManager : MonoBehaviour
         {
             m_currentStatusMessage = "";
         }
+    }
+
+    // For showing the control setup on screen
+    private void DiplayControlsOnWindows()
+    {
+        // Show the control setup
+        GUI.Box(m_pausedMessageRect, m_pausedMessage);
+    }
+
+    private void InitPauseMessages()
+    {
+        m_runningMessage = "Press RETURN to Pause";
+        m_runningMessageRect = new Rect(15, 25, 200, 25);
+        m_pausedMessage = "Paused\nWASD OR Arrow keys = Move\nSHIFT = Run\n1 = Toggle Mission Status\n2 = Toggle Inventory\nF = Enter orbit camera mode.";
+        m_pausedMessageRect = new Rect((Screen.width / 2) - 300, (Screen.height / 2) - 150, 600, 300);
     }
 
     #endregion

@@ -38,12 +38,16 @@ public class Character_Player : CharacterBase
 			m_stateMachine.UpdateState();
 			
 			//Show Missions
-			if (Input.GetKeyDown(KeyCode.M) )
-				m_missionManager.ToggleMissionDisplay();
+			if (Input.GetKeyDown(KeyCode.Alpha1) )
+            {
+                m_missionManager.ToggleMissionDisplay();
+            }
 			
 			//Toggle the inventory
-			if (Input.GetKeyDown (KeyCode.I) )
-				m_inventory.ToggleInventoryDisplay();
+			if (Input.GetKeyDown (KeyCode.Alpha2) )
+            {
+                m_inventory.ToggleInventoryDisplay();
+            }
 		}
 	}
 

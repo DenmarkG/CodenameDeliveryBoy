@@ -27,7 +27,7 @@ public class Health : MonoBehaviour
 
 	void Start()
 	{
-		GuiManager.OnUpdateGUI += DrawHealthBar;
+		//GuiManager.OnUpdateGUI += DrawHealthBar;
 	}
 
 	void Update()
