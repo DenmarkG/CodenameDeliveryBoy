@@ -1,5 +1,8 @@
 fileFormatVersion: 2
 guid: 319be13879d2f894aaf7a4fcf31d8891
 ShaderImporter:
-  defaultTextures: []
+  defaultTextures:
+  - _DawnDusk: {fileID: 8900000, guid: e7a5e215a83eb0442bc87412c0055faf, type: 2}
+  - _Day: {fileID: 8900000, guid: 7e219a07195b133469f8ca2d57b76eb4, type: 2}
+  - _Night: {fileID: 8900000, guid: 27690b32bc9e56f47be16ed1e2cdf162, type: 2}
   userData: 

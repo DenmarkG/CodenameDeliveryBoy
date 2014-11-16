@@ -22,15 +22,16 @@ public class SkyboxTransition : MonoBehaviour
         {
             m_isDayTime = true;
             m_skyboxMat.SetFloat("_DayNight", 0);
+            // Set the time of day
+            m_skyboxMat.SetFloat("_TimeOfDay", 0);
         }
         else
         {
             m_isDayTime = false;
             m_skyboxMat.SetFloat("_DayNight", 1);
+            // Set the time of day
+            m_skyboxMat.SetFloat("_TimeOfDay", 1);
         }
-
-        // Set the time of day
-        m_skyboxMat.SetFloat("_TimeOfDay", 1);
 
         // Assign the skybox with updated settings to the renderer
         RenderSettings.skybox = m_skyboxMat;
@@ -69,9 +70,9 @@ public class SkyboxTransition : MonoBehaviour
         }
     }
 
+    // This function smoothly tranisions from one skybox material to another using the exposed properties in the shader
     private IEnumerator TransitionToNextSky(bool toDawnDusk)
     {
-        Debug.Log("started");
         float transisitionTime = 0f;
         while (transisitionTime < m_transitionTime)
         {
@@ -86,10 +87,8 @@ public class SkyboxTransition : MonoBehaviour
                 m_skyboxMat.SetFloat("_TimeOfDay", 1 - (transisitionTime / m_transitionTime));
             }
 
-            Debug.Log("running");
             yield return null;
         }
-        Debug.Log("finished");
     }
 
     public bool IsDayTime
