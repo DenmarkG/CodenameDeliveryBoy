@@ -99,6 +99,7 @@ public class CharacterBase : MonoBehaviour
     public Motor_Base Motor
     {
         get { return m_motor; }
+        set { m_motor = value; }
     }
 
     public Animator GetAnimator

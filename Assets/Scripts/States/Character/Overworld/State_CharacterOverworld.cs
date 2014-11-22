@@ -18,13 +18,17 @@ public class State_CharacterOverworld : State_Base
 	public override void UpdateState()
 	{
 		if (m_motor != null)
-			m_motor.UpdateMotor();
+        {
+            m_motor.UpdateMotor();
+        }
 	}
 
 	public override void UpdateStateFixed()
 	{
 		if (m_motor != null)
-			m_motor.UpdateMotorFixed();
+        {
+            m_motor.UpdateMotorFixed();
+        }
 	}
 
 	public override void LateUpdateState()

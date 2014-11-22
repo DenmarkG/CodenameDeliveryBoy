@@ -3,10 +3,23 @@ using System.Collections;
 
 public class Motor_Player : Motor_Base
 {
+    private bool m_isInCover = false;
+    private CharacterController m_charController = null;
+
 	protected override void Awake ()
 	{
-		base.Awake ();
+        base.Awake();
 	}
+
+    protected override void Start()
+    {
+        base.Start();
+        m_charController = this.gameObject.GetComponent<CharacterController>();
+        if (m_charController == null)
+        {
+            m_charController = this.gameObject.AddComponent<CharacterController>();
+        }
+    }
 
 	public override void UpdateMotor ()
 	{
@@ -26,26 +39,53 @@ public class Motor_Player : Motor_Base
 			m_horizontal = Input.GetAxis(GameControllerHash.LeftStick.HORIZONTAL);
 			m_vertical = Input.GetAxis(GameControllerHash.LeftStick.VERTICAL);
 
-			//check to see if the player is running
-			m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
+            // Enter cover if the correct conditions are met
+            if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0)
+            {
+                //EnterCover();
+                m_animator.SetBool("IsInCover", true);
 
-			//now convert the movement to world space
-			ConvertInputToWorldSpace();
+                // raycast to check if should be standing
 
-			//set the values for the animator
-			m_animator.SetFloat("Speed", m_speed);
-			m_animator.SetFloat("Direction", m_direction);
+                //for now set crouch to true;
+                m_animator.SetBool("IsCrouching", true);
+                
 
-			if (m_speed > DEAD_ZONE && !IsPivoting)
-			{
-//				m_animator.SetFloat("Angle", m_angle);
-			}
-			//[#todo]check to see if an elseif can be made instead later
-			if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
-			{
-				m_animator.SetFloat("Speed", 0);
-				m_animator.SetFloat("Angle", 0);
-			}
+                m_isInCover = true;
+            }
+
+            if (m_isInCover)
+            {
+                if (Mathf.Abs(m_horizontal) > DEAD_ZONE)
+                {
+                    m_animator.SetFloat("Direction", -m_horizontal);
+                    m_animator.SetFloat("Speed", -m_horizontal);
+                }
+                else
+                {
+                    m_animator.SetFloat("Direction", 0);
+                    m_animator.SetFloat("Speed", 0);
+                }
+            }
+            else
+            {
+                //check to see if the player is running
+                m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
+
+                //now convert the movement to world space
+                ConvertInputToWorldSpace();
+
+                //set the values for the animator
+                m_animator.SetFloat("Speed", m_speed);
+                m_animator.SetFloat("Direction", m_direction);
+
+                //[#todo]check to see if an elseif can be made instead later
+                if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
+                {
+                    m_animator.SetFloat("Speed", 0);
+                    m_animator.SetFloat("Angle", 0);
+                }
+            }
 
 			//[#todo] implement a pause method that utilizes this method
 			m_animator.speed = Clock.TimeScale;
@@ -65,7 +105,7 @@ public class Motor_Player : Motor_Base
 		base.UnlockMotion();
 	}
 
-	private void ConvertInputToWorldSpace()
+	protected void ConvertInputToWorldSpace()
 	{
 		//**************************************************************************************************
 		//This function is currently a work in progress
@@ -104,15 +144,17 @@ public class Motor_Player : Motor_Base
 //		Debug.Log("Direction: " + m_direction);
 
 		if (moveVector.magnitude > DEAD_ZONE)
-			Rotate(moveVector);
+        {
+            Rotate(moveVector);
+        }
+			
 
-		//Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), inputAxisDirection, Color.green);
-		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);
-		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
-		Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), playerDirection, Color.red);
+        //Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);
+        //Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
+        //Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), playerDirection, Color.red);
 	}
 
-	void Rotate(Vector3 targetDir)
+	protected void Rotate(Vector3 targetDir)
 	{
 		//create a step value to rotate the player over time
 		float step = m_rotationSpeed * Clock.DeltaTime;
@@ -124,16 +166,23 @@ public class Motor_Player : Motor_Base
 		transform.rotation = Quaternion.Lerp(this.transform.rotation, qTargetDir, step);
 
 	}
-	#region Private Properties
 
-	private bool IsInLocomotion
+    #region PRIVATE FUNCTIONS
+
+    private IEnumerator EnterCover()
+    {
+        m_animator.SetBool("IsInCover", true);
+        yield return null;
+        m_animator.SetBool("IsInCover", false);
+    }
+
+    #endregion
+
+    #region Private Properties
+
+    private bool IsInLocomotion
 	{
 		get { return m_stateInfo.nameHash == m_locomotionId; }
-	}
-	
-	private bool IsPivoting
-	{
-		get { return m_stateInfo.nameHash == m_locomotionPivot_L || m_stateInfo.nameHash == m_locomotionPivot_R; }
 	}
 	
 	#endregion
