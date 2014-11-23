@@ -3,7 +3,20 @@ using System.Collections;
 
 public class Motor_Player : Motor_Base
 {
+    // True if the player is in cover
     private bool m_isInCover = false;
+
+    // The max distance the player can be from cover before it adjusts automagically
+    private const float MAX_DIST_FROM_COVER = .35f;
+    // How close the player can get to a corner before stopping
+    private const float MAX_DIST_FROM_CORNER = .5f;
+    //How far to cast a single ray
+    private const float MAX_RAYCAST_DIST = .9f;
+
+    // Cover taller than .75 will automaticall cause the player to stand, lower will make the player crouch
+    private const float EYE_HEIGHT = 1.3f;
+
+    // holds a reference to the character controller attached to this game object
     private CharacterController m_charController = null;
 
 	protected override void Awake ()
@@ -39,24 +52,9 @@ public class Motor_Player : Motor_Base
 			m_horizontal = Input.GetAxis(GameControllerHash.LeftStick.HORIZONTAL);
 			m_vertical = Input.GetAxis(GameControllerHash.LeftStick.VERTICAL);
 
-            // Enter cover if the correct conditions are met
-            if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0)
-            {
-                //EnterCover();
-                m_animator.SetBool("IsInCover", true);
-
-                // raycast to check if should be standing
-
-                //for now set crouch to true;
-                m_animator.SetBool("IsCrouching", true);
-                
-
-                m_isInCover = true;
-            }
-
             if (m_isInCover)
             {
-                if (Mathf.Abs(m_horizontal) > DEAD_ZONE)
+                if (Mathf.Abs(m_horizontal) > DEAD_ZONE && ClampToCover(this.transform.right * m_horizontal))
                 {
                     m_animator.SetFloat("Direction", -m_horizontal);
                     m_animator.SetFloat("Speed", -m_horizontal);
@@ -66,29 +64,50 @@ public class Motor_Player : Motor_Base
                     m_animator.SetFloat("Direction", 0);
                     m_animator.SetFloat("Speed", 0);
                 }
+
+                CorrectTransformError();
+
+                // Exit cover when the F key is pressed
+                if (m_isInCover && Input.GetKeyDown(KeyCode.Space))
+                {
+                    LeaveCover();
+                }
             }
             else
             {
-                //check to see if the player is running
-                m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
-
-                //now convert the movement to world space
-                ConvertInputToWorldSpace();
-
-                //set the values for the animator
-                m_animator.SetFloat("Speed", m_speed);
-                m_animator.SetFloat("Direction", m_direction);
-
-                //[#todo]check to see if an elseif can be made instead later
-                if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
+                // Enter cover if the correct conditions are met
+                if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0)
                 {
-                    m_animator.SetFloat("Speed", 0);
-                    m_animator.SetFloat("Angle", 0);
+                    // Enter cover, checking for crouch v. stand as well
+                    EnterCover();
+                }
+                else
+                {
+                    //check to see if the player is running
+                    m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
+
+                    //now convert the movement to world space
+                    ConvertInputToWorldSpace();
+
+                    //set the values for the animator
+                    m_animator.SetFloat("Speed", m_speed);
+                    m_animator.SetFloat("Direction", m_direction);
+
+                    //[#todo]check to see if an elseif can be made instead later
+                    if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
+                    {
+                        m_animator.SetFloat("Speed", 0);
+                        m_animator.SetFloat("Angle", 0);
+                    }
                 }
             }
 
 			//[#todo] implement a pause method that utilizes this method
 			m_animator.speed = Clock.TimeScale;
+
+            Vector3 castPos = this.transform.position + (this.transform.up * EYE_HEIGHT);
+            Vector3 endVect = castPos + (this.transform.forward * 5);
+            Debug.DrawLine(castPos, endVect);
 		}
 	}
 
@@ -148,7 +167,6 @@ public class Motor_Player : Motor_Base
             Rotate(moveVector);
         }
 			
-
         //Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), cameraDiretion, Color.blue);
         //Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), moveVector, Color.red);
         //Debug.DrawRay(new Vector3(this.transform.position.x, this.transform.position.y + 2f, this.transform.position.z), playerDirection, Color.red);
@@ -169,11 +187,83 @@ public class Motor_Player : Motor_Base
 
     #region PRIVATE FUNCTIONS
 
-    private IEnumerator EnterCover()
+    private bool CheckForCrouchingCover()
+    {
+        RaycastHit hit;
+        Vector3 castPos = this.transform.position + (this.transform.up * EYE_HEIGHT);
+        Vector3 endVect = castPos + (this.transform.forward * 5);
+        //Debug.DrawLine(castPos, endVect);
+        if (Physics.Raycast(castPos, this.transform.forward, out hit, MAX_RAYCAST_DIST))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    // This function uses raycasting to keep the player close to the cover object
+    // if at any point the raycast fails, the player will exit cover
+    // This will also align the player to the cover's surface to prevent artifacts
+    private void CorrectTransformError()
+    {
+        Vector3 moveVector;
+        RaycastHit hit;
+        if (Physics.Raycast(this.transform.position, this.transform.forward, out hit, MAX_RAYCAST_DIST))
+        {
+            // Correct Position error if it exists
+            if (hit.distance > MAX_DIST_FROM_COVER)
+            {
+                //move closer
+                float distanceToMove = hit.distance - MAX_DIST_FROM_COVER;
+                moveVector = hit.point - this.transform.position;
+                moveVector += this.transform.forward * distanceToMove;
+                m_charController.Move(moveVector * Clock.DeltaTime);
+            }
+
+            // Correct orientation error if beyond the threshold
+            float angle = Vector3.Angle(this.transform.forward, -hit.normal);
+            Debug.Log(angle);
+            if (angle > 5)
+            {
+                moveVector = Vector3.up * -angle * Clock.DeltaTime;
+                this.transform.Rotate(moveVector);
+            }
+        }
+        else
+        {
+            LeaveCover();
+        }
+    }
+
+    // Raycasts to the left/right of the player, and makes sure that the next direction is valid
+    // returns false if the direciton is not valid
+    private bool ClampToCover(Vector3 dir)
+    {
+        Vector3 castPos = this.transform.position + dir.normalized * MAX_DIST_FROM_CORNER;
+        RaycastHit hit;
+        if (Physics.Raycast(castPos, this.transform.forward, out hit, MAX_RAYCAST_DIST))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void EnterCover()
     {
         m_animator.SetBool("IsInCover", true);
-        yield return null;
+        m_animator.SetBool("IsCrouching", CheckForCrouchingCover() );
+        m_isInCover = true;
+
+        // Snap the game camera
+        //PlayerCamera.SnapCamera();
+    }
+
+    private void LeaveCover()
+    {
         m_animator.SetBool("IsInCover", false);
+        m_animator.SetBool("IsCrouching", false);
+        m_isInCover = false;
     }
 
     #endregion

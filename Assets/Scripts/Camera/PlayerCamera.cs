@@ -150,6 +150,11 @@ public class PlayerCamera : MonoBehaviour
 		return angle;
 	}
 
+    public static void SnapCamera()
+    {
+        m_instance.StartCoroutine(m_instance.ResetCamera());
+    }
+
 	IEnumerator ResetCamera()
 	{
 		RestoreDefaults();

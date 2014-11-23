@@ -40,7 +40,7 @@ public class GuiManager : MonoBehaviour
     #region Private Variables
 
     private Health m_playerHealth;
-    private List<ScreenMask> m_screenMasks = new List<ScreenMask>();
+    //private List<ScreenMask> m_screenMasks = new List<ScreenMask>();
 
     //variables for displaying status messages
     private static Rect m_statusBox;
