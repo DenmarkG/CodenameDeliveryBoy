@@ -150,11 +150,6 @@ public class PlayerCamera : MonoBehaviour
 		return angle;
 	}
 
-    public static void SnapCamera()
-    {
-        m_instance.StartCoroutine(m_instance.ResetCamera());
-    }
-
 	IEnumerator ResetCamera()
 	{
 		RestoreDefaults();
@@ -185,6 +180,13 @@ public class PlayerCamera : MonoBehaviour
 		//smoothly look at the desired target
 		SmoothLookAt();
 	}
+
+    public void LockCamera()
+    {
+        ResetCamera();
+        Vector3 relativePos = m_transform.position + (m_target.forward * -m_distanceAway);
+        m_transform.position = Vector3.Lerp(m_transform.position, relativePos, Clock.DeltaTime);
+    }
 
 	void SetDefaultValues()
 	{

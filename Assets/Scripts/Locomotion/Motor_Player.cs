@@ -19,6 +19,9 @@ public class Motor_Player : Motor_Base
     // holds a reference to the character controller attached to this game object
     private CharacterController m_charController = null;
 
+    // holds a reference to the player Camera
+
+
 	protected override void Awake ()
 	{
         base.Awake();
@@ -31,6 +34,14 @@ public class Motor_Player : Motor_Base
         if (m_charController == null)
         {
             m_charController = this.gameObject.AddComponent<CharacterController>();
+        }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit other)
+    {
+        if (CheckForCover(other))
+        {
+            EnterCover();
         }
     }
 
@@ -57,7 +68,7 @@ public class Motor_Player : Motor_Base
                 if (Mathf.Abs(m_horizontal) > DEAD_ZONE && ClampToCover(this.transform.right * m_horizontal))
                 {
                     m_animator.SetFloat("Direction", -m_horizontal);
-                    m_animator.SetFloat("Speed", -m_horizontal);
+                    m_animator.SetFloat("Speed", Mathf.Abs(m_horizontal));
                 }
                 else
                 {
@@ -65,49 +76,38 @@ public class Motor_Player : Motor_Base
                     m_animator.SetFloat("Speed", 0);
                 }
 
+                // Remove any inaccuracies that may have occured due to animation
                 CorrectTransformError();
+                // Lock the camera behind the player
+                m_camera.LockCamera();
 
                 // Exit cover when the F key is pressed
-                if (m_isInCover && Input.GetKeyDown(KeyCode.Space))
+                if (m_isInCover && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown(GameControllerHash.Buttons.B)))
                 {
                     LeaveCover();
                 }
             }
             else
             {
-                // Enter cover if the correct conditions are met
-                if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0)
+                //check to see if the player is running
+                m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
+
+                //now convert the movement to world space
+                ConvertInputToWorldSpace();
+
+                //set the values for the animator
+                m_animator.SetFloat("Speed", m_speed);
+                m_animator.SetFloat("Direction", m_direction);
+
+                //[#todo]check to see if an elseif can be made instead later
+                if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
                 {
-                    // Enter cover, checking for crouch v. stand as well
-                    EnterCover();
-                }
-                else
-                {
-                    //check to see if the player is running
-                    m_isRunning = Input.GetButton(GameControllerHash.Buttons.B) || Input.GetKey(KeyCode.LeftShift);
-
-                    //now convert the movement to world space
-                    ConvertInputToWorldSpace();
-
-                    //set the values for the animator
-                    m_animator.SetFloat("Speed", m_speed);
-                    m_animator.SetFloat("Direction", m_direction);
-
-                    //[#todo]check to see if an elseif can be made instead later
-                    if (m_speed < DEAD_ZONE && Mathf.Abs(m_horizontal) < DEAD_ZONE)
-                    {
-                        m_animator.SetFloat("Speed", 0);
-                        m_animator.SetFloat("Angle", 0);
-                    }
+                    m_animator.SetFloat("Speed", 0);
+                    m_animator.SetFloat("Angle", 0);
                 }
             }
-
 			//[#todo] implement a pause method that utilizes this method
 			m_animator.speed = Clock.TimeScale;
-
-            Vector3 castPos = this.transform.position + (this.transform.up * EYE_HEIGHT);
-            Vector3 endVect = castPos + (this.transform.forward * 5);
-            Debug.DrawLine(castPos, endVect);
 		}
 	}
 
@@ -137,8 +137,10 @@ public class Motor_Player : Motor_Base
 		moveVector.x = (m_horizontal * cameraTransform.right.x) + (m_vertical * cameraTransform.forward.x);
 		moveVector.z = (m_horizontal * cameraTransform.right.z) + (m_vertical * cameraTransform.forward.z);
 
-		if (moveVector.magnitude > 1)
-			moveVector.Normalize();
+        if (moveVector.magnitude > 1)
+        {
+            moveVector.Normalize();
+        }
 
 		//cache the forward vector of the player and the camera
 		//also remove the y values for each, since we only want to calculate in 2 dimensions
@@ -150,10 +152,14 @@ public class Motor_Player : Motor_Base
 
 		//if the player is running set the speed to 2. Otherwise set it to the length of the input vector
 
-		if (m_isRunning && m_speed > DEAD_ZONE)
-			m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime * RUN_TRANSITION_SPEED);
-		else
-			m_speed = Mathf.Lerp(m_speed, moveVector.magnitude, Clock.DeltaTime * RUN_TRANSITION_SPEED);
+        if (m_isRunning && m_speed > DEAD_ZONE)
+        {
+            m_speed = Mathf.Lerp(m_speed, RUN_SPEED, Clock.DeltaTime * RUN_TRANSITION_SPEED);
+        }
+        else
+        {
+            m_speed = Mathf.Lerp(m_speed, moveVector.magnitude, Clock.DeltaTime * RUN_TRANSITION_SPEED);
+        }
 
 		//get the angle between the camera's forward vector and the movement vector
 		m_angle = Vector3.Angle(cameraDiretion, moveVector) * (m_horizontal >= 0 ? 1 : -1);
@@ -187,12 +193,21 @@ public class Motor_Player : Motor_Base
 
     #region PRIVATE FUNCTIONS
 
+    private bool CheckForCover(ControllerColliderHit other)
+    {
+        if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0 &&
+            other.gameObject.isStatic)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private bool CheckForCrouchingCover()
     {
         RaycastHit hit;
         Vector3 castPos = this.transform.position + (this.transform.up * EYE_HEIGHT);
-        Vector3 endVect = castPos + (this.transform.forward * 5);
-        //Debug.DrawLine(castPos, endVect);
         if (Physics.Raycast(castPos, this.transform.forward, out hit, MAX_RAYCAST_DIST))
         {
             return false;
@@ -222,7 +237,6 @@ public class Motor_Player : Motor_Base
 
             // Correct orientation error if beyond the threshold
             float angle = Vector3.Angle(this.transform.forward, -hit.normal);
-            Debug.Log(angle);
             if (angle > 5)
             {
                 moveVector = Vector3.up * -angle * Clock.DeltaTime;
@@ -251,12 +265,12 @@ public class Motor_Player : Motor_Base
 
     private void EnterCover()
     {
+        // Snap the game camera
+        m_camera.LockCamera();
+
         m_animator.SetBool("IsInCover", true);
         m_animator.SetBool("IsCrouching", CheckForCrouchingCover() );
         m_isInCover = true;
-
-        // Snap the game camera
-        //PlayerCamera.SnapCamera();
     }
 
     private void LeaveCover()

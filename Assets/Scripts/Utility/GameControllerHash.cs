@@ -11,7 +11,7 @@ public class GameControllerHash
 		public const string Y = "Y";
 
 		public const string RB = "RIGHT_BUMPER";
-		public const string LB = "LEFT_BUMPER";
+        public const string LB = "LEFT_BUMPER";
 
 		public const string START = "START";
 		public const string BACK = "BACK";
