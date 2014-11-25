@@ -1,0 +1,6 @@
+
+// Zombie 01
+scream 	- 	084 frames
+walk 	- 	68
+idle 	-	120
+attack	-	79

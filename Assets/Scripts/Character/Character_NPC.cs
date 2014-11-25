@@ -15,7 +15,7 @@ public class Character_NPC : CharacterBase
 		m_stateMachine.SetCurrentState(m_overWorldState);
 	}
 
-	public void Update()
+    protected override void Update()
 	{
 		if (!m_isPaused)
 		{
@@ -23,7 +23,7 @@ public class Character_NPC : CharacterBase
 		}
 	}
 
-	public void FixedUpdate()
+    protected override void FixedUpdate()
 	{
 		if (!m_isPaused)
 		{

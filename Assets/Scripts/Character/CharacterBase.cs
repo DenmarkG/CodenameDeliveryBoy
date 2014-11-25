@@ -23,7 +23,7 @@ public class CharacterBase : MonoBehaviour
     protected Motor_Base m_motor = null;
 
     //Each player will have an overworld state, which will be the primary state for all characters
-    protected State_CharacterOverworld m_overWorldState = null;
+    protected State_Base m_overWorldState = null;
     protected State_Conversation m_conversationState = null;
 
     #endregion
@@ -37,6 +37,27 @@ public class CharacterBase : MonoBehaviour
         m_animator = this.gameObject.GetComponent<Animator>();
         m_pauseState = new State_Pause(m_animator);
 
+        // Set up the pause functionality
+        AddToGameManagerPauseEvent();
+    }
+
+    protected virtual void Start()
+    {
+        // Does nothing in the base class but may be needed in subclasses
+    }
+
+    protected virtual void Update()
+    {
+        //
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        //
+    }
+
+    protected void AddToGameManagerPauseEvent()
+    {
         //add the pause and resume functions to the game manager's delegate
         GameManager.OnPause += OnPause;
         GameManager.OnUnPause += OnUnPause;
