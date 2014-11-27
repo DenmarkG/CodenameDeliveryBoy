@@ -23,7 +23,8 @@ public class Motor_Base : MonoBehaviour
 	protected const float RUN_SPEED = 2f;
 	protected const float RUN_TRANSITION_SPEED = 3f;
 	protected float m_angle = 0f;
-	protected float m_rotationSpeed = 3f;
+	[SerializeField]
+    protected float m_rotationSpeed = 3f;
 
     // The transform attached to this game object
     protected Transform m_transform = null;
@@ -64,8 +65,6 @@ public class Motor_Base : MonoBehaviour
 		//
 	}
 
-	//Protected Functions
-
 	public virtual void LockMotion()
 	{
 		m_bLocked = true;
@@ -79,5 +78,17 @@ public class Motor_Base : MonoBehaviour
     public float Speed
     {
         get { return m_speed; }
+    }
+
+    protected void Rotate(Vector3 targetDir)
+    {
+        //create a step value to rotate the player over time
+        float step = m_rotationSpeed * Clock.DeltaTime;
+
+        //create a rotation with the forward vector the same as the move direction
+        Quaternion qTargetDir = Quaternion.LookRotation(targetDir, Vector3.up);
+
+        //set the rotation to the lerp between the current and the desired direction
+        transform.rotation = Quaternion.Lerp(this.transform.rotation, qTargetDir, step);
     }
 }

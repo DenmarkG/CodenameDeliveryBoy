@@ -47,18 +47,6 @@ public class Motor_Stalker : Motor_Base
         }
     }
 
-    protected void Rotate(Vector3 targetDir)
-    {
-        //create a step value to rotate the player over time
-        float step = m_rotationSpeed * Clock.DeltaTime;
-
-        //create a rotation with the forward vector the same as the move direction
-        Quaternion qTargetDir = Quaternion.LookRotation(targetDir, Vector3.up);
-
-        //set the rotation to the lerp between the current and the desired direction
-        transform.rotation = Quaternion.Lerp(this.transform.rotation, qTargetDir, step);
-    }
-
     #endregion
 
     #region PROPERTIES
