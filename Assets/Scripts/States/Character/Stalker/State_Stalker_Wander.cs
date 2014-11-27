@@ -6,9 +6,11 @@ public class State_Stalker_Wander : State_Base
 {
     #region PRIVATE VARIABLES
 
-    // The stalker this state refers to 
+    // The stalker this state refers to and the motor attached 
     Character_Stalker m_stalker = null;
+    Motor_Stalker m_stalkerMotor = null;
 
+    // The path this should follow
     List<Vector3> m_wanderPath = null;
 
     #endregion
@@ -18,18 +20,23 @@ public class State_Stalker_Wander : State_Base
     public State_Stalker_Wander(Character_Stalker stalker)
     {
         m_stalker = stalker;
+        m_stalkerMotor = m_stalker.GetComponent<Motor_Stalker>();
         m_wanderPath = new List<Vector3>();
     }
 
     public override void EnterState()
     {
-        //PerformAStarSearch(ref m_wanderPath);
-        m_wanderPath.Add(GameObject.FindGameObjectWithTag("Waypoint").transform.position);
+        //m_wanderPath.Add(GameObject.FindGameObjectWithTag("Waypoint").transform.position);
     }
 
     public override void UpdateState()
     {
-        //
+        if (m_stalkerMotor.TargetReached)
+        {
+            m_stalkerMotor.SetNewTarget(Waypoint.FindNearestWaypoint(m_stalkerMotor.CurrentTarget));
+        }
+
+        m_stalkerMotor.UpdateMotor();
     }
 
     public override void UpdateStateFixed()
@@ -54,17 +61,6 @@ public class State_Stalker_Wander : State_Base
 
     private void FindNextWayPoint()
     {
-        //
-    }
-
-    private void PerformAStarSearch(ref List<Vector3> path)
-    {
-        List<Vector3> closedSet = new List<Vector3>();
-        Queue<Vector3> openSet = new Queue<Vector3>();
-
-        // Enqueue the start position (the current position)
-        openSet.Enqueue(m_stalker.transform.position);
-
         //
     }
 

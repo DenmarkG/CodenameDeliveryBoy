@@ -49,13 +49,6 @@ public class Motor_Player : Motor_Base
 			//reset the angle to zero
 			m_angle = 0f;
 
-			//get the info for the current animation states
-			m_animStateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-	//		m_animTransistionInfo = m_animator.GetAnimatorTransitionInfo(0);
-
-			//get the state info for the current state
-			m_stateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-
 			//Get the input from the player
 			m_horizontal = Input.GetAxis(GameControllerHash.LeftStick.HORIZONTAL);
 			m_vertical = Input.GetAxis(GameControllerHash.LeftStick.VERTICAL);

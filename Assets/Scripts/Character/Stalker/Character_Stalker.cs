@@ -24,6 +24,11 @@ public class Character_Stalker : CharacterBase
         AddToGameManagerPauseEvent();
     }
 
+    protected override void Start()
+    {
+        m_stateMachine.SetCurrentState(m_overWorldState);
+    }
+
     protected override void Update() 
 	{
         if (!m_isPaused)

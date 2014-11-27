@@ -25,6 +25,9 @@ public class Motor_Base : MonoBehaviour
 	protected float m_angle = 0f;
 	protected float m_rotationSpeed = 3f;
 
+    // The transform attached to this game object
+    protected Transform m_transform = null;
+
 	//variables for setting up the Animator
 	protected Animator m_animator = null;
 	protected AnimatorStateInfo m_animStateInfo;
@@ -42,6 +45,7 @@ public class Motor_Base : MonoBehaviour
 	protected virtual void Awake()
 	{
         m_animator = this.GetComponent<Animator>();
+        m_transform = this.transform;
 	}
 
 	protected virtual void Start()
@@ -71,4 +75,9 @@ public class Motor_Base : MonoBehaviour
 	{
 		m_bLocked = false;
 	}
+
+    public float Speed
+    {
+        get { return m_speed; }
+    }
 }
