@@ -20,6 +20,7 @@ public class State_Stalker_Wander : State_Base
 
     #region PUBLIC FUNCTIONS
 
+    // Constructor simply assigns references to the stalker passed in 
     public State_Stalker_Wander(Character_Stalker stalker)
     {
         m_stalker = stalker;
@@ -28,6 +29,7 @@ public class State_Stalker_Wander : State_Base
         m_activePoints = new Navigation.ActivePoints();
     }
 
+    // Upon Entering the state, the stalker should find the best path to the next waypoint
     public override void EnterState()
     {
         m_activePoints.m_currentWaypoint = m_stalker.transform.position;
@@ -40,7 +42,7 @@ public class State_Stalker_Wander : State_Base
     {
         if (m_stalkerMotor.TargetReached)
         {
-            Debug.Log("Target Reached");
+            //Debug.Log("Target Reached");
             if (m_path.status != NavMeshPathStatus.PathInvalid && m_currentPathIndex < m_path.corners.Length)
             {
                 m_stalkerMotor.SetNewTarget(m_path.corners[m_currentPathIndex++]);
@@ -49,6 +51,8 @@ public class State_Stalker_Wander : State_Base
             {
                 // clear the current path
                 m_path.ClearCorners();
+                m_currentPathIndex = 0;
+
                 // Find the next waypoint and find a path to it
                 m_stalkerAgent.CalculatePath(Navigation.FindNearestWaypoint(ref m_activePoints), m_path);
             }

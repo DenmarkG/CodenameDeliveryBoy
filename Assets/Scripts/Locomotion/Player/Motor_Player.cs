@@ -55,6 +55,14 @@ public class Motor_Player : Motor_Base
 
             if (m_isInCover)
             {
+
+                // Early out and exit cover when the Action button is pressed
+                if (m_isInCover && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown(GameControllerHash.Buttons.B)))
+                {
+                    LeaveCover();
+                    return;
+                }
+
                 if (Mathf.Abs(m_horizontal) > DEAD_ZONE && ClampToCover(this.transform.right * m_horizontal))
                 {
                     m_animator.SetFloat("Direction", -m_horizontal);
@@ -69,13 +77,8 @@ public class Motor_Player : Motor_Base
                 // Remove any inaccuracies that may have occured due to animation
                 CorrectTransformError();
                 // Lock the camera behind the player
+                
                 m_camera.LockCamera();
-
-                // Exit cover when the F key is pressed
-                if (m_isInCover && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown(GameControllerHash.Buttons.B)))
-                {
-                    LeaveCover();
-                }
             }
             else
             {
@@ -172,7 +175,9 @@ public class Motor_Player : Motor_Base
 
     private bool CheckForCover(ControllerColliderHit other)
     {
-        if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0)
+        if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0 && 
+            (other.gameObject.tag != "NPC" && other.gameObject.tag != "Stalker") &&
+            (other.gameObject.tag != "Ground"))
         {
             return true;
         }
@@ -199,24 +204,32 @@ public class Motor_Player : Motor_Base
     {
         Vector3 moveVector;
         RaycastHit hit;
-        if (Physics.Raycast(this.transform.position, this.transform.forward, out hit, MAX_RAYCAST_DIST))
+        if (Physics.Raycast(m_transform.position, m_transform.forward, out hit, MAX_RAYCAST_DIST))
         {
             // Correct Position error if it exists
             if (hit.distance > MAX_DIST_FROM_COVER)
             {
                 //move closer
                 float distanceToMove = hit.distance - MAX_DIST_FROM_COVER;
-                moveVector = hit.point - this.transform.position;
-                moveVector += this.transform.forward * distanceToMove;
+                moveVector = hit.point - m_transform.position;
+                moveVector += m_transform.forward * distanceToMove;
                 m_charController.Move(moveVector * Clock.DeltaTime);
             }
 
             // Correct orientation error if beyond the threshold
-            float angle = Vector3.Angle(this.transform.forward, -hit.normal);
+            float angle = Vector3.Angle(m_transform.forward, -hit.normal);
             if (angle > 5)
             {
-                moveVector = Vector3.up * -angle * Clock.DeltaTime;
-                this.transform.Rotate(moveVector);
+                if (Vector3.Dot(m_transform.right, hit.normal) < 0)
+                {
+                    moveVector = Vector3.up * angle * Clock.DeltaTime;
+                }
+                else
+                {
+                    moveVector = Vector3.up * -angle * Clock.DeltaTime;
+                }
+                
+                m_transform.Rotate(moveVector);
             }
         }
         else
@@ -257,10 +270,6 @@ public class Motor_Player : Motor_Base
     }
 
     #endregion
-
-    #region Private Properties
-	
-	#endregion
 
 	#region Public Properties
 

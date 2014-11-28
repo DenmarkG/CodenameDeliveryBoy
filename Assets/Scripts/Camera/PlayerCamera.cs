@@ -87,7 +87,7 @@ public class PlayerCamera : MonoBehaviour
 		if (!Clock.IsPaused)
 		{
 			//reset the camera if the reset button is pressed
-			if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.L) ) && !IsInvoking("ResetCamera") )
+			if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.R) ) && !IsInvoking("ResetCamera") )
 				StartCoroutine("ResetCamera");
 
 			//if the right mouse button is pressed or the right stick is moved, allow the camera to enter the free orbit state
@@ -274,6 +274,11 @@ public class PlayerCamera : MonoBehaviour
 		get { return m_lookDir; }
 		set { m_lookDir = value; }
 	}
+
+    public bool IsInOrbit
+    {
+        get { return m_stateMachine.CurrentState == m_orbitState; }
+    }
 
 	#endregion
 }
