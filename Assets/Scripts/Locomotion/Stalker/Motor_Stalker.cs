@@ -3,15 +3,33 @@ using System.Collections;
 
 public class Motor_Stalker : Motor_Base 
 {
+    [SerializeField]
+    private float m_angleOfVision = 60f;
+
     private Vector3 m_targetPosition = Vector3.zero;
     private const float MAX_DIST_FROM_TARGET = .5f;
     private const float TURN_ANGLE_DEAD_ZONE = 5f;
+
+    // Reference to the player in the game
+    private Character_Player m_player = null;
 
     protected override void Awake()
     {
         base.Awake();
         m_charController = this.GetComponent<CharacterController>();
+        m_player = GameManager.Player;
     }
+
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (other.gameObject.tag == "Player")
+    //    {
+    //        if (LookAtPlayer())
+    //        {
+    //            Debug.Log("Player in sight");
+    //        }
+    //    }
+    //}
 
     #region PUBLIC FUNCTIONS
 
@@ -45,6 +63,23 @@ public class Motor_Stalker : Motor_Base
             
             m_animator.SetFloat("Speed", m_speed);
         }
+    }
+
+    // Raycasts toward the player. 
+    // Returns true if the player is seen
+    private bool LookAtPlayer()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(m_transform.position, m_player.transform.position - m_transform.position, out hit, 10f) )
+        {
+            if (Vector3.Angle(m_transform.position, m_player.transform.position) <= m_angleOfVision)
+            {
+                return true;
+            }
+            
+        }
+        
+        return false;
     }
 
     #endregion

@@ -52,6 +52,16 @@ public class Character_Stalker : CharacterBase
 
     #region PUBLIC FUNCTIONS
 
+    public void BeginLookForTarget(GameObject target)
+    {
+        //
+    }
+
+    public void EndLookForTarget()
+    {
+        //
+    }
+
     public void SetWanderState()
     {
         m_stateMachine.SetCurrentState(m_overWorldState);

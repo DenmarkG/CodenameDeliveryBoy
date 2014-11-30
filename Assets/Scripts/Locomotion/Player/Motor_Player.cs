@@ -77,8 +77,10 @@ public class Motor_Player : Motor_Base
                 // Remove any inaccuracies that may have occured due to animation
                 CorrectTransformError();
                 // Lock the camera behind the player
-                
-                m_camera.LockCamera();
+                if (!m_camera.IsInOrbit)
+                {
+                    m_camera.LockCamera();
+                }
             }
             else
             {

@@ -99,5 +99,10 @@ public class GameManager : MonoBehaviour
     {
         get { return m_instance.m_isWindows; }
     }
+
+    public static Character_Player Player
+    {
+        get { return m_player; }
+    }
 }
 
