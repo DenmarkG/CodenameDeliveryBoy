@@ -63,7 +63,10 @@ public class State_Stalker_Wander : State_Base
 
     public override void UpdateStateFixed()
     {
-        //
+        if (m_stalkerMotor.ShouldCheckForNearbyObjects)
+        {
+            m_stalkerMotor.UpdateMotorFixed();
+        }
     }
 
     public override void LateUpdateState()

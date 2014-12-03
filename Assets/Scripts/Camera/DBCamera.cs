@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerCamera : MonoBehaviour 
+public class DBCamera : MonoBehaviour
 {
-	#region Private Serialized Variables
+    #region Private Serialized Variables
 
-	//tuneable private varibles for how the camera should move
+    //tuneable private varibles for how the camera should move
 	//and where it should be relative to the player
 	[SerializeField]
 	private float m_distanceAway = 3f; //How far away the camera should be
@@ -46,7 +46,7 @@ public class PlayerCamera : MonoBehaviour
 	private Transform m_transform = null;
 
 	//variable for the singleton instance
-	private static PlayerCamera m_instance = null;
+	private static DBCamera m_instance = null;
 	//private Vector3 m_desiredPosition = Vector3.zero;
 
 	//constants
@@ -208,7 +208,7 @@ public class PlayerCamera : MonoBehaviour
 
 	#region Properties
 
-	public static PlayerCamera GetCamera
+	public static DBCamera GetCamera
 	{
 		get { return m_instance; }
 	}

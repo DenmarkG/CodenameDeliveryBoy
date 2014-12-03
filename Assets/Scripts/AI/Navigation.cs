@@ -29,13 +29,11 @@ public sealed class Navigation
     private static readonly Navigation m_instance = new Navigation();
     #endregion
 
-    #region UNITY FUNCTIONS
+    // Constructor simply finds all waypoints in the scene
     private Navigation()
-	{
+    {
         FindAllWayPoints(out m_allWaypoints);
-	}
-
-    #endregion
+    }
 
     #region PUBLIC FUNCTIONS
 

@@ -35,10 +35,11 @@ public class Motor_Base : MonoBehaviour
 	protected AnimatorTransitionInfo m_animTransistionInfo;
 	protected AnimatorStateInfo m_stateInfo;
 
-	//reference to the game's camera
-	protected PlayerCamera m_camera = null;
-
 	protected bool m_bLocked = false; //when true the character cannot move
+
+    // Cover taller than .75 will automaticall cause the player to stand, lower will make the player crouch
+    // For the enemy this will represent the camera's vertical position
+    protected const float EYE_HEIGHT = 1.3f;
 
 	//private variables
 
@@ -49,21 +50,16 @@ public class Motor_Base : MonoBehaviour
         m_transform = this.transform;
 	}
 
-	protected virtual void Start()
-	{
-		m_camera = PlayerCamera.GetCamera;
-	}
-
 	//Public Functions
 	public virtual void UpdateMotor()
 	{
 		//
 	}
 
-	public virtual void UpdateMotorFixed()
-	{
-		//
-	}
+    public virtual void UpdateMotorFixed()
+    {
+        //
+    }
 
 	public virtual void LockMotion()
 	{

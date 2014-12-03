@@ -4,11 +4,11 @@ using System.Collections;
 public class State_Camera_Follow : State_Base
 {
 	//private member variables
-	PlayerCamera m_camera = null;
+	DBCamera m_camera = null;
 	Vector3 m_targetPos = Vector3.zero;
 	Vector3 m_lookDir = Vector3.zero;
 
-	public State_Camera_Follow(PlayerCamera pCamera)
+	public State_Camera_Follow(DBCamera pCamera)
 	{
 		m_camera = pCamera;
 	}

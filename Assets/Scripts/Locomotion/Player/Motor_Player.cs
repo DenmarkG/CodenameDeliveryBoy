@@ -13,20 +13,17 @@ public class Motor_Player : Motor_Base
     //How far to cast a single ray
     private const float MAX_RAYCAST_DIST = .9f;
 
-    // Cover taller than .75 will automaticall cause the player to stand, lower will make the player crouch
-    private const float EYE_HEIGHT = 1.3f;
-
-    // holds a reference to the player Camera
-
+    //reference to the game's camera
+    protected DBCamera m_camera = null;
 
 	protected override void Awake ()
 	{
         base.Awake();
 	}
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
+        m_camera = DBCamera.GetCamera;
         m_charController = this.gameObject.GetComponent<CharacterController>();
         if (m_charController == null)
         {
@@ -36,9 +33,12 @@ public class Motor_Player : Motor_Base
 
     private void OnControllerColliderHit(ControllerColliderHit other)
     {
-        if (CheckForCover(other))
+        if (Vector3.Dot(other.normal, m_transform.forward) < 0)
         {
-            EnterCover();
+            if (CheckForCover(other))
+            {
+                EnterCover();
+            }
         }
     }
 

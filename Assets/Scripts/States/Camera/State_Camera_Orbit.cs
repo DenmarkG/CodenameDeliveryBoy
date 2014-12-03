@@ -4,7 +4,7 @@ using System.Collections;
 public class State_Camera_Orbit : State_Base 
 {
 	//private member variables
-	private PlayerCamera m_camera = null;
+	private DBCamera m_camera = null;
 //	private Transform m_targetTransform = null;
 	
 	//private Vector3 m_desiredPosition = Vector3.zero;
@@ -15,7 +15,7 @@ public class State_Camera_Orbit : State_Base
 	private Vector3 m_targetPos = Vector3.zero;
 	Vector3 m_lookDir = Vector3.zero;
 	
-	public State_Camera_Orbit(PlayerCamera pCamera)
+	public State_Camera_Orbit(DBCamera pCamera)
 	{
 		m_camera = pCamera;
 //		m_targetTransform = m_camera.CameraTarget;
