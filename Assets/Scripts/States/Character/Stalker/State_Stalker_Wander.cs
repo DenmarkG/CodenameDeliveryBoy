@@ -36,13 +36,13 @@ public class State_Stalker_Wander : State_Base
 
         Vector3 goal = Navigation.FindNearestWaypoint(ref m_activePoints);
         m_stalkerAgent.CalculatePath(goal, m_path);
+        m_currentPathIndex = 0;
     }
 
     public override void UpdateState()
     {
         if (m_stalkerMotor.TargetReached)
         {
-            //Debug.Log("Target Reached");
             if (m_path.status != NavMeshPathStatus.PathInvalid && m_currentPathIndex < m_path.corners.Length)
             {
                 m_stalkerMotor.SetNewTarget(m_path.corners[m_currentPathIndex++]);
@@ -58,15 +58,26 @@ public class State_Stalker_Wander : State_Base
             }
         }
 
+        // Move to next position
         m_stalkerMotor.UpdateMotor();
+
+        // Check for player if in range
+        if (m_stalkerMotor.ShouldCheckForNearbyObjects)
+        {
+            // Update the sight
+            m_stalkerMotor.LookForPlayer();
+
+            if (m_stalkerMotor.CanSeePlayer)
+            {
+                // Enter pursuit state and set the player's location as the new target
+                m_stalker.SetPursuitState(GameManager.Player.transform);
+            }
+        }
     }
 
     public override void UpdateStateFixed()
     {
-        if (m_stalkerMotor.ShouldCheckForNearbyObjects)
-        {
-            m_stalkerMotor.UpdateMotorFixed();
-        }
+        //
     }
 
     public override void LateUpdateState()

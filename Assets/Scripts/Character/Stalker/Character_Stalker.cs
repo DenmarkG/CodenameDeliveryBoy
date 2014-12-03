@@ -67,23 +67,11 @@ public class Character_Stalker : CharacterBase
         m_stateMachine.SetCurrentState(m_overWorldState);
     }
 
-    public void SetPursuitState(Vector3 goalPos)
+    public void SetPursuitState(Transform target)
     {
         m_stateMachine.SetCurrentState(m_pursuitState);
-        m_pursuitState.SetGoalPosition(goalPos);
+        m_pursuitState.SetGoalPosition(target);
     }
-
-    #endregion
-
-    #region PROTECTED FUNCTIONS
-
-    #endregion
-
-    #region PRIVATE FUNCTIONS
-
-    #endregion
-
-    #region PROPERTIES
 
     #endregion
 }

@@ -5,16 +5,18 @@ public class Motor_Stalker : Motor_Base
 {
     // The angle of vision of the Ai
     [SerializeField]
-    private float m_angleOfVision = 30f;
+    private float m_angleOfVision = 45f;
     // The min distance the AI can see 
     private float m_nearPlaneDistance = .3f;
     // How far the AI can see
     [SerializeField]
-    private float m_farPlaneDistance = 5f;
+    private float m_farPlaneDistance = 8f;
+    [SerializeField]
+    private float attackRange = 2f;
     
     // Objects in this range will activate the enemy sight
     [SerializeField]
-    private float m_searchRadius = 6f;
+    private float m_searchRadius = 10f;
 
     private Vector3 m_targetPosition = Vector3.zero;
     private const float MAX_DIST_FROM_TARGET = .5f;
@@ -31,6 +33,8 @@ public class Motor_Stalker : Motor_Base
     // Whether or not the enemy should check for nearby objects of interest. 
     // This is done purely for performance reasons
     private bool m_shouldCheckForNearbyObjects = false;
+    // Whether or not the player is visible
+    private bool m_isPlayerVisible = false;
 
     protected override void Awake()
     {
@@ -72,11 +76,7 @@ public class Motor_Stalker : Motor_Base
 
     public override void UpdateMotorFixed()
     {
-        m_planes = GeometryUtility.CalculateFrustumPlanes(m_camera);
-        if (LookForObjectsOfInterestInFOV(ref m_planes, m_player))
-        {
-            Debug.Log("Player visible");
-        }
+        //
     }
 
     public void SetNewTarget(Vector3 newTarget)
@@ -84,6 +84,20 @@ public class Motor_Stalker : Motor_Base
         if (newTarget != m_targetPosition)
         {
             m_targetPosition = newTarget;
+        }
+    }
+
+    public void LookForPlayer()
+    {
+        m_planes = GeometryUtility.CalculateFrustumPlanes(m_camera);
+        if (LookForObjectsOfInterestInFOV(ref m_planes, m_player))
+        {
+            // The player is in the FOV, raycast to make sure nothing is blocking its
+            m_isPlayerVisible = Physics.Raycast(m_transform.position, m_player.transform.position - m_transform.position, m_farPlaneDistance);
+        }
+        else
+        {
+            m_isPlayerVisible = false;
         }
     }
 
@@ -120,23 +134,6 @@ public class Motor_Stalker : Motor_Base
             
             m_animator.SetFloat("Speed", m_speed);
         }
-    }
-
-    // Raycasts toward the player. 
-    // Returns true if the player is seen
-    private bool LookAtPlayer()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(m_transform.position, m_player.transform.position - m_transform.position, out hit, 10f) )
-        {
-            if (Vector3.Angle(m_transform.position, m_player.transform.position) <= m_angleOfVision)
-            {
-                return true;
-            }
-            
-        }
-        
-        return false;
     }
 
     // returns true if the enemy sees an object of interest
@@ -182,5 +179,15 @@ public class Motor_Stalker : Motor_Base
         set { m_shouldCheckForNearbyObjects = value; }
     }
 
+    public float AttackRange
+    {
+        get { return attackRange; }
+    }
+
+    // Returns true if the player is seen
+    public bool CanSeePlayer
+    {
+        get { return m_isPlayerVisible; }
+    }
     #endregion
 }

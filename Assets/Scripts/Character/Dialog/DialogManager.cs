@@ -27,10 +27,16 @@ public class DialogManager
 	{
 		if (shoudEnd) 
 		{
-			m_npChar.OnEndSpeak();
+            if (m_npChar != null)
+            {
+                m_npChar.OnEndSpeak();
+            }
 			m_npChar = null;
 
-			m_playerChar.OnEndSpeak();
+            if (m_playerChar != null)
+            {
+                m_playerChar.OnEndSpeak();
+            }
 		}
 	}
 }
