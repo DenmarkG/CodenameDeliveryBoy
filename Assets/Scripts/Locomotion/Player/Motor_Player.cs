@@ -33,7 +33,7 @@ public class Motor_Player : Motor_Base
 
     private void OnControllerColliderHit(ControllerColliderHit other)
     {
-        if (Vector3.Dot(other.normal, m_transform.forward) < 0)
+        if (!m_isInCover && Vector3.Dot(other.normal, m_transform.forward) <= 0)
         {
             if (CheckForCover(other))
             {
@@ -220,7 +220,7 @@ public class Motor_Player : Motor_Base
 
             // Correct orientation error if beyond the threshold
             float angle = Vector3.Angle(m_transform.forward, -hit.normal);
-            if (angle > 5)
+            if (angle > 0)
             {
                 if (Vector3.Dot(m_transform.right, hit.normal) < 0)
                 {
@@ -236,7 +236,7 @@ public class Motor_Player : Motor_Base
         }
         else
         {
-            LeaveCover();
+            //LeaveCover();
         }
     }
 
@@ -245,8 +245,7 @@ public class Motor_Player : Motor_Base
     private bool ClampToCover(Vector3 dir)
     {
         Vector3 castPos = this.transform.position + dir.normalized * MAX_DIST_FROM_CORNER;
-        RaycastHit hit;
-        if (Physics.Raycast(castPos, this.transform.forward, out hit, MAX_RAYCAST_DIST))
+        if (Physics.Raycast(castPos, this.transform.forward, MAX_RAYCAST_DIST))
         {
             return true;
         }

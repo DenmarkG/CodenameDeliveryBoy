@@ -63,7 +63,13 @@ public class Motor_Stalker : Motor_Base
 
         m_camera.transform.parent = m_transform;
         m_planes = GeometryUtility.CalculateFrustumPlanes(m_camera);
-        
+
+        // make sure the enemy can see as far as it detects. 
+        if (m_searchRadius > m_farPlaneDistance)
+        {
+            m_searchRadius = m_farPlaneDistance;
+        }
+
         // Then set the radius of the attached sphere collider to the search radius
         this.gameObject.GetComponent<SphereCollider>().radius = m_searchRadius;
 
