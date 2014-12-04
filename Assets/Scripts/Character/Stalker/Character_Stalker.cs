@@ -70,7 +70,7 @@ public class Character_Stalker : CharacterBase
     public void SetPursuitState(Transform target)
     {
         m_stateMachine.SetCurrentState(m_pursuitState);
-        m_pursuitState.SetGoalPosition(target);
+        m_pursuitState.SetTarget(target);
     }
 
     #endregion

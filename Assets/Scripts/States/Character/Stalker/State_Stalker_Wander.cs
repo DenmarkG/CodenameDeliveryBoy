@@ -41,6 +41,7 @@ public class State_Stalker_Wander : State_Base
 
     public override void UpdateState()
     {
+        //Debug.DrawLine(m_stalker.transform.position, m_activePoints.m_currentWaypoint, Color.magenta);
         if (m_stalkerMotor.TargetReached)
         {
             if (m_path.status != NavMeshPathStatus.PathInvalid && m_currentPathIndex < m_path.corners.Length)
@@ -54,7 +55,15 @@ public class State_Stalker_Wander : State_Base
                 m_currentPathIndex = 0;
 
                 // Find the next waypoint and find a path to it
-                m_stalkerAgent.CalculatePath(Navigation.FindNearestWaypoint(ref m_activePoints), m_path);
+                switch (m_stalkerMotor.CurrentSearchType)
+                {
+                    case Motor_Stalker.SearchType.LINEAR:
+                        m_stalkerAgent.CalculatePath(Navigation.FindNearestWaypoint(ref m_activePoints), m_path);
+                        break;
+                    case Motor_Stalker.SearchType.RANDOM:
+                        m_stalkerAgent.CalculatePath(Navigation.FindRandomWaypoint(ref m_activePoints), m_path);
+                        break;
+                }
             }
         }
 
@@ -65,7 +74,7 @@ public class State_Stalker_Wander : State_Base
         if (m_stalkerMotor.ShouldCheckForNearbyObjects)
         {
             // Update the sight
-            m_stalkerMotor.LookForPlayer();
+            m_stalkerMotor.UpdateLOS();
 
             if (m_stalkerMotor.CanSeePlayer)
             {

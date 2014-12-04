@@ -8,6 +8,9 @@ public sealed class Navigation
 {
     // A public struct to improve the look of the AI.
     // This will hold a reference to the last and current waypoints.
+
+    private Vector3 m_maxVector = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+
     public struct ActivePoints
     {
         // the default constructor sets each vector to the max value
@@ -39,10 +42,10 @@ public sealed class Navigation
 
     public static Vector3 FindNearestWaypoint(ref ActivePoints activePoints)
     {
-        Vector3 nearest = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        Vector3 nearest = m_instance.m_maxVector;
         for (int i = 0; i < m_instance.m_allWaypoints.Length; ++i)
         {
-            if ((m_instance.m_allWaypoints[i] - activePoints.m_currentWaypoint).sqrMagnitude <= (m_instance.m_allWaypoints[i] - nearest).sqrMagnitude &&
+            if ((m_instance.m_allWaypoints[i] - activePoints.m_currentWaypoint).sqrMagnitude <= (nearest - activePoints.m_currentWaypoint).sqrMagnitude &&
                 m_instance.m_allWaypoints[i] != activePoints.m_currentWaypoint && 
                 m_instance.m_allWaypoints[i] != activePoints.m_previousWaypoint)
             {
@@ -53,6 +56,19 @@ public sealed class Navigation
 
         m_instance.UpdateActivePoints(nearest, ref activePoints);
         return nearest;
+    }
+
+    public static Vector3 FindRandomWaypoint(ref ActivePoints activePoints)
+    {
+        Vector3 point = m_instance.m_maxVector;
+
+        while (point == m_instance.m_maxVector || point == activePoints.m_currentWaypoint)
+        {
+            point = m_instance.m_allWaypoints[(int)Random.Range(0, m_instance.m_allWaypoints.Length)];
+        }
+
+        m_instance.UpdateActivePoints(point, ref activePoints);
+        return point;
     }
 
     #endregion

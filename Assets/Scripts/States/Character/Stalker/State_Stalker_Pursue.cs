@@ -24,44 +24,44 @@ public class State_Stalker_Pursue : State_Base
 
     public override void EnterState()
     {
-        //find the path to the target (a sound/ player/ etc.)
-        //m_stalkerAgent.CalculatePath(m_goalPosition, m_path);
+        // reset the path index
         m_currentPathIndex = 0;
     }
 
     public override void UpdateState()
     {
+        //for (int i = 0; i < m_path.corners.Length - 1; ++i)
+        //{
+        //    Debug.DrawLine(m_path.corners[i], m_path.corners[i + 1], Color.red);
+        //}
+
+        // Update the LOS
+        m_stalkerMotor.UpdateLOS();
+
+        // Update the position if the player is still in sight and has moved
+        if (m_stalkerMotor.CanSeePlayer)
+        {
+            //Debug.Log("Player visible");
+            if (m_target.position != m_goalPosition)
+            {
+                UpdateGoalPositionAndPath(m_target.position);
+                // update the motor and early out
+                m_stalkerMotor.SetNewTarget(m_path.corners[0]);
+                m_stalkerMotor.UpdateMotor();
+                return;
+            }
+        }
+
         if (m_stalkerMotor.TargetReached)
         {
-            // Check to see if the player is still visible
-            if (m_stalkerMotor.CanSeePlayer)
+            // Continue Along path until goal is reached
+            if (m_path.status != NavMeshPathStatus.PathInvalid && m_currentPathIndex < m_path.corners.Length)
             {
-                // If we are in attack range, attack
-                if (Vector3.Distance(m_stalkerMotor.transform.position, m_goalPosition) < m_stalkerMotor.AttackRange)
-                {
-                    //
-                }
-                // if the player has moved, update the goal position and calculate path
-                if (m_target.position != m_goalPosition)
-                {
-                    m_goalPosition = m_target.position;
-                    m_stalkerAgent.CalculatePath(m_goalPosition, m_path);
-                }
+                m_stalkerMotor.SetNewTarget(m_path.corners[m_currentPathIndex++]);
             }
             else
             {
-                if (m_path.status != NavMeshPathStatus.PathInvalid && m_currentPathIndex < m_path.corners.Length)
-                {
-                    m_stalkerMotor.SetNewTarget(m_path.corners[m_currentPathIndex++]);
-                }
-                else // if this is the end of the path, go back to wandering
-                {
-                    // Return to wander state
-                    m_stalker.SetWanderState();
-
-                    // may have to early out here
-                    // return;
-                }
+                m_stalker.SetWanderState();
             }
         }
 
@@ -70,7 +70,7 @@ public class State_Stalker_Pursue : State_Base
 
     public override void UpdateStateFixed()
     {
-        m_stalkerMotor.UpdateMotorFixed();
+        //
     }
 
     public override void LateUpdateState()
@@ -83,19 +83,18 @@ public class State_Stalker_Pursue : State_Base
         m_path.ClearCorners();
         m_currentPathIndex = 0;
         m_target = null;
-
-        Debug.Log("Back to wandering");
     }
 
-    public void SetGoalPosition(Transform target)
+    public void SetTarget(Transform target)
     {
         m_target = target;
-        m_goalPosition = target.position;
-        m_stalkerAgent.CalculatePath(m_goalPosition, m_path);
+        UpdateGoalPositionAndPath(target.position);
     }
 
-    private bool LookForPlayer()
+    private void UpdateGoalPositionAndPath(Vector3 position)
     {
-        return false;
+        m_goalPosition = position;
+        m_stalkerAgent.CalculatePath(m_goalPosition, m_path);
+        m_currentPathIndex = 0;
     }
 }

@@ -3,6 +3,15 @@ using System.Collections;
 
 public class Motor_Stalker : Motor_Base 
 {
+    public enum SearchType
+    {
+        LINEAR,
+        RANDOM
+    }
+
+    [SerializeField]
+    private SearchType m_searchtype;
+
     // The angle of vision of the Ai
     [SerializeField]
     private float m_angleOfVision = 45f;
@@ -16,7 +25,7 @@ public class Motor_Stalker : Motor_Base
     
     // Objects in this range will activate the enemy sight
     [SerializeField]
-    private float m_searchRadius = 10f;
+    private float m_searchRadius = 3.5f;
 
     private Vector3 m_targetPosition = Vector3.zero;
     private const float MAX_DIST_FROM_TARGET = .5f;
@@ -40,7 +49,6 @@ public class Motor_Stalker : Motor_Base
     {
         base.Awake();
         m_charController = this.GetComponent<CharacterController>();
-        m_player = GameManager.Player;
 
         if (m_camera == null)
         {
@@ -55,16 +63,17 @@ public class Motor_Stalker : Motor_Base
 
         m_camera.transform.parent = m_transform;
         m_planes = GeometryUtility.CalculateFrustumPlanes(m_camera);
-
-        // Make sure that the search radius is >= the view distance
-        // This way we can start looking as soon as the player is in range
-        if (m_searchRadius < m_farPlaneDistance)
-        {
-            m_searchRadius = m_farPlaneDistance;
-        }
         
         // Then set the radius of the attached sphere collider to the search radius
         this.gameObject.GetComponent<SphereCollider>().radius = m_searchRadius;
+
+        // Set the search type
+        m_searchtype = (SearchType)( (int)Mathf.Round(Random.value) );
+    }
+
+    private void Start()
+    {
+        m_player = GameManager.Player;
     }
 
     #region PUBLIC FUNCTIONS
@@ -87,13 +96,23 @@ public class Motor_Stalker : Motor_Base
         }
     }
 
-    public void LookForPlayer()
+    public void UpdateLOS()
     {
         m_planes = GeometryUtility.CalculateFrustumPlanes(m_camera);
         if (LookForObjectsOfInterestInFOV(ref m_planes, m_player))
         {
             // The player is in the FOV, raycast to make sure nothing is blocking its
-            m_isPlayerVisible = Physics.Raycast(m_transform.position, m_player.transform.position - m_transform.position, m_farPlaneDistance);
+            RaycastHit hit;
+            Vector3 eyeLevel = m_transform.up * EYE_HEIGHT;
+            Vector3 rayStart = m_transform.position + eyeLevel;
+            Vector3 rayEnd = (m_player.transform.position - m_transform.position);
+
+            if (Physics.Raycast(rayStart, rayEnd, out hit, m_farPlaneDistance))
+            {
+                m_isPlayerVisible = hit.collider.tag == "Player";
+            }
+
+            //Debug.DrawLine(this.transform.position, hit.point, Color.blue);
         }
         else
         {
@@ -139,14 +158,17 @@ public class Motor_Stalker : Motor_Base
     // returns true if the enemy sees an object of interest
     private bool LookForObjectsOfInterestInFOV(ref Plane[] planes, Character_Player player)
     {
-        if (GeometryUtility.TestPlanesAABB(planes, player.collider.bounds))
+        if (player == null)
         {
-            return true;
+            Debug.Log("null player");
         }
-        else
+
+        if (planes == null)
         {
-            return false;
+            Debug.Log("Null planes");
         }
+
+        return GeometryUtility.TestPlanesAABB(planes, player.collider.bounds);
     }
 
     #endregion
@@ -176,7 +198,6 @@ public class Motor_Stalker : Motor_Base
     public bool ShouldCheckForNearbyObjects
     {
         get { return m_shouldCheckForNearbyObjects; }
-        set { m_shouldCheckForNearbyObjects = value; }
     }
 
     public float AttackRange
@@ -189,5 +210,11 @@ public class Motor_Stalker : Motor_Base
     {
         get { return m_isPlayerVisible; }
     }
+
+    public SearchType CurrentSearchType
+    {
+        get { return m_searchtype; }
+    }
+
     #endregion
 }
