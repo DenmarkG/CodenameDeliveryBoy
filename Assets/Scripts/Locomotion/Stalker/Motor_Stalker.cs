@@ -11,6 +11,9 @@ public class Motor_Stalker : Motor_Base
 
     [SerializeField]
     private SearchType m_searchtype;
+    [SerializeField]
+    [Range(0, 1)]
+    private float m_linearSearchChance = .25f;
 
     // The angle of vision of the Ai
     [SerializeField]
@@ -74,7 +77,8 @@ public class Motor_Stalker : Motor_Base
         this.gameObject.GetComponent<SphereCollider>().radius = m_searchRadius;
 
         // Set the search type
-        m_searchtype = (SearchType)( (int)Mathf.Round(Random.value) );
+        //m_searchtype = (SearchType)( (int)Mathf.Round(Random.value) );
+        m_searchtype = (Random.value < m_linearSearchChance) ? SearchType.LINEAR : SearchType.RANDOM;
     }
 
     private void Start()

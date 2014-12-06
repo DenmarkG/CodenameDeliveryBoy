@@ -1,0 +1,117 @@
+fileFormatVersion: 2
+guid: a5e5be6ce5cffb745b39837490a1a937
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: prison_fence_corner_in_nobarbed_nobase001
+    100004: prison_fence_corner_in_nobarbed_nobase002
+    100006: prison_fence_corner_in_nobarbed_nobase003
+    100008: prison_fence_corner_in_nobarbed_nobase004
+    100010: prison_fence_corner_in_nobarbed_nobase005
+    100012: prison_fence_corner_in_nobarbed_nobase006
+    100014: prison_fence_large_nobarbed_nobase001
+    100016: prison_fence_large_nobarbed_nobase002
+    100018: prison_fence_large_nobarbed_nobase003
+    100020: prison_fence_large_nobarbed_nobase004
+    100022: prison_fence_large_nobarbed_nobase005
+    400000: //RootNode
+    400002: prison_fence_corner_in_nobarbed_nobase001
+    400004: prison_fence_corner_in_nobarbed_nobase002
+    400006: prison_fence_corner_in_nobarbed_nobase003
+    400008: prison_fence_corner_in_nobarbed_nobase004
+    400010: prison_fence_corner_in_nobarbed_nobase005
+    400012: prison_fence_corner_in_nobarbed_nobase006
+    400014: prison_fence_large_nobarbed_nobase001
+    400016: prison_fence_large_nobarbed_nobase002
+    400018: prison_fence_large_nobarbed_nobase003
+    400020: prison_fence_large_nobarbed_nobase004
+    400022: prison_fence_large_nobarbed_nobase005
+    2300000: prison_fence_corner_in_nobarbed_nobase001
+    2300002: prison_fence_corner_in_nobarbed_nobase002
+    2300004: prison_fence_corner_in_nobarbed_nobase003
+    2300006: prison_fence_corner_in_nobarbed_nobase004
+    2300008: prison_fence_corner_in_nobarbed_nobase005
+    2300010: prison_fence_corner_in_nobarbed_nobase006
+    2300012: prison_fence_large_nobarbed_nobase001
+    2300014: prison_fence_large_nobarbed_nobase002
+    2300016: prison_fence_large_nobarbed_nobase003
+    2300018: prison_fence_large_nobarbed_nobase004
+    2300020: prison_fence_large_nobarbed_nobase005
+    3300000: prison_fence_corner_in_nobarbed_nobase001
+    3300002: prison_fence_corner_in_nobarbed_nobase002
+    3300004: prison_fence_corner_in_nobarbed_nobase003
+    3300006: prison_fence_corner_in_nobarbed_nobase004
+    3300008: prison_fence_corner_in_nobarbed_nobase005
+    3300010: prison_fence_corner_in_nobarbed_nobase006
+    3300012: prison_fence_large_nobarbed_nobase001
+    3300014: prison_fence_large_nobarbed_nobase002
+    3300016: prison_fence_large_nobarbed_nobase003
+    3300018: prison_fence_large_nobarbed_nobase004
+    3300020: prison_fence_large_nobarbed_nobase005
+    4300000: prison_fence_large_nobarbed_nobase001
+    4300002: prison_fence_corner_in_nobarbed_nobase001
+    4300004: prison_fence_corner_in_nobarbed_nobase002
+    4300006: prison_fence_corner_in_nobarbed_nobase003
+    4300008: prison_fence_large_nobarbed_nobase002
+    4300010: prison_fence_corner_in_nobarbed_nobase004
+    4300012: prison_fence_large_nobarbed_nobase003
+    4300014: prison_fence_corner_in_nobarbed_nobase005
+    4300016: prison_fence_large_nobarbed_nobase004
+    4300018: prison_fence_corner_in_nobarbed_nobase006
+    4300020: prison_fence_large_nobarbed_nobase005
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

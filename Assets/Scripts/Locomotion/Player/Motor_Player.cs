@@ -57,7 +57,7 @@ public class Motor_Player : Motor_Base
             {
 
                 // Early out and exit cover when the Action button is pressed
-                if (m_isInCover && (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown(GameControllerHash.Buttons.B)))
+                if (m_isInCover && (Input.GetKeyUp(KeyCode.Space) || Input.GetButtonUp(GameControllerHash.Buttons.X) ) )
                 {
                     LeaveCover();
                     return;
@@ -179,7 +179,8 @@ public class Motor_Player : Motor_Base
     {
         if ((m_charController.collisionFlags & CollisionFlags.Sides) != 0 && 
             (other.gameObject.tag != "NPC" && other.gameObject.tag != "Stalker") &&
-            (other.gameObject.tag != "Ground"))
+            (other.gameObject.tag != "Ground") &&
+            (Input.GetKey(KeyCode.Space) || Input.GetButton(GameControllerHash.Buttons.X) ) )
         {
             return true;
         }

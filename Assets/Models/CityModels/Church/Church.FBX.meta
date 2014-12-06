@@ -1,0 +1,272 @@
+fileFormatVersion: 2
+guid: 2023b28d00a92a14db6c9b45eb154593
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: 09c58359
+    100002: 09c58359 1
+    100004: 09c58359 2
+    100006: 0f64bc70
+    100008: 0f64bc70 1
+    100010: 0f64bc70 2
+    100012: 0f64bc70 3
+    100014: 0f64bc70 4
+    100016: 1e8599fb
+    100018: 1e8599fb 1
+    100020: 23b9807c
+    100022: 23b9807c 1
+    100024: 23b9807c 2
+    100026: 23b9807c 3
+    100028: 23b9807c 4
+    100030: 23b9807c 5
+    100032: 23b9807c 6
+    100034: 23b9807c 7
+    100036: 298cc8ae
+    100038: 298cc8ae 1
+    100040: 329ade7f
+    100042: 4c36a9fb
+    100044: 6fe78a94
+    100046: 6fe78a94 1
+    100048: 723323b8
+    100050: 723323b8 1
+    100052: 9d476543
+    100054: 9d476543 1
+    100056: a2baa7a2
+    100058: a2baa7a2 1
+    100060: a2baa7a2 2
+    100062: a5e39c65
+    100064: a5e39c65 1
+    100066: //RootNode
+    100068: d4dde499
+    100070: d4dde499 1
+    100072: d7ca50cb
+    100074: Mesh120
+    100076: Mesh122
+    100078: Mesh64
+    100080: Mesh78
+    100082: Mesh79
+    100084: Mesh88
+    400000: 09c58359
+    400002: 09c58359 1
+    400004: 09c58359 2
+    400006: 0f64bc70
+    400008: 0f64bc70 1
+    400010: 0f64bc70 2
+    400012: 0f64bc70 3
+    400014: 0f64bc70 4
+    400016: 1e8599fb
+    400018: 1e8599fb 1
+    400020: 23b9807c
+    400022: 23b9807c 1
+    400024: 23b9807c 2
+    400026: 23b9807c 3
+    400028: 23b9807c 4
+    400030: 23b9807c 5
+    400032: 23b9807c 6
+    400034: 23b9807c 7
+    400036: 298cc8ae
+    400038: 298cc8ae 1
+    400040: 329ade7f
+    400042: 4c36a9fb
+    400044: 6fe78a94
+    400046: 6fe78a94 1
+    400048: 723323b8
+    400050: 723323b8 1
+    400052: 9d476543
+    400054: 9d476543 1
+    400056: a2baa7a2
+    400058: a2baa7a2 1
+    400060: a2baa7a2 2
+    400062: a5e39c65
+    400064: a5e39c65 1
+    400066: //RootNode
+    400068: d4dde499
+    400070: d4dde499 1
+    400072: d7ca50cb
+    400074: Mesh120
+    400076: Mesh122
+    400078: Mesh64
+    400080: Mesh78
+    400082: Mesh79
+    400084: Mesh88
+    2300000: 09c58359
+    2300002: 09c58359 1
+    2300004: 09c58359 2
+    2300006: 0f64bc70
+    2300008: 0f64bc70 1
+    2300010: 0f64bc70 2
+    2300012: 0f64bc70 3
+    2300014: 0f64bc70 4
+    2300016: 1e8599fb
+    2300018: 1e8599fb 1
+    2300020: 23b9807c
+    2300022: 23b9807c 1
+    2300024: 23b9807c 2
+    2300026: 23b9807c 3
+    2300028: 23b9807c 4
+    2300030: 23b9807c 5
+    2300032: 23b9807c 6
+    2300034: 23b9807c 7
+    2300036: 298cc8ae
+    2300038: 298cc8ae 1
+    2300040: 329ade7f
+    2300042: 4c36a9fb
+    2300044: 6fe78a94
+    2300046: 6fe78a94 1
+    2300048: 723323b8
+    2300050: 723323b8 1
+    2300052: 9d476543
+    2300054: 9d476543 1
+    2300056: a2baa7a2
+    2300058: a2baa7a2 1
+    2300060: a2baa7a2 2
+    2300062: a5e39c65
+    2300064: a5e39c65 1
+    2300066: d4dde499
+    2300068: d4dde499 1
+    2300070: d7ca50cb
+    2300072: Mesh120
+    2300074: Mesh122
+    2300076: Mesh64
+    2300078: Mesh78
+    2300080: Mesh79
+    2300082: Mesh88
+    3300000: 09c58359
+    3300002: 09c58359 1
+    3300004: 09c58359 2
+    3300006: 0f64bc70
+    3300008: 0f64bc70 1
+    3300010: 0f64bc70 2
+    3300012: 0f64bc70 3
+    3300014: 0f64bc70 4
+    3300016: 1e8599fb
+    3300018: 1e8599fb 1
+    3300020: 23b9807c
+    3300022: 23b9807c 1
+    3300024: 23b9807c 2
+    3300026: 23b9807c 3
+    3300028: 23b9807c 4
+    3300030: 23b9807c 5
+    3300032: 23b9807c 6
+    3300034: 23b9807c 7
+    3300036: 298cc8ae
+    3300038: 298cc8ae 1
+    3300040: 329ade7f
+    3300042: 4c36a9fb
+    3300044: 6fe78a94
+    3300046: 6fe78a94 1
+    3300048: 723323b8
+    3300050: 723323b8 1
+    3300052: 9d476543
+    3300054: 9d476543 1
+    3300056: a2baa7a2
+    3300058: a2baa7a2 1
+    3300060: a2baa7a2 2
+    3300062: a5e39c65
+    3300064: a5e39c65 1
+    3300066: d4dde499
+    3300068: d4dde499 1
+    3300070: d7ca50cb
+    3300072: Mesh120
+    3300074: Mesh122
+    3300076: Mesh64
+    3300078: Mesh78
+    3300080: Mesh79
+    3300082: Mesh88
+    4300000: 09c58359
+    4300002: a2baa7a2
+    4300004: a2baa7a2
+    4300006: a2baa7a2
+    4300008: Mesh64
+    4300010: 0f64bc70
+    4300012: 0f64bc70
+    4300014: 0f64bc70
+    4300016: 0f64bc70
+    4300018: 0f64bc70
+    4300020: Mesh78
+    4300022: Mesh79
+    4300024: 4c36a9fb
+    4300026: 723323b8
+    4300028: a5e39c65
+    4300030: a5e39c65
+    4300032: Mesh88
+    4300034: 9d476543
+    4300036: 9d476543
+    4300038: 298cc8ae
+    4300040: d7ca50cb
+    4300042: 23b9807c
+    4300044: 23b9807c
+    4300046: 23b9807c
+    4300048: 23b9807c
+    4300050: 23b9807c
+    4300052: 23b9807c
+    4300054: 23b9807c
+    4300056: 23b9807c
+    4300058: 1e8599fb
+    4300060: 1e8599fb
+    4300062: 09c58359
+    4300064: 09c58359
+    4300066: 6fe78a94
+    4300068: 6fe78a94
+    4300070: 723323b8
+    4300072: Mesh120
+    4300074: 329ade7f
+    4300076: Mesh122
+    4300078: 298cc8ae
+    4300080: d4dde499
+    4300082: d4dde499
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
