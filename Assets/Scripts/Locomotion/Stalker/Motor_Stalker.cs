@@ -24,7 +24,9 @@ public class Motor_Stalker : Motor_Base
     [SerializeField]
     private float m_farPlaneDistance = 8f;
     [SerializeField]
-    private float attackRange = 2f;
+    private float m_attackRange = 2f;
+    [SerializeField]
+    private float m_attackDamage = 25f;
     
     // Objects in this range will activate the enemy sight
     [SerializeField]
@@ -130,6 +132,19 @@ public class Motor_Stalker : Motor_Base
         }
     }
 
+    public void SetAttacking(bool isAttacking)
+    {
+        m_animator.SetBool("IsAttacking", isAttacking);
+    }
+
+    public void HitPlayer()
+    {
+        if (m_animator.GetBool("IsAttacking"))
+        {
+            m_player.GetComponent<Health>().ModifyHealth(-m_attackDamage);
+        }
+    }
+
     #endregion
 
 
@@ -162,6 +177,7 @@ public class Motor_Stalker : Motor_Base
             }
             
             m_animator.SetFloat("Speed", m_speed);
+            m_animator.speed = Clock.TimeScale;
         }
     }
 
@@ -212,7 +228,7 @@ public class Motor_Stalker : Motor_Base
 
     public float AttackRange
     {
-        get { return attackRange; }
+        get { return m_attackRange; }
     }
 
     // Returns true if the player is seen

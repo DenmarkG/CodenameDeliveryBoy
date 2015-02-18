@@ -30,10 +30,11 @@ public class State_Stalker_Pursue : State_Base
 
     public override void UpdateState()
     {
-        //for (int i = 0; i < m_path.corners.Length - 1; ++i)
-        //{
-        //    Debug.DrawLine(m_path.corners[i], m_path.corners[i + 1], Color.red);
-        //}
+        // Draw the path in the editor window
+        for (int i = 0; i < m_path.corners.Length - 1; ++i)
+        {
+            Debug.DrawLine(m_path.corners[i], m_path.corners[i + 1], Color.red);
+        }
 
         // Update the LOS
         m_stalkerMotor.UpdateLOS();
@@ -41,18 +42,23 @@ public class State_Stalker_Pursue : State_Base
         // Update the position if the player is still in sight and has moved
         if (m_stalkerMotor.CanSeePlayer)
         {
-            //Debug.Log("Player visible");
+            if (Vector3.Distance(m_stalker.transform.position, m_target.position) < m_stalkerMotor.AttackRange)
+            {
+                m_stalkerMotor.SetAttacking(true);
+                return;
+            }
+            else
+            {
+                m_stalkerMotor.SetAttacking(false);
+            }
+
             if (m_target.position != m_goalPosition)
             {
                 UpdateGoalPositionAndPath(m_target.position);
-                // update the motor and early out
                 m_stalkerMotor.SetNewTarget(m_path.corners[0]);
-                m_stalkerMotor.UpdateMotor();
-                return;
             }
         }
-
-        if (m_stalkerMotor.TargetReached)
+        else if (m_stalkerMotor.TargetReached)
         {
             // Continue Along path until goal is reached
             if (m_path.status != NavMeshPathStatus.PathInvalid && m_currentPathIndex < m_path.corners.Length)

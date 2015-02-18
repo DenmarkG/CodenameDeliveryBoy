@@ -12,7 +12,7 @@ public class GuiManager : MonoBehaviour
     public static event UpdateGUI OnUpdateGUI;
 
     // When testing the timescale, uncomment this
-    //float m_hSliderValue = 1f;
+    float m_hSliderValue = 1f;
 
     #endregion
 
@@ -70,7 +70,10 @@ public class GuiManager : MonoBehaviour
         m_statusBox = new Rect(0, Screen.height - m_statusBoxHeight, m_statusBoxWidth, m_statusBoxHeight);
         m_textDialogBox = new Rect((Screen.width - m_textDialogBoxWidth) / 2, Screen.height - m_textDialogBoxHeight, m_textDialogBoxWidth, m_textDialogBoxHeight);
 
-        m_instance = this;
+        if (m_instance == null)
+        {
+            m_instance = this;
+        }
     }
 
     void Start()
@@ -110,14 +113,19 @@ public class GuiManager : MonoBehaviour
             }
 
             //time scale test
-            //m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), m_hSliderValue, 0, 20f);
-            //Clock.TimeScale = m_hSliderValue;
+            m_hSliderValue = GUI.HorizontalSlider(new Rect(25, 75, 100, 30), m_hSliderValue, 0.1f, 20f);
+            Clock.TimeScale = m_hSliderValue;
         }
         else
         {
 
             DiplayControlsOnWindows();
         }
+    }
+
+    private void OnDestroy()
+    {
+        OnUpdateGUI = null;
     }
 
     #endregion

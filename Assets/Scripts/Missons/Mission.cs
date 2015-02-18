@@ -67,7 +67,7 @@ public class Mission
 
 	public string GetInfo
 	{
-		get { return m_missionName + ":\n\t\t" + m_currenState.ToString (); }
+        get { return m_missionName + ":\n\t\t" + m_currenState.ToString() + ":\n\t\t" + m_missionDescription; }
 	}
 
 	public MissionState GetMissionState

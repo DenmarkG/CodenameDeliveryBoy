@@ -29,13 +29,21 @@ public class InventoryItem
 		get 
 		{ 
 			if (m_itemImage == null)
-				if (m_itemName != "")
-					m_itemImage = Resources.Load<Texture2D> ("ItemTextures/T_" + m_itemName);
+            {
+                if (m_itemName != "")
+                {
+                    m_itemImage = Resources.Load<Texture2D>("ItemTextures/T_" + m_itemName);
+                }
+            }
 
-			if (m_itemImage != null)
-				return m_itemImage; 
-			else
-				return new Texture2D(32, 32);
+            if (m_itemImage != null)
+            {
+                return m_itemImage;
+            }
+            else
+            {
+                return new Texture2D(32, 32);
+            }
 		}
 	}
 

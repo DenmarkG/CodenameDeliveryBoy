@@ -63,10 +63,10 @@ public class MissionManager
 					completeMissions += m.GetInfo + "\n";
 			}
 			if (currentMissions != "")
-				GUI.Box(new Rect(0, 50, 150, 50), currentMissions);
+				GUI.Box(new Rect(0, 100, 150, 200), currentMissions);
 
 			if (completeMissions != "")
-				GUI.Box(new Rect(Screen.width - 150, 50, 150, 50), completeMissions);
+				GUI.Box(new Rect(Screen.width - 150, 100, 150, 200), completeMissions);
 		}
 		else
 		{

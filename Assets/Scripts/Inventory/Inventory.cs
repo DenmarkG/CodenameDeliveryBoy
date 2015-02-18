@@ -44,7 +44,7 @@ public class Inventory
 			m_inventoryItems.Add(newItem);
 		}
 
-		GuiManager.DisplayStatusMessage(newItem.ItemName + " Added!");
+		GuiManager.DisplayStatusMessage(newItem.ItemName + " obtained!");
 	}
 
 	public void RemoveItem(InventoryItem itemToRemove)
@@ -99,4 +99,21 @@ public class Inventory
 	{
 		return m_inventoryItems.Contains(item);
 	}
+
+    public InventoryItem GetItemByIndex(int index)
+    {
+        if (index > m_inventoryItems.Count)
+        {
+            return null;
+        }
+        else
+        {
+            return m_inventoryItems[index];
+        }
+    }
+
+    public int Count
+    {
+        get { return m_inventoryItems.Count;  }
+    }
 }

@@ -21,6 +21,8 @@ public class Character_Player : CharacterBase
 			}
 		}
 
+        m_health = this.GetComponent<Health>();
+
 		//set the inital state
 		m_overWorldState = new State_CharacterOverworld(m_motor);
 		m_stateMachine.SetCurrentState(m_overWorldState);
@@ -33,7 +35,7 @@ public class Character_Player : CharacterBase
 
     protected override void Update()
 	{
-		if (!m_isPaused)
+		if (!m_isPaused && m_health.IsAlive)
 		{
 			m_stateMachine.UpdateState();
 			
@@ -49,6 +51,10 @@ public class Character_Player : CharacterBase
                 m_inventory.ToggleInventoryDisplay();
             }
 		}
+        else if (!m_health.IsAlive)
+        {
+            Die();
+        }
 	}
 
     protected override void FixedUpdate()

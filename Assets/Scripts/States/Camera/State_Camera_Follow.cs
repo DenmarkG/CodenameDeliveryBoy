@@ -19,8 +19,8 @@ public class State_Camera_Follow : State_Base
 	}
 
 	public override void UpdateState ()
-	{	
-		//
+	{
+        //
 	}
 
 	public override void UpdateStateFixed ()

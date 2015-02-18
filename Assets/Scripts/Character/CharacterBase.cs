@@ -26,6 +26,9 @@ public class CharacterBase : MonoBehaviour
     protected State_Base m_overWorldState = null;
     protected State_Conversation m_conversationState = null;
 
+    // The health component attached to this character
+    protected Health m_health = null;
+
     #endregion
 
     #region Protected Methods
@@ -96,6 +99,10 @@ public class CharacterBase : MonoBehaviour
         m_motor.UnlockMotion();
     }
 
+    #endregion
+
+    #region PUBLIC FUNCTIONS
+
     public virtual void OnSpeak()
     {
         m_motor.LockMotion();
@@ -106,6 +113,11 @@ public class CharacterBase : MonoBehaviour
     {
         m_motor.UnlockMotion();
         m_stateMachine.SetCurrentState(m_overWorldState);
+    }
+
+    public virtual void Die()
+    {
+        m_animator.SetBool("IsAlive", false);
     }
 
     #endregion

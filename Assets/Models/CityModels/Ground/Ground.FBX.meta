@@ -95,6 +95,24 @@ ModelImporter:
     4300030: SideWalk_010
     4300032: SideWalk_011
     4300034: LiquorStore_Ground002
+    6400000: LiquorStore_Ground
+    6400002: LiquorStore_Ground001
+    6400004: LiquorStore_Ground002
+    6400006: SchoolBoundsTest
+    6400008: Side
+    6400010: Side001
+    6400012: Side002
+    6400014: SideWalk_003
+    6400016: SideWalk_004
+    6400018: SideWalk_005
+    6400020: SideWalk_006
+    6400022: SideWalk_007
+    6400024: SideWalk_008
+    6400026: SideWalk_009
+    6400028: SideWalk_010
+    6400030: SideWalk_011
+    6400032: SideWalk_02
+    6400034: Street_001
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -117,10 +135,10 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: .00999999978
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
-    generateSecondaryUV: 0
+    generateSecondaryUV: 1
     useFileUnits: 1
     optimizeMeshForGPU: 1
     weldVertices: 1

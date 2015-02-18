@@ -35,7 +35,10 @@ public class Clock : MonoBehaviour
 
     void Awake()
     {
-        m_instance = this;
+        if (m_instance == null)
+        {
+            m_instance = this;
+        }
 
         currentHours = (int)(m_dayStartTime / 100);
         currentMinutes = (int)(m_dayStartTime % 100);

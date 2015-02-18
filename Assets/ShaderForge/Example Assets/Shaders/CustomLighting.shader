@@ -103,15 +103,15 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_283 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_283.rg, _Normals))).rgb;
+                float2 node_273 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_273.rg, _Normals))).rgb;
                 float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(_WorldSpaceLightPos0.xyz);
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 node_41 = normalDirection;
-                float3 finalColor = (attenuation*_LightColor0.rgb*((tex2D(_Diffuse,TRANSFORM_TEX(node_283.rg, _Diffuse)).rgb*_Color.rgb*floor(max(0,dot(lightDirection,node_41)) * _Bands) / (_Bands - 1))+UNITY_LIGHTMODEL_AMBIENT.rgb+floor(pow(max(0,dot(node_41,halfDirection)),exp2(_Gloss)) * _Bands) / (_Bands - 1)));
+                float3 finalColor = (attenuation*_LightColor0.rgb*((tex2D(_Diffuse,TRANSFORM_TEX(node_273.rg, _Diffuse)).rgb*_Color.rgb*floor(max(0,dot(lightDirection,node_41)) * _Bands) / (_Bands - 1))+UNITY_LIGHTMODEL_AMBIENT.rgb+floor(pow(max(0,dot(node_41,halfDirection)),exp2(_Gloss)) * _Bands) / (_Bands - 1)));
 /// Final Color:
                 return fixed4(finalColor,1);
             }
@@ -172,15 +172,15 @@ Shader "Shader Forge/Examples/Custom Lighting" {
                 float3x3 tangentTransform = float3x3( i.tangentDir, i.binormalDir, i.normalDir);
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
 /////// Normals:
-                float2 node_284 = i.uv0;
-                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_284.rg, _Normals))).rgb;
+                float2 node_274 = i.uv0;
+                float3 normalLocal = UnpackNormal(tex2D(_Normals,TRANSFORM_TEX(node_274.rg, _Normals))).rgb;
                 float3 normalDirection =  normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));
                 float3 halfDirection = normalize(viewDirection+lightDirection);
 ////// Lighting:
                 float attenuation = LIGHT_ATTENUATION(i);
                 float3 node_41 = normalDirection;
-                float3 finalColor = (attenuation*_LightColor0.rgb*((tex2D(_Diffuse,TRANSFORM_TEX(node_284.rg, _Diffuse)).rgb*_Color.rgb*floor(max(0,dot(lightDirection,node_41)) * _Bands) / (_Bands - 1))+UNITY_LIGHTMODEL_AMBIENT.rgb+floor(pow(max(0,dot(node_41,halfDirection)),exp2(_Gloss)) * _Bands) / (_Bands - 1)));
+                float3 finalColor = (attenuation*_LightColor0.rgb*((tex2D(_Diffuse,TRANSFORM_TEX(node_274.rg, _Diffuse)).rgb*_Color.rgb*floor(max(0,dot(lightDirection,node_41)) * _Bands) / (_Bands - 1))+UNITY_LIGHTMODEL_AMBIENT.rgb+floor(pow(max(0,dot(node_41,halfDirection)),exp2(_Gloss)) * _Bands) / (_Bands - 1)));
 /// Final Color:
                 return fixed4(finalColor * 1,0);
             }

@@ -46,6 +46,8 @@ ModelImporter:
     100080: TrackSupport020
     100082: TrackSupport021
     100084: //RootNode
+    100086: Object042
+    100088: Object043
     400000: Body_and_cab
     400002: Body_and_cab001
     400004: Body_and_cab002
@@ -89,6 +91,8 @@ ModelImporter:
     400080: TrackSupport020
     400082: TrackSupport021
     400084: //RootNode
+    400086: Object042
+    400088: Object043
     2300000: Body_and_cab
     2300002: Body_and_cab001
     2300004: Body_and_cab002
@@ -130,6 +134,8 @@ ModelImporter:
     2300076: TrackSupport018
     2300078: TrackSupport019
     2300080: TrackSupport021
+    2300082: Object042
+    2300084: Object043
     3300000: Body_and_cab
     3300002: Body_and_cab001
     3300004: Body_and_cab002
@@ -171,6 +177,8 @@ ModelImporter:
     3300076: TrackSupport018
     3300078: TrackSupport019
     3300080: TrackSupport021
+    3300082: Object042
+    3300084: Object043
     4300000: TrackBase
     4300002: TrackBase001
     4300004: TrackBase002
@@ -212,6 +220,9 @@ ModelImporter:
     4300076: TrackBase013
     4300078: TrackBase014
     4300080: Object040
+    4300082: Object042
+    4300084: Object043
+    7400000: Take 001
     9500000: //RootNode
   materials:
     importMaterials: 1

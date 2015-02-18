@@ -3,7 +3,7 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager m_instance = null;
+    private static GameManager m_instance = null;
 
     private static Character_Player m_player = null;
 
@@ -44,6 +44,44 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             TogglePause();
+        }
+
+        if (!m_player.GetComponent<Health>().IsAlive)
+        {
+            // end the game
+            EndGame();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        OnPause = null;
+        OnUnPause = null;
+    }
+
+    public static void EndGame(float timeBeforeReload = 5f)
+    {
+        m_instance.StartCoroutine(m_instance.ResetLevel());
+    }
+
+    public IEnumerator ResetLevel(float timeBeforeReload = 5f)
+    {
+        GuiManager.OnUpdateGUI += m_instance.DisplayEndGameText;
+
+        yield return new WaitForSeconds(timeBeforeReload);
+
+        Application.LoadLevel(0);
+    }
+
+    private void DisplayEndGameText()
+    {
+        if (!m_player.GetComponent<Health>().IsAlive)
+        {
+            GUI.Box(new Rect((Screen.width / 2) - (150 / 2), (Screen.height / 2), 150, 25), "You Lose");
+        }
+        else
+        {
+            GUI.Box(new Rect((Screen.width / 2) - (150 / 2), (Screen.height / 2), 150, 25), "You Win");
         }
     }
 

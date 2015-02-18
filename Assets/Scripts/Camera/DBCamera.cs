@@ -58,8 +58,10 @@ public class DBCamera : MonoBehaviour
 	void Awake()
 	{
 		//if the static instance of this camera is null, assign it
-		if (m_instance == null)
-			m_instance = this;
+        if (m_instance == null)
+        {
+            m_instance = this;
+        }
 
 		//assign the states that this camera object will use
         m_stateMachine = new StateMachineBase();
@@ -87,17 +89,24 @@ public class DBCamera : MonoBehaviour
 		if (!Clock.IsPaused)
 		{
 			//reset the camera if the reset button is pressed
-			if(  (Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.R) ) && !IsInvoking("ResetCamera") )
-				StartCoroutine("ResetCamera");
+            if ((Input.GetAxis("LEFT_TRIGGER") < -DEAD_ZONE || Input.GetKeyDown(KeyCode.R)) && !IsInvoking("ResetCamera"))
+            {
+                StartCoroutine("ResetCamera");
+            }
 
 			//if the right mouse button is pressed or the right stick is moved, allow the camera to enter the free orbit state
 			/*bool orbiting = Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.HORIZONTAL) ) > DEAD_ZONE || 
 							Mathf.Abs(Input.GetAxis(GameControllerHash.RightStick.VERTICAL) ) > DEAD_ZONE;*/
 
-			if ( (Input.GetKeyDown(KeyCode.F) /*|| orbiting == true*/) && m_stateMachine.CurrentState == m_followState )
-				m_stateMachine.SetCurrentState(m_orbitState);
+			if ( (Input.GetKeyDown(KeyCode.F) ) && 
+                m_stateMachine.CurrentState == m_followState )
+            {
+                m_stateMachine.SetCurrentState(m_orbitState);
+            }
 			else if ( (Input.GetKeyUp(KeyCode.F) /*|| orbiting == false*/) && m_stateMachine.CurrentState == m_orbitState)
-				m_stateMachine.SetCurrentState(m_followState);
+            {
+                m_stateMachine.SetCurrentState(m_followState);
+            }
 
 			//update the state machine's current state
 			m_stateMachine.UpdateState();

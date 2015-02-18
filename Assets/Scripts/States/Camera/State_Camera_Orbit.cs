@@ -40,11 +40,8 @@ public class State_Camera_Orbit : State_Base
 		//convert to the horizontal input to coordinates
 		m_moveVector = Vector3.zero;
 		
-		//if (Mathf.Abs(input_X) > m_camera.DeadZone)
-			m_moveVector.x -= input_X;
-		
-		//if (Mathf.Abs(input_Y) > m_camera.DeadZone)
-			m_moveVector.y -= input_Y;
+	    m_moveVector.x += input_X;		
+		m_moveVector.y -= input_Y;
 
 		//update the distance for the camera
 		float deltaZoom = -Input.GetAxis("Mouse ScrollWheel");
