@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
 
     public static void EndGame(float timeBeforeReload = 5f)
     {
-        m_instance.StartCoroutine(m_instance.ResetLevel());
+        m_instance.StartCoroutine(m_instance.ResetLevel(timeBeforeReload));
     }
 
     public IEnumerator ResetLevel(float timeBeforeReload = 5f)
@@ -70,7 +70,9 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(timeBeforeReload);
 
-        Application.LoadLevel(0);
+        MissionHash.Instance.ResetMisisons();
+
+        Application.LoadLevel(Application.loadedLevel);
     }
 
     private void DisplayEndGameText()

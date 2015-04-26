@@ -3,9 +3,14 @@ using System.Collections;
 
 public class MissionTestChar_02 : MonoBehaviour 
 {
-	private InventoryItem m_itemToGive = MissionHash.mission_01.Item;
+	private InventoryItem m_itemToGive = null;
+	private Mission mission = null;
 
-	private Mission mission = MissionHash.mission_01;
+    private void Awake()
+    {
+        m_itemToGive = MissionHash.Instance.mission_01.Item;
+        mission = MissionHash.Instance.mission_01;
+    }
 
     private void Start()
     {
@@ -13,7 +18,7 @@ public class MissionTestChar_02 : MonoBehaviour
         ((Mission_01)mission).AddFoodStore();
     }
 
-	void OnTriggerEnter(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
 		if(other.tag == "Player")
 		{

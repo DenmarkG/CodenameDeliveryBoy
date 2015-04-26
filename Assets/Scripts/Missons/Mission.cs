@@ -55,7 +55,12 @@ public class Mission
 	{
 		//end the mission
 	}
-	
+
+    public virtual void ResetMission()
+    {
+        m_currenState = MissionState.INVALID;
+    }
+
 	protected virtual void UnlockDependentMissions()
 	{
 		//

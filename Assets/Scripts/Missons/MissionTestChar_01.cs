@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MissionTestChar_01 : MonoBehaviour
 {
-	private Mission mission = MissionHash.mission_01;
+	private Mission mission = MissionHash.Instance.mission_01;
 
 	void OnTriggerEnter(Collider other)
 	{
