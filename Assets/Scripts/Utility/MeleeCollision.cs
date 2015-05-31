@@ -8,7 +8,7 @@ public class MeleeCollision : MonoBehaviour
 
     private void Awake()
     {
-        m_collider = this.gameObject.collider;
+        m_collider = this.gameObject.GetComponent<Collider>();
     }
 
 	private void Start () 
@@ -18,7 +18,7 @@ public class MeleeCollision : MonoBehaviour
         // (self collisions make the animations look terrible)
         if (FindAndSetOwner())
         {
-            Physics.IgnoreCollision(m_collider, m_owner.GetComponent<CharacterController>().collider );
+            Physics.IgnoreCollision(m_collider, m_owner.GetComponent<CharacterController>().GetComponent<Collider>() );
         }
 	}
 

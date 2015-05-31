@@ -194,7 +194,7 @@ public class Motor_Stalker : Motor_Base
             Debug.Log("Null planes");
         }
 
-        return GeometryUtility.TestPlanesAABB(planes, player.collider.bounds);
+        return GeometryUtility.TestPlanesAABB(planes, player.GetComponent<Collider>().bounds);
     }
 
     #endregion

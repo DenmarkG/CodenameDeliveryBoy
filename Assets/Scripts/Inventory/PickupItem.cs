@@ -13,13 +13,13 @@ public class PickupItem : InventoryItem
 	public virtual IEnumerator CoolDown(GameObject itemObject, float coolDownTime)
 	{
 		yield return new WaitForSeconds(coolDownTime);
-		itemObject.renderer.enabled = true;
-		itemObject.collider.enabled = true;
+		itemObject.GetComponent<Renderer>().enabled = true;
+		itemObject.GetComponent<Collider>().enabled = true;
 	}
 	
 	public virtual void Collect(GameObject itemObject)
 	{
-		itemObject.renderer.enabled = false;
+		itemObject.GetComponent<Renderer>().enabled = false;
 		//AddToInventory(inventory);
 		GameObject.Destroy(itemObject);
 	}
